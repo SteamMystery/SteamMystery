@@ -22,7 +22,7 @@ enum class EVolumeType : uint8
 UCLASS(config = Settings, configdonotcheckdefaults)
 class STEAMMYSTERY_API UExtendedGameUserSettings : public UGameUserSettings
 {
-	GENERATED_UCLASS_BODY()
+	GENERATED_BODY()
 public:
 	/** 
 	* Sets the volume value for the given category for audio output.

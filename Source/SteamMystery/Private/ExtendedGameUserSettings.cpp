@@ -3,17 +3,6 @@
 
 #include "ExtendedGameUserSettings.h"
 
-
-UExtendedGameUserSettings::UExtendedGameUserSettings(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer)
-{
-	MasterVolume = 1.0f;
-	AmbientVolume = 0.8f;
-	DialogVolume = 0.65f;
-	EffectVolume = 0.75f;
-	MusicVolume = 0.9f;
-}
-
 void UExtendedGameUserSettings::SetAudioCategoryVolume(EVolumeType VolumeCategory, float NewVolume)
 {
 	switch (VolumeCategory)
