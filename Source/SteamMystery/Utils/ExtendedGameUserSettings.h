@@ -83,6 +83,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetAll(const FSettings& Settings);
 
+	UFUNCTION(BlueprintPure)
+	FSettings GetAll() const;
+
 protected:
 	
 	UPROPERTY(config)

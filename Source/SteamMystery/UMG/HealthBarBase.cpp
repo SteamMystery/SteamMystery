@@ -2,6 +2,7 @@
 
 
 #include "HealthBarBase.h"
+#include "Components/ProgressBar.h"
 
 float UHealthBarBase::GetHealth() const
 {
@@ -18,16 +19,12 @@ void UHealthBarBase::SetHealth(float Value)
 	});
 	TArray<float> Keys;
 	Thresholds.GetKeys(Keys);
-	const FLinearColor* Color = nullptr;
+	FLinearColor Color = FLinearColor(1, 1, 1);
 	for (const auto Key : Keys)
-	{
 		if (Key > Value)
 		{
-			Color = Thresholds.Find(Key);
+			Color = *Thresholds.Find(Key);
 			break;
 		}
-	}
-	if (!Color)
-		Color = new FLinearColor(1.0f, 1.0f, 1.0f);
-	Health->SetFillColorAndOpacity(*Color);
+	Health->SetFillColorAndOpacity(Color);
 }

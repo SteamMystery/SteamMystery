@@ -4,13 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "Components/Button.h"
-#include "Components/WidgetSwitcher.h"
-#include "SteamMystery/Utils/ExtendedGameUserSettings.h"
-#include "GameFramework/GameUserSettings.h"
-
 #include "Options.generated.h"
 
+class UWidgetSwitcher;
+class UButton;
 /**
  * 
  */
@@ -19,45 +16,25 @@ class STEAMMYSTERY_API UOptions : public UUserWidget
 {
 	GENERATED_BODY()
 	
-private:
-	// UPROPERTY()
-	// UExtendedGameUserSettings* Settings = UExtendedGameUserSettings::GetExtendedGameUserSettings();
-	//
-	UPROPERTY(meta=(BindWidget))
-	UButton* Cancel;
+protected:
 
 	UPROPERTY(meta=(BindWidget))
-	UButton* Save;
+	UButton* SoundButton;
 
 	UPROPERTY(meta=(BindWidget))
-	UButton* Sound;
+	UButton* GraphicsButton;
 
 	UPROPERTY(meta=(BindWidget))
-	UButton* Graphics;
-
-	UPROPERTY(meta=(BindWidget))
-	UButton* Controls;
+	UButton* ControlsButton;
 
 	UPROPERTY(meta=(BindWidget))
 	UWidgetSwitcher* WidgetSwitcher;
 
-	UPROPERTY()
-	TArray<UButton*> TabButtons = TArray{Sound, Graphics, Controls};
+	UPROPERTY(BlueprintReadOnly)
+	TArray<UButton*> TabButtons;
 
-	UPROPERTY(EditAnywhere)
-	USoundMix* SoundMix;
-	
 	virtual bool Initialize() override;
 
-	void OnSave();
-
-	void OnCancel();
-
-	void OnSoundClicked();
-
-	void OnGraphicsClicked();
-
-	void OnControlsClicked();
-	
+	UFUNCTION(BlueprintCallable)
 	void SetActiveWidget(int32 Index);
 };

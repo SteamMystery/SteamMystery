@@ -53,3 +53,22 @@ void UExtendedGameUserSettings::SetAll(const FSettings& Settings)
 	SetFullscreenMode(Settings.InFullScreenMode);
 	SetVSyncEnabled(Settings.VSync);
 }
+
+FSettings UExtendedGameUserSettings::GetAll() const
+{
+	FSettings Settings;
+	Settings.Textures = GetTextureQuality();
+	Settings.Reflection = GetReflectionQuality();
+	Settings.GlobalIllumination = GetGlobalIlluminationQuality();
+	Settings.ViewDistance = GetViewDistanceQuality();
+	Settings.PostProcessing = GetPostProcessingQuality();
+	Settings.AntiAliasing = GetAntiAliasingQuality();
+	Settings.Shading = GetShadingQuality();
+	Settings.Shadows = GetShadowQuality();
+	Settings.VisualEffects = GetVisualEffectQuality();
+	Settings.Foliage = GetFoliageQuality();
+	Settings.ScreenResolution = GetScreenResolution();
+	Settings.InFullScreenMode = GetFullscreenMode();
+	Settings.VSync = IsVSyncEnabled();
+	return Settings;
+}
