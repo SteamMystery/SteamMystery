@@ -2,9 +2,8 @@
 
 
 #include "BTTask_Attack.h"
-
 #include "AIController.h"
-#include "Characters/MainCharacter.h"
+#include "SteamMystery/Characters/MainCharacter.h"
 
 UBTTask_Attack::UBTTask_Attack()
 {
@@ -19,8 +18,16 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 	{
 		if(const auto Character = Cast<AMainCharacter>(AIOwnerController->GetPawn()))
 		{
-			Character->RangedAttack();
+			Character->Attack();
 		}
+		else
+		{
+			UE_LOG(LogTemp, Display, TEXT("Character failes"))
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Display, TEXT("Controller failes"))
 	}
 	
 	return EBTNodeResult::Succeeded;

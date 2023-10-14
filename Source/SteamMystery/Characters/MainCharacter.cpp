@@ -2,59 +2,60 @@
 
 
 #include "MainCharacter.h"
-#include "EnhancedInputSubsystems.h"
-#include "Camera/CameraComponent.h"
+
+#include "Components/CapsuleComponent.h"
+#include "SteamMystery/Components/HealthComponent.h"
 #include "SteamMystery/Weapons/RangedWeapon.h"
 
 // Sets default values
 AMainCharacter::AMainCharacter()
 {
-	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-	
-	FirstPersonCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
-	FirstPersonCamera->SetupAttachment(RootComponent);
-	FirstPersonCamera->SetRelativeLocation(FVector(-10,0,60));
-	FirstPersonCamera->bUsePawnControlRotation = true;
-
-	FirstPersonSkeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Arms"));
-	FirstPersonSkeletalMesh->SetupAttachment(FirstPersonCamera);
-	FirstPersonSkeletalMesh->SetRelativeLocation(FVector(-30,0,-150));
+	// Set size for collision capsule
+	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
+	Health = CreateDefaultSubobject<UHealthComponent>(TEXT("Health"));
 }
 
-
-// Called to bind functionality to input
-void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+// Called when the game starts or when spawned
+void AMainCharacter::BeginPlay()
 {
-	//Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-	// Get the player controller
-	const APlayerController* PlayerController = Cast<APlayerController>(GetController());
-
-	// Get the local player subsystem
-	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(
-		PlayerController->GetLocalPlayer());
-	// Clear out existing mapping, and add our mapping
-	Subsystem->ClearAllMappings();
-	Subsystem->AddMappingContext(InputMapping, 0);
+	Super::BeginPlay();
+	if (WeaponClass)
+	{
+		Weapon = GetWorld()->SpawnActor<AWeapon>(WeaponClass);
+		Weapon->AttachToComponent(GetMainMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("GripPoint"));
+		Weapon->SetOwner(this);
+		bHasRifle = true;
+	}
 }
 
 
-
-void AMainCharacter::Look(const FVector2D Value)
+void AMainCharacter::Move(const FVector2D Value)
 {
 	if (!Controller) return;
 
+	// Right/Left direction
 	if (Value.X != 0.f)
-		AddControllerYawInput(Value.X);
+		AddMovementInput(GetActorRightVector(), Value.X);
 
+	// Forward/Backward direction
 	if (Value.Y != 0.f)
-		AddControllerPitchInput(Value.Y);
+		AddMovementInput(GetActorForwardVector(), Value.Y);
+}
+
+void AMainCharacter::HandleDeath()
+{
+	DetachFromControllerPendingDestroy();
+	GetMesh()->DetachFromComponent(FDetachmentTransformRules::KeepRelativeTransform);
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetMesh()->SetSimulatePhysics(true);
+}
+
+void AMainCharacter::Attack() const
+{
+	Weapon->Attack();
 }
 
 USkeletalMeshComponent* AMainCharacter::GetMainMesh() const
 {
-	return FirstPersonSkeletalMesh;
+	return GetMesh();
 }
-
-

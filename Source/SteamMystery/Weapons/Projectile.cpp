@@ -21,7 +21,6 @@ AProjectile::AProjectile()
 void AProjectile::BeginPlay()
 {
 	Super::BeginPlay();
-
 	Mesh->OnComponentHit.AddDynamic(this, &AProjectile::OnHit);
 }
 
@@ -31,24 +30,17 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComp,
                         FVector NormalImpulse,
                         const FHitResult& HitResult)
 {
-
-	const auto OwnerActor = GetOwner();
-	
-	UE_LOG(LogTemp, Display, TEXT("%s"), *OwnerActor->GetActorNameOrLabel());
-	if (!OwnerActor) return;
-	if (OtherActor && OtherActor != this && OtherActor != OwnerActor)
+	if (const auto OwnerActor = GetOwner())
 	{
-		UGameplayStatics::ApplyDamage(OtherActor,
-		                              Damage,
-		                              OwnerActor->GetInstigatorController(),
-		                              this,
-		                              UDamageType::StaticClass());
-		Destroy();
+		UE_LOG(LogTemp, Display, TEXT("%s"), *OwnerActor->GetActorNameOrLabel());
+		if (OtherActor && OtherActor != this && OtherActor != OwnerActor)
+		{
+			UGameplayStatics::ApplyDamage(OtherActor,
+			                              Damage,
+			                              OwnerActor->GetInstigatorController(),
+			                              this,
+			                              UDamageType::StaticClass());
+			Destroy();
+		}
 	}
-}
-
-// Called every frame
-void AProjectile::Tick(const float DeltaTime)
-{
-	Super::Tick(DeltaTime);
 }

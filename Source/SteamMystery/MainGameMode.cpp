@@ -4,8 +4,8 @@
 #include "MainGameMode.h"
 
 #include "MainPlayerController.h"
-#include "Characters/GameCharacter.h"
 #include "Characters/MainCharacter.h"
+#include "Characters/PlayerCharacter.h"
 #include "Kismet/GameplayStatics.h"
 
 void AMainGameMode::ActorDied(AActor* Actor) const
@@ -17,7 +17,7 @@ void AMainGameMode::ActorDied(AActor* Actor) const
 			MainPlayerController -> SetPlayerEnabledState(false);
 	}
 	//Other deaths
-	else if(AGameCharacter* Character = Cast<AGameCharacter>(Actor))
+	else if(AMainCharacter* Character = Cast<AMainCharacter>(Actor))
 	{
 		Character->HandleDeath();
 	}
@@ -27,6 +27,6 @@ void AMainGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
-	Player = Cast<AMainCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+	Player = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 	MainPlayerController = Cast<AMainPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
 }

@@ -4,26 +4,24 @@
 
 #include "CoreMinimal.h"
 #include "Weapon.h"
-#include "RangedWeapon.generated.h"
+#include "MeleeWeapon.generated.h"
 
-class AProjectile;
 /**
  * 
  */
 UCLASS()
-class STEAMMYSTERY_API ARangedWeapon : public AWeapon
+class STEAMMYSTERY_API AMeleeWeapon : public AWeapon
 {
 	GENERATED_BODY()
 
 public:
-
 	virtual void Attack() const override;
 
 protected:
+	virtual void BeginPlay() override;
 	
+private:
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<AProjectile>  ProjectileClass;
+	float Damage = 50.f;
 
-	UPROPERTY(EditDefaultsOnly)
-	FVector ProjectileOffset;
 };

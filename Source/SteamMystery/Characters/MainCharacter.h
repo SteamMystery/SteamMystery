@@ -3,11 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameCharacter.h"
+#include "GameFramework/Character.h"
 #include "MainCharacter.generated.h"
 
+class UCameraComponent;
+class AWeapon;
+
 UCLASS()
-class STEAMMYSTERY_API AMainCharacter : public AGameCharacter
+class STEAMMYSTERY_API AMainCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
@@ -16,21 +19,36 @@ public:
 	AMainCharacter();
 
 protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enhanced Input")
-	class UInputMappingContext* InputMapping;
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
 
-	UPROPERTY(VisibleAnywhere)
-	UCameraComponent* FirstPersonCamera;
-	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	USkeletalMeshComponent* FirstPersonSkeletalMesh;
-
-public:
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
+public:	
 
 	UFUNCTION(BlueprintCallable)
-	void Look(const FVector2D Value);
+	void Move(const FVector2D Value);
+	
+	UFUNCTION()
+	virtual void HandleDeath();
 
-	virtual USkeletalMeshComponent* GetMainMesh() const override;
+	UFUNCTION(BlueprintCallable)
+	void Attack() const;
+
+	UFUNCTION()
+	virtual USkeletalMeshComponent* GetMainMesh() const;
+
+protected:
+	UPROPERTY(VisibleAnywhere)
+	class UHealthComponent* Health;
+
+	UPROPERTY(BlueprintReadWrite)
+	bool bHasRifle;
+	
+private:
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AWeapon> WeaponClass;
+
+	UPROPERTY()
+	AWeapon* Weapon;
+
 };

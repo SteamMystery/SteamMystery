@@ -3,6 +3,7 @@
 
 #include "BTService_PlayerLocationIfSeen.h"
 
+#include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -18,8 +19,19 @@ void UBTService_PlayerLocationIfSeen::TickNode(UBehaviorTreeComponent& OwnerComp
 	{
 		if (const auto AIOwnerController = OwnerComp.GetAIOwner())
 		{
-			OwnerComp.GetBlackboardComponent()->SetValueAsVector(GetSelectedBlackboardKey(),
-			                                                     PlayerPawn->GetActorLocation());
+			if (AIOwnerController->LineOfSightTo(PlayerPawn))
+				OwnerComp.GetBlackboardComponent()->SetValueAsVector(GetSelectedBlackboardKey(),
+																	 PlayerPawn->GetActorLocation());
+			else
+				OwnerComp.GetBlackboardComponent()->ClearValue(GetSelectedBlackboardKey());
 		}
+		else
+		{
+			UE_LOG(LogTemp, Display, TEXT("Controller failes"))
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Display, TEXT("Pawn failes"))
 	}
 }

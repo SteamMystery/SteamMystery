@@ -20,7 +20,7 @@ public:
 	virtual void BeginPlay() override;
 private:
 	UPROPERTY()
-	class AMainCharacter* Player;
+	class APlayerCharacter* Player;
 
 	UPROPERTY()
 	class AMainPlayerController* MainPlayerController;

@@ -3,8 +3,8 @@
 
 #include "HealthComponent.h"
 
-#include "MainGameMode.h"
 #include "Kismet/GameplayStatics.h"
+#include "SteamMystery/MainGameMode.h"
 
 // Sets default values for this component's properties
 UHealthComponent::UHealthComponent()

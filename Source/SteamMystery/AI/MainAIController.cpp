@@ -20,17 +20,17 @@ void AMainAIController::BeginPlay()
 void AMainAIController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-	if (LineOfSightTo(PlayerPawn))
-	{
-		GetBlackboardComponent()->SetValueAsVector(TEXT("PlayerLocation"), PlayerPawn->GetActorLocation());
-		GetBlackboardComponent()->SetValueAsVector(TEXT("LastKnownLocation"), PlayerPawn->GetActorLocation());
-		// SetFocus(PlayerPawn, EAIFocusPriority::Gameplay);
-		// AcceptanceRadius = 200;
-		// MoveToActor(PlayerPawn, AcceptanceRadius);
-	}
-	else
-	{
-		GetBlackboardComponent()->ClearValue(TEXT("PlayerLocation"));
-		// ClearFocus(EAIFocusPriority::Gameplay);
-	}
+	// if (LineOfSightTo(PlayerPawn))
+	// {
+	// 	GetBlackboardComponent()->SetValueAsVector(TEXT("PlayerLocation"), PlayerPawn->GetActorLocation());
+	// 	GetBlackboardComponent()->SetValueAsVector(TEXT("LastKnownLocation"), PlayerPawn->GetActorLocation());
+	// 	// SetFocus(PlayerPawn, EAIFocusPriority::Gameplay);
+	// 	// AcceptanceRadius = 200;
+	// 	// MoveToActor(PlayerPawn, AcceptanceRadius);
+	// }
+	// else
+	// {
+	// 	GetBlackboardComponent()->ClearValue(TEXT("PlayerLocation"));
+	// 	// ClearFocus(EAIFocusPriority::Gameplay);
+	// }
 }

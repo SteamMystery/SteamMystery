@@ -10,28 +10,26 @@ UCLASS()
 class STEAMMYSTERY_API AWeapon : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	AWeapon();
+	
+	UFUNCTION(BlueprintCallable)
+	virtual void Attack() const
+	PURE_VIRTUAL(&AWeapon::Attack)
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
+	
 	UFUNCTION(BlueprintPure)
 	USkeletalMeshComponent* GetMesh() const;
 
+	
 private:
+
 	UPROPERTY(VisibleAnywhere)
 	USceneComponent* Root;
 
 	UPROPERTY(VisibleAnywhere)
 	USkeletalMeshComponent* Mesh;
-
-	
 };

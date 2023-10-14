@@ -29,5 +29,5 @@ private:
 	float AcceptanceRadius;
 
 	UPROPERTY(EditAnywhere)
-	class UBehaviorTree* BehaviorTree;
+	UBehaviorTree* BehaviorTree;
 };
