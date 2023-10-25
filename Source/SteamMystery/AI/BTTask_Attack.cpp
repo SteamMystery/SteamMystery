@@ -3,7 +3,7 @@
 
 #include "BTTask_Attack.h"
 #include "AIController.h"
-#include "SteamMystery/Characters/MainCharacter.h"
+#include "SteamMystery/Characters/GameCharacter.h"
 
 UBTTask_Attack::UBTTask_Attack()
 {
@@ -16,7 +16,7 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 
 	if(const auto AIOwnerController = OwnerComp.GetAIOwner())
 	{
-		if(const auto Character = Cast<AMainCharacter>(AIOwnerController->GetPawn()))
+		if(const auto Character = Cast<AGameCharacter>(AIOwnerController->GetPawn()))
 		{
 			Character->Attack();
 		}

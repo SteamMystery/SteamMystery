@@ -5,7 +5,7 @@
 
 #include "Kismet/GameplayStatics.h"
 
-void AMeleeWeapon::Attack() const
+void AMeleeWeapon::Use() const
 {
 }
 

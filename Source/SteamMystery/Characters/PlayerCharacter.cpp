@@ -4,7 +4,6 @@
 #include "PlayerCharacter.h"
 #include "EnhancedInputSubsystems.h"
 #include "Camera/CameraComponent.h"
-#include "SteamMystery/Weapons/RangedWeapon.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -27,30 +26,12 @@ APlayerCharacter::APlayerCharacter()
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	//Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-	// Get the player controller
 	const APlayerController* PlayerController = Cast<APlayerController>(GetController());
-
-	// Get the local player subsystem
-	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(
-		PlayerController->GetLocalPlayer());
-	// Clear out existing mapping, and add our mapping
+	const auto Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
 	Subsystem->ClearAllMappings();
 	Subsystem->AddMappingContext(InputMapping, 0);
 }
 
-
-
-void APlayerCharacter::Look(const FVector2D Value)
-{
-	if (!Controller) return;
-
-	if (Value.X != 0.f)
-		AddControllerYawInput(Value.X);
-
-	if (Value.Y != 0.f)
-		AddControllerPitchInput(Value.Y);
-}
 
 USkeletalMeshComponent* APlayerCharacter::GetMainMesh() const
 {

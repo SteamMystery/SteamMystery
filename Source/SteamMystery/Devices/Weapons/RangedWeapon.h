@@ -17,7 +17,7 @@ class STEAMMYSTERY_API ARangedWeapon : public AWeapon
 
 public:
 
-	virtual void Attack() const override;
+	virtual void Use() const override;
 
 protected:
 	

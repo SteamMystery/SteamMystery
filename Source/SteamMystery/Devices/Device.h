@@ -4,32 +4,33 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Weapon.generated.h"
+#include "Device.generated.h"
 
 UCLASS()
-class STEAMMYSTERY_API AWeapon : public AActor
+class STEAMMYSTERY_API ADevice : public AActor
 {
 	GENERATED_BODY()
-
-public:
-	// Sets default values for this actor's properties
-	AWeapon();
+	
+public:	
+	ADevice();
 	
 	UFUNCTION(BlueprintCallable)
-	virtual void Attack() const
-	PURE_VIRTUAL(&AWeapon::Attack)
+	virtual void Use() const;
 
 protected:
 	
 	UFUNCTION(BlueprintPure)
 	USkeletalMeshComponent* GetMesh() const;
 
-	
-private:
-
 	UPROPERTY(VisibleAnywhere)
 	USceneComponent* Root;
 
 	UPROPERTY(VisibleAnywhere)
 	USkeletalMeshComponent* Mesh;
+
+	UPROPERTY(EditAnywhere)
+	float SteamPrice = 0.f;
+
+	UPROPERTY(EditAnywhere)
+	float ElectricityPrice = 0.f;
 };

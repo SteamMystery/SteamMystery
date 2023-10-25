@@ -3,11 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "MainCharacter.h"
+#include "GameCharacter.h"
 #include "PlayerCharacter.generated.h"
 
 UCLASS()
-class STEAMMYSTERY_API APlayerCharacter : public AMainCharacter
+class STEAMMYSTERY_API APlayerCharacter : public AGameCharacter
 {
 	GENERATED_BODY()
 
@@ -20,17 +20,16 @@ protected:
 	class UInputMappingContext* InputMapping;
 
 	UPROPERTY(VisibleAnywhere)
-	UCameraComponent* FirstPersonCamera;
+	class UCameraComponent* FirstPersonCamera;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USkeletalMeshComponent* FirstPersonSkeletalMesh;
 
 public:
+	
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
-	UFUNCTION(BlueprintCallable)
-	void Look(const FVector2D Value);
-
 	virtual USkeletalMeshComponent* GetMainMesh() const override;
+	
 };
