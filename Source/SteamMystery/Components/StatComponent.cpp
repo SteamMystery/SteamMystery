@@ -50,7 +50,7 @@ void UStatComponent::TickComponent(const float DeltaTime, const ELevelTick TickT
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	if(ToRestore > 0)
 	{
-		CurrentValue++;
-		ToRestore--;
+		CurrentValue+=0.5;
+		ToRestore-=0.5;
 	}
 }
