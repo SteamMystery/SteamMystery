@@ -9,7 +9,7 @@ float UHealthBarBase::GetHealth() const
 	return Health ? Health->GetPercent() : NULL;
 }
 
-void UHealthBarBase::SetHealth(float Value)
+void UHealthBarBase::SetHealth(const float Value)
 {
 	if (!Health) return;
 	Health->SetPercent(Value);

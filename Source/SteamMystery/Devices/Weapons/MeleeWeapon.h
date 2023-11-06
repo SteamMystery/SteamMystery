@@ -15,7 +15,7 @@ class STEAMMYSTERY_API AMeleeWeapon : public AWeapon
 	GENERATED_BODY()
 
 public:
-	virtual void Use() const override;
+	virtual bool Use() const override;
 
 protected:
 	virtual void BeginPlay() override;
