@@ -36,4 +36,10 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	class UInventoryComponent* Looter = nullptr;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UUserWidget> InteractionWidgetClass;
+
+	UPROPERTY()
+	UUserWidget* InteractionWidget = nullptr;
 };

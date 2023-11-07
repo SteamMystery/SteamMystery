@@ -4,9 +4,9 @@
 #include "GameCharacter.h"
 
 #include "Components/CapsuleComponent.h"
-#include "SteamMystery/InventoryComponent.h"
 #include "SteamMystery/Components/ElectricityComponent.h"
 #include "SteamMystery/Components/HealthComponent.h"
+#include "SteamMystery/Components/InventoryComponent.h"
 #include "SteamMystery/Components/SteamComponent.h"
 #include "SteamMystery/Devices/Device.h"
 

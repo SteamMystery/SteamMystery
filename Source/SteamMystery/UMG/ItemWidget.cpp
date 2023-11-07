@@ -3,10 +3,10 @@
 
 #include "ItemWidget.h"
 
-#include "Item.h"
 #include "Components/Button.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
+#include "SteamMystery/Item.h"
 
 
 void UItemWidget::SetItem(const UItem* Value, const int N)

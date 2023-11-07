@@ -10,6 +10,7 @@ TMap<UItem*, int32> UInventoryComponent::GetItems() const
 
 void UInventoryComponent::AddItem(UItem* Item, const int Count = 1)
 {
+	UE_LOG(LogTemp, Display, TEXT("%p"), Item);
 	if (Items.Contains(Item))
 		Items[Item] += Count;
 	else
@@ -32,4 +33,5 @@ void UInventoryComponent::Loot(UInventoryComponent* Looter)
 {
 	for (const auto Item : Items)
 		Looter->AddItem(Item.Key, Item.Value);
+	Items.Empty();
 }

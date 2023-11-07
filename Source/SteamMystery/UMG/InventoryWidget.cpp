@@ -3,12 +3,11 @@
 
 #include "InventoryWidget.h"
 
-#include "InventoryComponent.h"
-#include "Item.h"
 #include "ItemWidget.h"
 #include "Components/TextBlock.h"
 #include "Components/VerticalBox.h"
 #include "GameFramework/Character.h"
+#include "SteamMystery/Components/InventoryComponent.h"
 
 void UInventoryWidget::NativeConstruct()
 {
@@ -16,8 +15,9 @@ void UInventoryWidget::NativeConstruct()
 	if (const APlayerController* Controller = GetOwningPlayer())
 		if (const ACharacter* Character = Controller->GetCharacter())
 			Inventory = Character->GetComponentByClass<UInventoryComponent>();
+	Items->ClearChildren();
 	if(Inventory)
-		for (const TTuple<UItem*, int> Element : Inventory->GetItems())
+		for (const auto Element : Inventory->GetItems())
 		{
 			const auto Widget = CreateWidget<UItemWidget>(GetOwningPlayer(), ItemWidgetClass);
 			Widget->SetItem(Element.Key, Element.Value);
