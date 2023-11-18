@@ -43,6 +43,7 @@ protected:
 	
 	UPROPERTY(EditAnywhere)
 	class UElectricityComponent* Electricity;
+	
 
 	UPROPERTY(BlueprintReadWrite)
 	bool bHasRifle;
@@ -52,4 +53,9 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<ADevice> MainHandClass;
+
+public:
+	
+	UPROPERTY(EditAnywhere)
+	class UInventoryComponent* Inventory;
 };

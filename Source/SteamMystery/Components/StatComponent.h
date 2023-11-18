@@ -27,6 +27,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	virtual bool Consume(const float Value);
+
+	UFUNCTION(BlueprintPure)
+	virtual bool CanConsume(const float Value) const;
 	
 	UFUNCTION(BlueprintCallable)
 	void Restore(const float Value);

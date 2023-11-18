@@ -4,7 +4,7 @@
 #include "HealthComponent.h"
 
 #include "Kismet/GameplayStatics.h"
-#include "SteamMystery/MainGameMode.h"
+#include "SteamMystery/Game/MainGameMode.h"
 
 void UHealthComponent::BeginPlay()
 {

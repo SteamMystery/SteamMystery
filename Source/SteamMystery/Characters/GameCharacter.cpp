@@ -6,6 +6,7 @@
 #include "Components/CapsuleComponent.h"
 #include "SteamMystery/Components/ElectricityComponent.h"
 #include "SteamMystery/Components/HealthComponent.h"
+#include "SteamMystery/Components/InventoryComponent.h"
 #include "SteamMystery/Components/SteamComponent.h"
 #include "SteamMystery/Devices/Device.h"
 
@@ -18,6 +19,7 @@ AGameCharacter::AGameCharacter()
 	Health = CreateDefaultSubobject<UHealthComponent>(TEXT("Health"));
 	Steam = CreateDefaultSubobject<USteamComponent>(TEXT("Steam"));
 	Electricity = CreateDefaultSubobject<UElectricityComponent>(TEXT("Electricity"));
+	Inventory = CreateDefaultSubobject<UInventoryComponent>(TEXT("Inventory"));
 }
 
 

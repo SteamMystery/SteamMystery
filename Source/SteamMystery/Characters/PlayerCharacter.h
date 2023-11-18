@@ -25,6 +25,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USkeletalMeshComponent* FirstPersonSkeletalMesh;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class UInteractionComponent* Grabber;
+
 public:
 	
 	// Called to bind functionality to input

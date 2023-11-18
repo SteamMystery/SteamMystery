@@ -4,6 +4,7 @@
 #include "PlayerCharacter.h"
 #include "EnhancedInputSubsystems.h"
 #include "Camera/CameraComponent.h"
+#include "SteamMystery/Components/InteractionComponent.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -19,6 +20,9 @@ APlayerCharacter::APlayerCharacter()
 	FirstPersonSkeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Arms"));
 	FirstPersonSkeletalMesh->SetupAttachment(FirstPersonCamera);
 	FirstPersonSkeletalMesh->SetRelativeLocation(FVector(-30,0,-150));
+
+	Grabber = CreateDefaultSubobject<UInteractionComponent>(TEXT("Grabber"));
+	Grabber->SetupAttachment(FirstPersonCamera);
 }
 
 

@@ -15,18 +15,18 @@ public:
 	ADevice();
 	
 	UFUNCTION(BlueprintCallable)
-	virtual void Use() const;
+	virtual bool Use() const;
 
 protected:
 	
 	UFUNCTION(BlueprintPure)
-	USkeletalMeshComponent* GetMesh() const;
+	UStaticMeshComponent* GetMesh() const;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(EditAnywhere)
 	USceneComponent* Root;
 
-	UPROPERTY(VisibleAnywhere)
-	USkeletalMeshComponent* Mesh;
+	UPROPERTY(EditAnywhere)
+	UStaticMeshComponent* Mesh;
 
 	UPROPERTY(EditAnywhere)
 	float SteamPrice = 0.f;

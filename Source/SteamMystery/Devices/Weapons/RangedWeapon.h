@@ -17,13 +17,16 @@ class STEAMMYSTERY_API ARangedWeapon : public AWeapon
 
 public:
 
-	virtual void Use() const override;
+	virtual bool Use() const override;
 
+	ARangedWeapon();
 protected:
+	UPROPERTY(EditAnywhere)
+	USceneComponent* FirePoint;
 	
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AProjectile>  ProjectileClass;
 
 	UPROPERTY(EditDefaultsOnly)
-	FVector ProjectileOffset;
+	class USoundBase* FireSound;
 };

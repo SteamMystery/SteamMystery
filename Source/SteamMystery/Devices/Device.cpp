@@ -10,21 +10,24 @@
 ADevice::ADevice()
 {
 	PrimaryActorTick.bCanEverTick = false;
-	Mesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh"));
-	SetRootComponent(Mesh);
+	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+	SetRootComponent(Root);
+	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
+	Mesh->SetupAttachment(Root);
 }
 
-void ADevice::Use() const
+bool ADevice::Use() const
 {
 	const auto Char = GetOwner();
 	const auto SteamComponent = Char->GetComponentByClass<USteamComponent>();
-	SteamComponent->Consume(SteamPrice);
 	const auto ElectricityComponent = Char->GetComponentByClass<UElectricityComponent>();
-	ElectricityComponent->Consume(ElectricityPrice);
+	
+	if (SteamComponent->CanConsume(SteamPrice) && ElectricityComponent->CanConsume(ElectricityPrice))
+		return SteamComponent->Consume(SteamPrice) && ElectricityComponent->Consume(ElectricityPrice);
+	return false;
 }
 
-USkeletalMeshComponent* ADevice::GetMesh() const
+UStaticMeshComponent* ADevice::GetMesh() const
 {
 	return Mesh;
 }
-

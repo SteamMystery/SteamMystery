@@ -5,8 +5,9 @@
 
 #include "Kismet/GameplayStatics.h"
 
-void AMeleeWeapon::Use() const
+bool AMeleeWeapon::Use() const
 {
+	return false;
 }
 
 void AMeleeWeapon::BeginPlay()

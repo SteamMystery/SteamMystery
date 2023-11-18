@@ -25,7 +25,7 @@ float UStatComponent::SetValue(const float Value)
 
 bool UStatComponent::Consume(const float Value)
 {
-	if (CurrentValue >= Value)
+	if (CanConsume(Value))
 	{
 		CurrentValue -= Value;
 		return true;
@@ -33,9 +33,13 @@ bool UStatComponent::Consume(const float Value)
 	return false;
 }
 
+bool UStatComponent::CanConsume(const float Value) const
+{
+	return CurrentValue >= Value;
+}
+
 void UStatComponent::Restore(const float Value)
 {
-	//UE_LOG(LogTemp, Display, TEXT("Restore float %f"), ToRestore);
 	ToRestore = Value;
 }
 
@@ -45,12 +49,13 @@ void UStatComponent::BeginPlay()
 	CurrentValue = MaxValue;
 }
 
-void UStatComponent::TickComponent(const float DeltaTime, const ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void UStatComponent::TickComponent(const float DeltaTime, const ELevelTick TickType,
+                                   FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	if(ToRestore > 0)
+	if (ToRestore > 0)
 	{
-		CurrentValue+=0.5;
-		ToRestore-=0.5;
+		CurrentValue += 0.5;
+		ToRestore -= 0.5;
 	}
 }
