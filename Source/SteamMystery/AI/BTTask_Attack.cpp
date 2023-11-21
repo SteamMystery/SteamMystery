@@ -18,7 +18,8 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 	{
 		if(const auto Character = Cast<AGameCharacter>(AIOwnerController->GetPawn()))
 		{
-			Character->Attack();
+			if(Character->Attack())
+				Character->PlayAnimMontage(Character->GetAttackAnimMontage());
 		}
 		else
 		{

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
+#include "Perception/AIPerceptionTypes.h"
 #include "MainAIController.generated.h"
 
 /**
@@ -14,8 +15,12 @@ class STEAMMYSTERY_API AMainAIController : public AAIController
 {
 	GENERATED_BODY()
 
+	AMainAIController();
 protected:
 	virtual void BeginPlay() override;
+
+	UFUNCTION()
+	void OnSensed(AActor* SourceActor, FAIStimulus Stimulus);
 
 public:
 	virtual void Tick(float DeltaSeconds) override;
@@ -30,4 +35,7 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	UBehaviorTree* BehaviorTree;
+
+	UPROPERTY(EditAnywhere)
+	UAIPerceptionComponent* AIPerceptionComponent;
 };

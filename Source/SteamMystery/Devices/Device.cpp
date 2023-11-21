@@ -3,6 +3,7 @@
 
 #include "Device.h"
 
+#include "SteamMystery/Characters/GameCharacter.h"
 #include "SteamMystery/Components/ElectricityComponent.h"
 #include "SteamMystery/Components/SteamComponent.h"
 
@@ -16,7 +17,7 @@ ADevice::ADevice()
 	Mesh->SetupAttachment(Root);
 }
 
-bool ADevice::Use() const
+bool ADevice::Use()
 {
 	const auto Char = GetOwner();
 	const auto SteamComponent = Char->GetComponentByClass<USteamComponent>();
@@ -25,6 +26,16 @@ bool ADevice::Use() const
 	if (SteamComponent->CanConsume(SteamPrice) && ElectricityComponent->CanConsume(ElectricityPrice))
 		return SteamComponent->Consume(SteamPrice) && ElectricityComponent->Consume(ElectricityPrice);
 	return false;
+}
+
+FString ADevice::GetDeviceName() const
+{
+	return DeviceName;
+}
+
+void ADevice::BeginPlay()
+{
+	Super::BeginPlay();
 }
 
 UStaticMeshComponent* ADevice::GetMesh() const

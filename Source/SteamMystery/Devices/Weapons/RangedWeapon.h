@@ -17,10 +17,12 @@ class STEAMMYSTERY_API ARangedWeapon : public AWeapon
 
 public:
 
-	virtual bool Use() const override;
+	virtual bool Use() override;
+	bool Sweep(FHitResult& HitResult) const;
 
 	ARangedWeapon();
 protected:
+	
 	UPROPERTY(EditAnywhere)
 	USceneComponent* FirePoint;
 	
@@ -28,5 +30,12 @@ protected:
 	TSubclassOf<AProjectile>  ProjectileClass;
 
 	UPROPERTY(EditDefaultsOnly)
-	class USoundBase* FireSound;
+	USoundBase* FireSound;
+	
+	UPROPERTY(EditAnywhere)
+	float MaxFireDistance;
+
+	UPROPERTY(EditAnywhere)
+	float DamageRadius;
+	
 };

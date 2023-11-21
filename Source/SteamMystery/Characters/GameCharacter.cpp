@@ -15,7 +15,7 @@ AGameCharacter::AGameCharacter()
 {
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
-	
+
 	Health = CreateDefaultSubobject<UHealthComponent>(TEXT("Health"));
 	Steam = CreateDefaultSubobject<USteamComponent>(TEXT("Steam"));
 	Electricity = CreateDefaultSubobject<UElectricityComponent>(TEXT("Electricity"));
@@ -25,9 +25,12 @@ AGameCharacter::AGameCharacter()
 
 void AGameCharacter::HandleDeath()
 {
-	GetMesh()->DetachFromComponent(FDetachmentTransformRules::KeepRelativeTransform);
-	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	GetMesh()->SetSimulatePhysics(true);
+	// GetMesh()->DetachFromComponent(FDetachmentTransformRules::KeepRelativeTransform);
+	// GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	// GetMesh()->SetSimulatePhysics(true);
+	DetachFromControllerPendingDestroy();
+	if(Inventory)
+		Tags.Add("Inventory");
 }
 
 USkeletalMeshComponent* AGameCharacter::GetMainMesh() const
@@ -36,9 +39,11 @@ USkeletalMeshComponent* AGameCharacter::GetMainMesh() const
 }
 
 
-void AGameCharacter::Attack()
+bool AGameCharacter::Attack()
 {
-	MainHand->Use();
+	if (MainHand)
+		return MainHand->Use();
+	return false;
 }
 
 // Called when the game starts or when spawned
@@ -52,6 +57,16 @@ void AGameCharacter::BeginPlay()
 		MainHand->SetOwner(this);
 		bHasRifle = true;
 	}
+}
+
+UAnimMontage* AGameCharacter::GetAttackAnimMontage() const
+{
+	return AttackAnimMontage;
+}
+
+ADevice* AGameCharacter::GetMainHand() const
+{
+	return MainHand;
 }
 
 

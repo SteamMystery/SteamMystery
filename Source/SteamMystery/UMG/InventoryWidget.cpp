@@ -17,6 +17,8 @@ void UInventoryWidget::NativeConstruct()
 			Inventory = Character->GetComponentByClass<UInventoryComponent>();
 	Items->ClearChildren();
 	if(Inventory)
+	{
+		Coins->SetText(FText::AsNumber(Inventory->GetCoins()));
 		for (const auto Element : Inventory->GetItems())
 		{
 			const auto Widget = CreateWidget<UItemWidget>(GetOwningPlayer(), ItemWidgetClass);
@@ -24,4 +26,5 @@ void UInventoryWidget::NativeConstruct()
 			Widget->SetDescBlock(Description);
 			Items->AddChild(Widget);
 		}
+	}
 }

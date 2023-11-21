@@ -21,18 +21,22 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	class UCameraComponent* FirstPersonCamera;
-	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	USkeletalMeshComponent* FirstPersonSkeletalMesh;
+	//
+	// UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	// USkeletalMeshComponent* FirstPersonSkeletalMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UInteractionComponent* Grabber;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class USpringArmComponent* SpringArm;
 
+	virtual void BeginPlay() override;
 public:
 	
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
-	virtual USkeletalMeshComponent* GetMainMesh() const override;
+	// virtual USkeletalMeshComponent* GetMainMesh() const override;
 	
 };

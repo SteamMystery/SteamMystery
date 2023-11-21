@@ -15,13 +15,9 @@ class STEAMMYSTERY_API AMeleeWeapon : public AWeapon
 	GENERATED_BODY()
 
 public:
-	virtual bool Use() const override;
+	virtual bool Use() override;
 
 protected:
 	virtual void BeginPlay() override;
-	
-private:
-	UPROPERTY(EditDefaultsOnly)
-	float Damage = 50.f;
 
 };

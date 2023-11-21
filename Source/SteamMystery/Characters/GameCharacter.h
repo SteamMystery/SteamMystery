@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "GameCharacter.generated.h"
 
+
 UCLASS()
 class STEAMMYSTERY_API AGameCharacter : public ACharacter
 {
@@ -21,41 +22,52 @@ public:
 
 	UFUNCTION()
 	virtual USkeletalMeshComponent* GetMainMesh() const;
-	
+
 	UFUNCTION(BlueprintCallable)
-	virtual void Attack();
-	
+	virtual bool Attack();
+
 	UFUNCTION(BlueprintCallable)
 	void Look(const FVector2D Value);
 
 	UFUNCTION(BlueprintCallable)
 	void Move(const FVector2D Value);
 
-
 protected:
 	virtual void BeginPlay() override;
-	
+
 	UPROPERTY(EditAnywhere)
 	class UHealthComponent* Health;
-	
+
 	UPROPERTY(EditAnywhere)
 	class USteamComponent* Steam;
-	
+
 	UPROPERTY(EditAnywhere)
 	class UElectricityComponent* Electricity;
-	
+
 
 	UPROPERTY(BlueprintReadWrite)
 	bool bHasRifle;
-	
+
+	UPROPERTY(BlueprintReadWrite)
+	bool bFire;
+
 	UPROPERTY()
 	class ADevice* MainHand;
-	
+
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<ADevice> MainHandClass;
 
+
+	UPROPERTY(EditAnywhere)
+	UAnimMontage* AttackAnimMontage;
+
 public:
-	
+	UFUNCTION(BlueprintPure)
+	UAnimMontage* GetAttackAnimMontage() const;
+
 	UPROPERTY(EditAnywhere)
 	class UInventoryComponent* Inventory;
+
+	UFUNCTION(BlueprintPure)
+	ADevice* GetMainHand() const;
 };

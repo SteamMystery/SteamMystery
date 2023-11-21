@@ -32,15 +32,13 @@ void UInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	if (InteractionWidget)
 	{
 		if (FHitResult HitResult; Sweep(HitResult))
-		{
 			if (const auto HitActor = HitResult.GetActor())
-				if (HitActor->ActorHasTag("Interactable"))
+				if (HitActor->ActorHasTag("Inventory"))
 				{
 					if (!InteractionWidget->IsInViewport())
 						InteractionWidget->AddToViewport();
 					return;
 				}
-		}
 		if (InteractionWidget->IsInViewport())
 			InteractionWidget->RemoveFromParent();
 	}
@@ -61,19 +59,7 @@ void UInteractionComponent::Interact() const
 {
 	if (FHitResult HitResult; Sweep(HitResult))
 		if (const auto HitActor = HitResult.GetActor())
-		{
-			if (HitActor->ActorHasTag("Interactable"))
-			{
-				UE_LOG(LogTemp, Display, TEXT("HitActor :%s"), *HitActor->GetActorNameOrLabel())
-				bool bContains = HitActor->ActorHasTag("Inventory");
-				UE_LOG(LogTemp, Display, TEXT("HitActor :%d"), bContains)
-				if (bContains)
-				{
-					const auto Inventory = HitActor->GetComponentByClass<UInventoryComponent>();
-					UE_LOG(LogTemp, Display, TEXT("Inv: %p"), Inventory)
-					if (Inventory)
+				if (HitActor->ActorHasTag("Inventory"))
+					if (const auto Inventory = HitActor->GetComponentByClass<UInventoryComponent>())
 						Inventory->Loot(Looter);
-				}
-			}
-		}
 }

@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "InventoryWidget.generated.h"
 
+class UTextBlock;
 /**
  * 
  */
@@ -25,7 +26,10 @@ protected:
 	class UVerticalBox* Items;
 	
 	UPROPERTY(meta=(BindWidget))
-	class UTextBlock* Description;
+	UTextBlock* Description;
+	
+	UPROPERTY(meta=(BindWidget))
+	UTextBlock* Coins;
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class UItemWidget> ItemWidgetClass;

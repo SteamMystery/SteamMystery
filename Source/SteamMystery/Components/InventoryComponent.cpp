@@ -3,6 +3,26 @@
 
 #include "InventoryComponent.h"
 
+int UInventoryComponent::GetCoins() const
+{
+	return Coins;
+}
+
+void UInventoryComponent::AddCoins(const int Value)
+{
+	Coins += Value;
+}
+
+bool UInventoryComponent::RemoveCoins(const int Value)
+{
+	if (Coins >= Value)
+	{
+		Coins -= Value;
+		return true;
+	}
+	return false;
+}
+
 TMap<UItem*, int32> UInventoryComponent::GetItems() const
 {
 	return Items;
@@ -34,4 +54,8 @@ void UInventoryComponent::Loot(UInventoryComponent* Looter)
 	for (const auto Item : Items)
 		Looter->AddItem(Item.Key, Item.Value);
 	Items.Empty();
+	Looter->AddCoins(GetCoins());
+	RemoveCoins(GetCoins());
+	if (const auto OwnerActor = GetOwner())
+		OwnerActor->Tags.Remove("Inventory");
 }

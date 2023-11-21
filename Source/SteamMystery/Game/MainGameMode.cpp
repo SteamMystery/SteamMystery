@@ -12,8 +12,6 @@ void AMainGameMode::ActorDied(AActor* Actor) const
 	if (Actor == Player)
 	{
 		Player->HandleDeath();
-		if (MainPlayerController)
-			MainPlayerController -> SetPlayerEnabledState(false);
 	}
 	else if(AGameCharacter* Character = Cast<AGameCharacter>(Actor))
 	{

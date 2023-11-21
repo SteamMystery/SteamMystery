@@ -11,4 +11,8 @@ UCLASS()
 class STEAMMYSTERY_API AWeapon : public ADevice
 {
 	GENERATED_BODY()
+protected:
+	
+	UPROPERTY(EditAnywhere)
+	float Damage = 50.f;
 };

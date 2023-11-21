@@ -10,15 +10,19 @@ UCLASS()
 class STEAMMYSTERY_API ADevice : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	ADevice();
-	
+
 	UFUNCTION(BlueprintCallable)
-	virtual bool Use() const;
+	virtual bool Use();
+
+	UFUNCTION(BlueprintPure)
+	FString GetDeviceName() const;
 
 protected:
-	
+	virtual void BeginPlay() override;
+
 	UFUNCTION(BlueprintPure)
 	UStaticMeshComponent* GetMesh() const;
 
@@ -33,4 +37,10 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	float ElectricityPrice = 0.f;
+
+	UPROPERTY(EditAnywhere)
+	UAnimationAsset* UseAnimation;
+
+	UPROPERTY(BlueprintReadWrite)
+	FString DeviceName = "None";
 };
