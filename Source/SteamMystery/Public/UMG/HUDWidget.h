@@ -22,7 +22,6 @@ class STEAMMYSTERY_API UHUDWidget : public UUserWidget
 	virtual void NativeConstruct() override;
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
-
 	UPROPERTY()
 	UHealthComponent* HealthComponent;
 	UPROPERTY()

@@ -13,11 +13,7 @@ void UHealthComponent::BeginPlay()
 	GameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 }
 
-void UHealthComponent::DamageTaken(AActor* /*DamagedActor*/,
-                                   const float Damage,
-                                   const UDamageType* /*DamageType*/,
-                                   AController* /*Instigator*/,
-                                   AActor* /*DamageCauser*/)
+void UHealthComponent::DamageTaken(AActor*, const float Damage, const UDamageType*, AController*, AActor*)
 {
 	if (Damage <= 0) return;
 

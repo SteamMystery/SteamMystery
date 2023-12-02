@@ -3,19 +3,25 @@
 
 // ReSharper disable CppMemberFunctionMayBeConst
 #include "SteamMystery/Public/UMG/ItemWidget.h"
-
 #include "Components/Button.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "SteamMystery/Public/DataAssets/Item.h"
 
 
-void UItemWidget::SetItem(const UItem* Value, const int N)
+
+void UItemWidget::Sync()
 {
-	this->Item = Value;
 	Name->SetText(Item->Name);
 	Image->SetBrushResourceObject(Item->Icon);
-	Count->SetText(FText::AsNumber(N));
+	Count->SetText(FText::AsNumber(ItemCount));
+}
+
+void UItemWidget::SetItem(UItem* Value, const int N)
+{
+	this->Item = Value;
+	this->ItemCount = N;
+	Sync();
 }
 
 void UItemWidget::SetDescBlock(UTextBlock* TextBlock)
@@ -27,14 +33,12 @@ void UItemWidget::SetDescBlock(UTextBlock* TextBlock)
 
 void UItemWidget::OnHovered()
 {
-	if(DescriptionTextBlock && Item)
+	if (DescriptionTextBlock && Item)
 		DescriptionTextBlock->SetText(Item->Description);
 }
 
 void UItemWidget::OnUnhovered()
 {
-	if(DescriptionTextBlock && Item)
+	if (DescriptionTextBlock && Item)
 		DescriptionTextBlock->SetText(FText::FromString(""));
 }
-
-

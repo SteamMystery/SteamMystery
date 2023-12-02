@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "HealthBarBase.generated.h"
 
+class UProgressBar;
 /**
  * 
  */
@@ -15,7 +16,7 @@ class STEAMMYSTERY_API UHealthBarBase : public UUserWidget
 	GENERATED_BODY()
 protected:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	class UProgressBar* Health;
+	UProgressBar* Health;
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

@@ -15,9 +15,7 @@ public:
 	APlayerCharacter();
 
 protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enhanced Input")
-	class UInputMappingContext* InputMapping;
-
+	
 	UPROPERTY(VisibleAnywhere)
 	class UCameraComponent* FirstPersonCamera;
 	
@@ -33,7 +31,6 @@ protected:
 	virtual void BeginPlay() override;
 public:
 	
-	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
 	
 };

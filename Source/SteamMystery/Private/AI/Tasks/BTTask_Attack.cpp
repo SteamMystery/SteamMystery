@@ -3,9 +3,10 @@
 
 #include "SteamMystery/Public/AI/Tasks/BTTask_Attack.h"
 #include "AIController.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "SteamMystery/Public/Characters/GameCharacter.h"
 
-UBTTask_Attack::UBTTask_Attack(): AnimMontage(nullptr)
+UBTTask_Attack::UBTTask_Attack()
 {
 	NodeName = TEXT("Attack");
 }
@@ -14,10 +15,13 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 {
 	Super::ExecuteTask(OwnerComp, NodeMemory);
 
-	if(const auto AIOwnerController = OwnerComp.GetAIOwner())
-		if(const auto Character = Cast<AGameCharacter>(AIOwnerController->GetPawn()))
-			if(Character->Attack())
+	if (const auto AIOwnerController = OwnerComp.GetAIOwner())
+	{
+		if (const auto Character = Cast<AGameCharacter>(AIOwnerController->GetPawn()))
+			if (Character->Attack())
 				Character->PlayAnimMontage(AnimMontage);
-	
+	}
+	// if(const auto Blackboard = OwnerComp.GetBlackboardComponent())
+	// 	Blackboard->ClearValue(GetSelectedBlackboardKey());
 	return EBTNodeResult::Succeeded;
 }

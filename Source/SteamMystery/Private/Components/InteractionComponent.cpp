@@ -6,6 +6,7 @@
 #include "SteamMystery/Public/Components/InventoryComponent.h"
 #include "Blueprint/UserWidget.h"
 #include "Kismet/GameplayStatics.h"
+#include "Game/MainPlayerController.h"
 
 // Sets default values for this component's properties
 UInteractionComponent::UInteractionComponent()
@@ -22,6 +23,7 @@ void UInteractionComponent::BeginPlay()
 	if (InteractionWidgetClass)
 		if (APlayerController* OwningObject = UGameplayStatics::GetPlayerController(GetWorld(), 0))
 			InteractionWidget = CreateWidget(OwningObject, InteractionWidgetClass);
+	MainPlayerController = Cast<AMainPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 }
 
 
@@ -45,18 +47,21 @@ void UInteractionComponent::TickComponent(const float DeltaTime, const ELevelTic
 	}
 }
 
-bool UInteractionComponent::Sweep(FHitResult& HitResult) const
+bool UInteractionComponent::Sweep(FHitResult& HitResult)
 {
-	const FVector Start = GetComponentLocation();
-	const FVector End = Start + GetForwardVector() * MaxGrabDistance;
+	FVector Start = GetComponentLocation();
+	FRotator Rotator;
+	MainPlayerController->GetPlayerViewPoint(Start, Rotator);
+	const FVector End = Start + Rotator.Vector() /*GetForwardVector()*/ * MaxGrabDistance;
 	const FCollisionShape Shape = FCollisionShape::MakeSphere(GrabRadius);
 	FCollisionQueryParams Params = FCollisionQueryParams::DefaultQueryParam;
 	Params.AddIgnoredActor(GetOwner());
+	//DrawDebugLine(GetWorld(), Start, End, FColor::Blue, false, 5, 0, 5);
 	return GetWorld()->SweepSingleByChannel(HitResult, Start, End, FQuat::Identity, ECC_EngineTraceChannel2, Shape,
 	                                        Params);
 }
 
-void UInteractionComponent::Interact() const
+void UInteractionComponent::Interact()
 {
 	if (FHitResult HitResult; Sweep(HitResult))
 		if (const auto HitActor = HitResult.GetActor())

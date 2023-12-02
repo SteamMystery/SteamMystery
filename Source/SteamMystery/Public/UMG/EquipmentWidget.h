@@ -3,15 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "BaseHUDWidget.h"
-#include "InventoryWidget.generated.h"
+#include "UMG/BaseHUDWidget.h"
+#include "EquipmentWidget.generated.h"
 
 class UTextBlock;
 /**
  * 
  */
 UCLASS()
-class STEAMMYSTERY_API UInventoryWidget : public UBaseHUDWidget
+class STEAMMYSTERY_API UEquipmentWidget : public UBaseHUDWidget
 {
 	GENERATED_BODY()
 
@@ -19,7 +19,7 @@ class STEAMMYSTERY_API UInventoryWidget : public UBaseHUDWidget
 
 protected:
 	UPROPERTY(VisibleAnywhere)
-	class UInventoryComponent* Inventory;
+	class UEquipmentComponent* EquipmentComponent;
 	
 	UPROPERTY(meta=(BindWidget))
 	UPanelWidget* Items;
@@ -27,9 +27,7 @@ protected:
 	UPROPERTY(meta=(BindWidget))
 	UTextBlock* Description;
 	
-	UPROPERTY(meta=(BindWidget))
-	UTextBlock* Coins;
-
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<class UItemWidget> ItemWidgetClass;
+	TSubclassOf<class UDeviceWidget> ItemWidgetClass;
+	
 };

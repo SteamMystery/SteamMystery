@@ -3,6 +3,13 @@
 
 #include "SteamMystery/Public/Game/MainPlayerController.h"
 
+
+AMainPlayerController::AMainPlayerController()
+{
+	bEnableClickEvents = true;
+	bEnableMouseOverEvents = true;
+}
+
 void AMainPlayerController::SetPlayerEnabledState(const bool bPlayerEnabled)
 {
 	if (bPlayerEnabled)
@@ -10,5 +17,4 @@ void AMainPlayerController::SetPlayerEnabledState(const bool bPlayerEnabled)
 	else
 		GetPawn()->DisableInput(this);
 	bShowMouseCursor = bPlayerEnabled;
-	
 }

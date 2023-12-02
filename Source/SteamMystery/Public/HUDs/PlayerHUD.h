@@ -37,4 +37,7 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UPauseComponent* EquipmentComponent;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UBaseWidgetComponent* TalkTabComponent;
 };

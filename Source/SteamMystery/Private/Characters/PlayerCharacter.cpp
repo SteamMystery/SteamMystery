@@ -36,19 +36,19 @@ void APlayerCharacter::BeginPlay()
 	GetMesh()->HideBoneByName(TEXT("weapon_l"), PBO_None);
 }
 
-// Called to bind functionality to input
-void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	//Super::SetupPlayerInputComponent(PlayerInputComponent);
-	if(InputMapping)
-	{
-		const APlayerController* PlayerController = Cast<APlayerController>(GetController());
-		const auto Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(
-			PlayerController->GetLocalPlayer());
-		Subsystem->ClearAllMappings();
-		Subsystem->AddMappingContext(InputMapping, 0);
-	}
-}
+// // Called to bind functionality to input
+// void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+// {
+// 	//Super::SetupPlayerInputComponent(PlayerInputComponent);
+// 	if(InputMapping)
+// 	{
+// 		const APlayerController* PlayerController = Cast<APlayerController>(GetController());
+// 		const auto Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(
+// 			PlayerController->GetLocalPlayer());
+// 		Subsystem->ClearAllMappings();
+// 		Subsystem->AddMappingContext(InputMapping, 0);
+// 	}
+// }
 
 
 // USkeletalMeshComponent* APlayerCharacter::GetMainMesh() const

@@ -17,9 +17,11 @@ class STEAMMYSTERY_API UItemWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
+	void Sync();
+
 public:
 	UFUNCTION(BlueprintCallable)
-	void SetItem(const UItem* Value, const int N);
+	void SetItem(UItem* Value, const int N);
 	
 	UFUNCTION(BlueprintCallable)
 	void SetDescBlock(UTextBlock* TextBlock);
@@ -31,8 +33,11 @@ public:
 	void OnUnhovered();
 
 protected:
-	UPROPERTY()
-	const UItem* Item;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UItem* Item;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int ItemCount;
 	
 	UPROPERTY(meta=(BindWidget))
 	UTextBlock* Name;
@@ -46,7 +51,9 @@ protected:
 	UPROPERTY(meta=(BindWidget))
 	class UButton* Button;
 
-private:
 	UPROPERTY()
 	UTextBlock* DescriptionTextBlock;
+
+	UPROPERTY(EditAnywhere)
+	FKey DragKey;
 };

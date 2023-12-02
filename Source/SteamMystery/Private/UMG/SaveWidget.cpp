@@ -7,7 +7,9 @@
 
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
+#include "Game/MainPlayerState.h"
 #include "Kismet/GameplayStatics.h"
+#include "Quest/QuestManager.h"
 #include "SteamMystery/Public/Game/GameSave.h"
 #include "SteamMystery/Public/Game/SteamMysteryGameInstance.h"
 
@@ -40,11 +42,13 @@ void USaveWidget::SetGameTime(const FText Value) const
 void USaveWidget::Save()
 {
 	UGameplayStatics::SaveGameToSlot(Instance->GetSave(), SlotName, 0);
+	GetOwningPlayer()->GetPlayerState<AMainPlayerState>()->QuestManager->SaveQuestData(SlotName);
 }
 
 void USaveWidget::Load()
 {
 	UGameplayStatics::LoadGameFromSlot(SlotName, 0);
+	GetOwningPlayer()->GetPlayerState<AMainPlayerState>()->QuestManager->ROS_LoadFromSaveGame_Implementation(SlotName);
 }
 
 void USaveWidget::Delete()

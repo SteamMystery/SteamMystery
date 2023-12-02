@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "GameCharacter.generated.h"
 
+class UInputMappingContext;
+class ADevice;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FHandleDeathDelegate);
 
 UCLASS()
@@ -13,6 +15,8 @@ class STEAMMYSTERY_API AGameCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
+	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
+	
 public:
 	// Sets default values for this character's properties
 	AGameCharacter();
@@ -20,21 +24,39 @@ public:
 	UFUNCTION()
 	void HandleDeath();
 
-		UFUNCTION()
-	virtual USkeletalMeshComponent* GetMainMesh() const;
-
 	UFUNCTION(BlueprintCallable)
 	virtual bool Attack();
 
 	UFUNCTION(BlueprintCallable)
 	void Look(const FVector2D Value);
-
+	
 	UFUNCTION(BlueprintCallable)
 	void Move(const FVector2D Value);
 
 	UPROPERTY(BlueprintReadWrite)
 	bool bFire;
+
+
+protected:
 	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enhanced Input")
+	UInputMappingContext* DefaultInputMapping;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enhanced Input")
+	UInputMappingContext* ActionBarInputMapping;
+	
+	virtual void BeginPlay() override;
+
+	UPROPERTY(BlueprintCallable, BlueprintAssignable)
+	FHandleDeathDelegate HandleDeathDelegate;
+
+	UPROPERTY()
+	ADevice* MainHand;
+
+	UPROPERTY(EditDefaultsOnly)
+	const TSubclassOf<ADevice> MainHandClass;
+
+public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	class UHealthComponent* Health;
 
@@ -43,30 +65,16 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	class UElectricityComponent* Electricity;
-
-protected:
-	virtual void BeginPlay() override;
-
-	UPROPERTY(BlueprintCallable, BlueprintAssignable)
-	FHandleDeathDelegate HandleDeathDelegate;
 	
-
-
-	UPROPERTY(BlueprintReadWrite)
-	bool bHasRifle;
-
-
-	UPROPERTY()
-	class ADevice* MainHand;
-
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<ADevice> MainHandClass;
-
-public:
-
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	class UInventoryComponent* Inventory;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	class UEquipmentComponent* EquipmentComponent;
+	
 	UFUNCTION(BlueprintPure)
 	ADevice* GetMainHand() const;
+	
+	UFUNCTION(BlueprintCallable)
+	void AttachDevice(const TSubclassOf<ADevice> Class);
 };

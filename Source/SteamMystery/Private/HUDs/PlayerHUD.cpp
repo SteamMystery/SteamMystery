@@ -7,6 +7,7 @@
 #include "SteamMystery/Public/Components/UMG/PauseComponent.h"
 #include "SteamMystery/Public/Components/UMG/SavesComponent.h"
 #include "SteamMystery/Public/UMG/HUDWidget.h"
+#include "QuestEditor/Public/Quest/QuestManager.h"
 
 void APlayerHUD::BeginPlay()
 {
@@ -30,4 +31,5 @@ APlayerHUD::APlayerHUD()
 	PauseComponent = CreateDefaultSubobject<UPauseComponent>(TEXT("Pause"));
 	InventoryComponent = CreateDefaultSubobject<UPauseComponent>(TEXT("Inventory"));
 	EquipmentComponent = CreateDefaultSubobject<UPauseComponent>(TEXT("Equipment"));
+	TalkTabComponent = CreateDefaultSubobject<UBaseWidgetComponent>(TEXT("TalkTab"));
 }

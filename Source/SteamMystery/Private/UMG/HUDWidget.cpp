@@ -11,7 +11,6 @@
 #include "SteamMystery/Public/Components/Stats/SteamComponent.h"
 #include "SteamMystery/Public/UMG/HealthBarBase.h"
 
-
 void UHUDWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
@@ -35,3 +34,4 @@ void UHUDWidget::NativeTick(const FGeometry& MyGeometry, const float InDeltaTime
 	if (Electricity && ElectricityComponent)
 		Electricity->SetPercent(ElectricityComponent->GetPercentage());
 }
+

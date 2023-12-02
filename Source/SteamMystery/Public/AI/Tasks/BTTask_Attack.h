@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "BehaviorTree/BTTaskNode.h"
+#include "BehaviorTree/Tasks/BTTask_BlackboardBase.h"
 #include "BTTask_Attack.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class STEAMMYSTERY_API UBTTask_Attack : public UBTTaskNode
+class STEAMMYSTERY_API UBTTask_Attack : public UBTTask_BlackboardBase
 {
 	GENERATED_BODY()
 public:
@@ -20,5 +20,5 @@ protected:
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 
 	UPROPERTY(EditAnywhere)
-	UAnimMontage* AnimMontage;
+	UAnimMontage* AnimMontage = nullptr;
 };

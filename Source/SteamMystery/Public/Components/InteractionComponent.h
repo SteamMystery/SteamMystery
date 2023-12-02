@@ -23,11 +23,15 @@ protected:
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	bool Sweep(FHitResult& HitResult) const;
-	UFUNCTION(BlueprintCallable)
-	void Interact() const;
 
+	UFUNCTION(BlueprintCallable)
+	bool Sweep(FHitResult& HitResult);
+	UFUNCTION(BlueprintCallable)
+	void Interact();
 private:
+	UPROPERTY()
+	class AMainPlayerController* MainPlayerController = nullptr;
+	
 	UPROPERTY(EditAnywhere)
 	float MaxGrabDistance = 400;
 
