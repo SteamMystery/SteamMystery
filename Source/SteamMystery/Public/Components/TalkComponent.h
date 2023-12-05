@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/ActorComponent.h"
 #include "UMG/BaseWidgetComponent.h"
 #include "TalkComponent.generated.h"
 

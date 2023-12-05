@@ -4,7 +4,7 @@
 // ReSharper disable CppMemberFunctionMayBeStatic
 // ReSharper disable CppParameterMayBeConstPtrOrRef
 #include "Components/NPCOverlapComponent.h"
-#include "TalkComponent.cpp"
+#include "Components/TalkComponent.h"
 
 
 void UNPCOverlapComponent::OnBeginOverlap(UPrimitiveComponent*, AActor* OtherActor, UPrimitiveComponent*,
