@@ -76,16 +76,20 @@ bool AGameCharacter::Attack()
 void AGameCharacter::AttachDevice(const FName Device)
 {
 	if (MainHand)
+	{
 		MainHand->Destroy();
+		MainHand = nullptr;
+	}
 	if (Collections && Collections->Devices.Contains(Device))
 	{
 		auto Params = FActorSpawnParameters();
 		Params.Owner = this;
 		MainHand = GetWorld()->SpawnActor<ADevice>(Collections->Devices[Device], Params);
 		MainHand->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("GripPoint"));
-		if(MeleeTraceComponent)
+		if (MeleeTraceComponent)
 			MeleeTraceComponent->SetWeapon(MainHand);
 	}
+	OnDeviceAttached.Broadcast(Device);
 }
 
 void AGameCharacter::BeginPlay()

@@ -54,6 +54,5 @@ FReply UBaseItemWidget::NativeOnPreviewMouseButtonDown(const FGeometry& InGeomet
 
 void UBaseItemWidget::Sync() const
 {
-	if (const auto Row = Item.GetRow<FItem>(GetName()))
-		SyncItem(Row);
+	SyncItem(Item.GetRow<FItem>(GetName()));
 }

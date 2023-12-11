@@ -6,6 +6,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "MainGameMode.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FActorDiedEvent, const AActor*, DiedActor);
 /**
  * 
  */
@@ -15,12 +16,16 @@ class STEAMMYSTERY_API AMainGameMode : public AGameModeBase
 	GENERATED_BODY()
 
 public:
+	
 	void ActorDied(AActor* Actor) const;
 
 	virtual void BeginPlay() override;
+
+	UPROPERTY(BlueprintAssignable)
+	FActorDiedEvent OnActorDied;
 	
-	void WriteSaveGame();
 private:
+	
 	UPROPERTY()
 	class APlayerCharacter* Player;
 

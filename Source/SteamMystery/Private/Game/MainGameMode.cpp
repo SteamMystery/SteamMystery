@@ -9,14 +9,9 @@
 
 void AMainGameMode::ActorDied(AActor* Actor) const
 {
-	if (Actor == Player)
-	{
-		Player->HandleDeath();
-	}
-	else if(AGameCharacter* Character = Cast<AGameCharacter>(Actor))
-	{
+	if (AGameCharacter* Character = Cast<AGameCharacter>(Actor))
 		Character->HandleDeath();
-	}
+	OnActorDied.Broadcast(Actor);
 }
 
 void AMainGameMode::BeginPlay()
@@ -26,4 +21,3 @@ void AMainGameMode::BeginPlay()
 	Player = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 	MainPlayerController = Cast<AMainPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
 }
-

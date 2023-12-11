@@ -22,13 +22,14 @@ ADevice::ADevice()
 
 bool ADevice::Use()
 {
-	const auto Char = GetOwner();
-	const auto SteamComponent = Char->GetComponentByClass<USteamComponent>();
-	const auto ElectricityComponent = Char->GetComponentByClass<UElectricityComponent>();
-
-	if (const auto Stats = GetStats(); SteamComponent->CanConsume(Stats.SteamPrice) && ElectricityComponent->CanConsume(
-		Stats.ElectricityPrice))
-		return SteamComponent->Consume(Stats.SteamPrice) && ElectricityComponent->Consume(Stats.ElectricityPrice);
+	if (const auto Char = GetOwner())
+		if (const auto SteamComponent = Char->GetComponentByClass<USteamComponent>())
+			if (const auto ElectricityComponent = Char->GetComponentByClass<UElectricityComponent>())
+				if (const auto Stats = GetStats(); SteamComponent->CanConsume(Stats.SteamPrice) && ElectricityComponent
+					->CanConsume(
+						Stats.ElectricityPrice))
+					return SteamComponent->Consume(Stats.SteamPrice) && ElectricityComponent->Consume(
+						Stats.ElectricityPrice);
 	return false;
 }
 

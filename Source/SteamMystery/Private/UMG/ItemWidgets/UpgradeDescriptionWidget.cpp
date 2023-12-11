@@ -36,10 +36,10 @@ void UUpgradeDescriptionWidget::NativeConstruct()
 
 void UUpgradeDescriptionWidget::Sync() const
 {
-	if (const auto Row = Item.GetRow<FUpgrade>(GetName()))
+	const auto Row = Item.GetRow<FUpgrade>(GetName());
+	Super::SyncItem(Row);
+	if (Row)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("ROW"));
-		Super::SyncItem(Row);
 		Button->SetVisibility(ESlateVisibility::Visible);
 		Materials->ClearChildren();
 		for (const auto Element : Row->Materials)

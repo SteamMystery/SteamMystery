@@ -11,6 +11,7 @@ class UDataAssetCollections;
 class UInputMappingContext;
 class ADevice;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FHandleDeathDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDeviceAttached, FName, InDevice);
 
 UCLASS()
 class STEAMMYSTERY_API AGameCharacter : public ACharacter
@@ -61,6 +62,8 @@ protected:
 	FName MainHandType;
 
 public:
+	UPROPERTY(BlueprintAssignable)
+	FOnDeviceAttached OnDeviceAttached;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	class UHealthComponent* Health;

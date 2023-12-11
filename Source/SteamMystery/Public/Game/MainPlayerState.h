@@ -84,8 +84,6 @@ public:
 	void Action(const FInputActionValue& InputActionValue, int Index);
 	
 private:
-	UPROPERTY()
-	AGameCharacter* OwningCharacter;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Enhanced Input")
 	UInputMappingContext* ActionBarInputMapping = nullptr;
@@ -95,6 +93,8 @@ private:
 	
 
 protected:
+	UPROPERTY()
+	AGameCharacter* OwningCharacter;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FText> ActionBarKeys;

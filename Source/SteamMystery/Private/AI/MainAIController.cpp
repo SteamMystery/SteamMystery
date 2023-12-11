@@ -11,7 +11,6 @@
 #include "SteamMystery/Public/Components/Stats/HealthComponent.h"
 
 
-
 AMainAIController::AMainAIController(const FObjectInitializer& ObjectInitializer) : Super(
 	ObjectInitializer.SetDefaultSubobjectClass<UCrowdFollowingComponent>(TEXT("PathFollowingComponent")))
 {
@@ -41,13 +40,13 @@ void AMainAIController::OnSensed(AActor* SourceActor, FAIStimulus Stimulus)
 {
 	if (SourceActor == GetPawn())
 		return;
-	UE_LOG(LogClass, Warning, TEXT("Sight Triggered"));
 	const auto KeyName = TEXT("DetectedActor");
-	if (const auto GameCharacter = Cast<AGameCharacter>(SourceActor))
-		if (const auto Health = GameCharacter->Health; !Health->IsDead() && Stimulus.WasSuccessfullySensed())
-			GetBlackboardComponent()->SetValueAsObject(KeyName, SourceActor);
-		else
-			GetBlackboardComponent()->ClearValue(KeyName);
+	if (SourceActor->ActorHasTag("Player"))
+		if (const auto GameCharacter = Cast<AGameCharacter>(SourceActor))
+			if (const auto Health = GameCharacter->Health; !Health->IsDead() && Stimulus.WasSuccessfullySensed())
+				GetBlackboardComponent()->SetValueAsObject(KeyName, SourceActor);
+			else
+				GetBlackboardComponent()->ClearValue(KeyName);
 }
 
 void AMainAIController::OnInfoChanged(const FActorPerceptionUpdateInfo& Info)

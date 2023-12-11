@@ -3,7 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Characters/GameCharacter.h"
 #include "Components/CapsuleComponent.h"
+#include "Stats/HealthComponent.h"
 #include "NPCOverlapComponent.generated.h"
 
 
@@ -21,5 +23,7 @@ protected:
 	void OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 	virtual void BeginPlay() override;
-		
+
+	UPROPERTY()
+	UHealthComponent* HealthComponent;
 };

@@ -4,17 +4,20 @@
 // ReSharper disable CppMemberFunctionMayBeStatic
 // ReSharper disable CppParameterMayBeConstPtrOrRef
 #include "Components/NPCOverlapComponent.h"
+
+#include "Characters/GameCharacter.h"
 #include "Components/TalkComponent.h"
 
 
 void UNPCOverlapComponent::OnBeginOverlap(UPrimitiveComponent*, AActor* OtherActor, UPrimitiveComponent*,
                                           int32, bool, const FHitResult&)
 {
-	if (const auto TalkComponent = OtherActor->GetComponentByClass<UTalkComponent>())
-	{
-		TalkComponent->Show(3);
-		TalkComponent->SetCurrentNPC(GetOwner());
-	}
+	if (HealthComponent && !HealthComponent->IsDead())
+		if (const auto TalkComponent = OtherActor->GetComponentByClass<UTalkComponent>())
+		{
+			TalkComponent->Show(3);
+			TalkComponent->SetCurrentNPC(GetOwner());
+		}
 }
 
 void UNPCOverlapComponent::OnEndOverlap(UPrimitiveComponent*, AActor* OtherActor, UPrimitiveComponent*, int32)
@@ -32,4 +35,6 @@ void UNPCOverlapComponent::BeginPlay()
 	Super::BeginPlay();
 	OnComponentBeginOverlap.AddUniqueDynamic(this, &ThisClass::OnBeginOverlap);
 	OnComponentEndOverlap.AddUniqueDynamic(this, &ThisClass::OnEndOverlap);
+	if (const auto OwningPlayer = Cast<AGameCharacter>(GetOwner()))
+		HealthComponent = OwningPlayer->GetComponentByClass<UHealthComponent>();
 }
