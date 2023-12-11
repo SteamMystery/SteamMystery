@@ -3,6 +3,7 @@
 
 #include "SteamMystery/Public/Components/Stats/StatComponent.h"
 
+
 UStatComponent::UStatComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;

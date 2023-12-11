@@ -3,21 +3,18 @@
 
 #include "UMG/SkillSlotWidget.h"
 
-#include "EquipmentComponent.h"
 #include "ItemDragDropOperation.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "DataAssets/EquipmentItem.h"
-#include "DataAssets/Item.h"
-#include "Devices/Device.h"
-#include "GameFramework/Character.h"
 
 void USkillSlotWidget::NativePreConstruct()
 {
 	Super::NativePreConstruct();
-	if (const APlayerController* Controller = GetOwningPlayer())
-		if (const ACharacter* Character = Controller->GetCharacter())
-			EquipmentComponent = Character->GetComponentByClass<UEquipmentComponent>();
+	if (const auto Controller = GetOwningPlayer())
+		PlayerState = Controller->GetPlayerState<AMainPlayerState>();
+
+
 	SyncItem();
 	SyncKey();
 }
@@ -26,9 +23,17 @@ bool USkillSlotWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDrop
                                     UDragDropOperation* InOperation)
 {
 	if (const auto Operation = Cast<UItemDragDropOperation>(InOperation))
-		if (const auto Device = Operation->GetItem())
-			EquipmentComponent->SetAction(Number, Device);
+		PlayerState->SetDevice(Number, Operation->GetItem());
+
 	return Super::NativeOnDrop(InGeometry, InDragDropEvent, InOperation);
+}
+
+FReply USkillSlotWidget::NativeOnPreviewMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
+{
+	if (InMouseEvent.IsMouseButtonDown(RemoveKey))
+		PlayerState->SetDevice(Number, FName());
+
+	return Super::NativeOnPreviewMouseButtonDown(InGeometry, InMouseEvent);
 }
 
 inline int32 USkillSlotWidget::GetNumber() const
@@ -41,7 +46,7 @@ inline FText USkillSlotWidget::GetKey() const
 	return Key;
 }
 
-inline TSubclassOf<ADevice> USkillSlotWidget::GetItem() const
+inline FItem USkillSlotWidget::GetItem() const
 {
 	return Item;
 }
@@ -57,7 +62,7 @@ void USkillSlotWidget::SetKey(const FText Value)
 	SyncKey();
 }
 
-void USkillSlotWidget::SetItem(const TSubclassOf<ADevice> Value)
+void USkillSlotWidget::SetItem(const FItem Value)
 {
 	Item = Value;
 	SyncItem();
@@ -65,15 +70,12 @@ void USkillSlotWidget::SetItem(const TSubclassOf<ADevice> Value)
 
 void USkillSlotWidget::SyncItem() const
 {
-	if (Item)
-		if (const auto CDO = Item.GetDefaultObject())
-			if (const auto Stats = CDO->GetStats())
-				if (const auto Icon = Stats->Icon)
-				{
-					Image->SetBrushResourceObject(Icon);
-					Image->SetRenderOpacity(1);
-					return;
-				}
+	if (const auto Icon = Item.Icon)
+	{
+		Image->SetBrushResourceObject(Icon);
+		Image->SetRenderOpacity(1);
+		return;
+	}
 
 	Image->SetRenderOpacity(0);
 }

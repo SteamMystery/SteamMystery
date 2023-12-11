@@ -9,32 +9,23 @@
 #include "SteamMystery/Public/HUDs/MainComponentsHUD.h"
 #include "SteamMystery/Public/UMG/SaveWidget.h"
 
-int USavesWidget::GetMaxSavesNumber()
+void USavesWidget::Fill()
 {
-	return MaxSavesNumber;
-}
-
-bool USavesWidget::Initialize()
-{
-	const auto b = Super::Initialize();
-	if (b)
-		for (auto i = 1; i <= MaxSavesNumber; i++)
+	for (auto i = 1; i <= MaxSavesNumber; i++)
+	{
+		const auto SlotName = FString::FormatAsNumber(i);
+		if(const auto Widget = Cast<USaveWidget>(CreateWidget(this, SaveWidgetClass)))
 		{
-			const auto SlotName = FString::FormatAsNumber(i);
-			const auto Widget = Cast<USaveWidget>(CreateWidget(this, SaveWidgetClass, *SlotName));
-			Widget->SetName(FString::FromInt(i));
-			if (UGameplayStatics::DoesSaveGameExist(SlotName, 0))
-			{
-				const auto Save = Cast<UGameSave>(UGameplayStatics::LoadGameFromSlot(SlotName, 0));
-				Saves.Add(i, Save);
-				Widget->SetSaveTime(FText::AsDateTime(Save->Time));
-				Widget->SetLoadable(true);
-			}
-			else
-				Widget->SetLoadable(false);
+			Widget->SetName(SlotName);
 			SaveSlots->AddChild(Widget);
 		}
-	return b;
+	}
+}
+
+void USavesWidget::NativePreConstruct()
+{
+	Super::NativePreConstruct();
+	Fill();
 }
 
 void USavesWidget::NativeOnInitialized()

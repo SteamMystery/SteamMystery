@@ -18,6 +18,8 @@ public:
 	void ActorDied(AActor* Actor) const;
 
 	virtual void BeginPlay() override;
+	
+	void WriteSaveGame();
 private:
 	UPROPERTY()
 	class APlayerCharacter* Player;

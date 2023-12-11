@@ -3,7 +3,6 @@
 
 #include "SteamMystery/Public/Characters/PlayerCharacter.h"
 
-#include "EnhancedInputSubsystems.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "SteamMystery/Public/Components/InteractionComponent.h"
@@ -25,8 +24,8 @@ APlayerCharacter::APlayerCharacter()
 	 // FirstPersonSkeletalMesh->SetupAttachment(FirstPersonCamera);
 	 // FirstPersonSkeletalMesh->SetRelativeLocation(FVector(-30,0,-150));
 	
-	 Grabber = CreateDefaultSubobject<UInteractionComponent>(TEXT("Grabber"));
-	 Grabber->SetupAttachment(FirstPersonCamera);
+	 // Grabber = CreateDefaultSubobject<UInteractionComponent>(TEXT("Grabber"));
+	 // Grabber->SetupAttachment(FirstPersonCamera);
 }
 
 

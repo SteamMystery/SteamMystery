@@ -30,6 +30,6 @@ void UNPCOverlapComponent::OnEndOverlap(UPrimitiveComponent*, AActor* OtherActor
 void UNPCOverlapComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	OnComponentBeginOverlap.AddUniqueDynamic(this, &UNPCOverlapComponent::OnBeginOverlap);
-	OnComponentEndOverlap.AddUniqueDynamic(this, &UNPCOverlapComponent::OnEndOverlap);
+	OnComponentBeginOverlap.AddUniqueDynamic(this, &ThisClass::OnBeginOverlap);
+	OnComponentEndOverlap.AddUniqueDynamic(this, &ThisClass::OnEndOverlap);
 }

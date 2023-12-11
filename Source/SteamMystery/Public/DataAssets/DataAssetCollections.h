@@ -10,17 +10,11 @@
  * 
  */
 UCLASS()
-class STEAMMYSTERY_API UDataAssetCollections : public UPrimaryDataAsset
-{
-	GENERATED_BODY()
+ class STEAMMYSTERY_API UDataAssetCollections : public UPrimaryDataAsset
+ {
+ 	GENERATED_BODY()
+ public:
 
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TMap<FString, class UItem*> Items;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TMap<FString, class UUpgrade*> Upgrades;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TMap<FString, class UWeaponItem*> Weapons;
-};
+ 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+ 	TMap<FName, TSubclassOf<class ADevice>> Devices;
+ };

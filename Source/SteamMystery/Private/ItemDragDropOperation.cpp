@@ -3,12 +3,12 @@
 
 #include "ItemDragDropOperation.h"
 
-inline TSubclassOf<ADevice> UItemDragDropOperation::GetItem() const
+inline FName UItemDragDropOperation::GetItem() const
 {
 	return Item;
 }
 
-inline void UItemDragDropOperation::SetItem(const TSubclassOf<ADevice> Value)
+inline void UItemDragDropOperation::SetItem(const FName Value)
 {
 	Item = Value;
 }

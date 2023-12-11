@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/DragDropOperation.h"
+#include "DataAssets/EquipmentItem.h"
 #include "ItemDragDropOperation.generated.h"
 
 class ADevice;
@@ -16,12 +17,12 @@ class STEAMMYSTERY_API UItemDragDropOperation : public UDragDropOperation
 	GENERATED_BODY()
 
 	UPROPERTY()
-	TSubclassOf<ADevice> Item;
+	FName Item;
 
 public:
 	UFUNCTION(BlueprintPure)
-	TSubclassOf<ADevice> GetItem() const;
+	FName GetItem() const;
 	
 	UFUNCTION(BlueprintCallable)
-	void SetItem(TSubclassOf<ADevice> Value);
+	void SetItem(FName Value);
 };

@@ -17,22 +17,21 @@ class STEAMMYSTERY_API USaveWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
-	virtual bool Initialize() override;
+	virtual void NativeConstruct() override;
+	
+	void Sync();
+
 public:
 	
 	UFUNCTION(BlueprintCallable)
 	void SetName(const FString Value);
 
-	UFUNCTION(BlueprintCallable)
-	void SetSaveTime(const FText Value) const;
-
-	UFUNCTION(BlueprintCallable)
-	void SetGameTime(const FText Value) const;
-
 	UFUNCTION()
 	void Save();
+	
 	UFUNCTION()
 	void Load();
+	
 	UFUNCTION()
 	void Delete();
 
@@ -41,14 +40,15 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	void SetLoadable(const bool bIsLoadable) const;
-
-	virtual TSharedRef<SWidget> RebuildWidget() override;
+	
 private:
 
 	FString SlotName;
+	UPROPERTY()
+	class UQuestManager* QuestManager;
 
 	UPROPERTY()
-	class USteamMysteryGameInstance* Instance;
+	class UGameSaveSubsystem* SaveSubsystem;
 	
 	UPROPERTY(meta=(BindWidget))
 	UTextBlock* SaveNameTextBlock;

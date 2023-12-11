@@ -3,8 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "InputActionValue.h"
 #include "Blueprint/UserWidget.h"
+#include "DataAssets/Item.h"
+#include "Game/MainPlayerState.h"
 #include "SkillSlotWidget.generated.h"
 
 class ADevice;
@@ -19,7 +20,8 @@ class STEAMMYSTERY_API USkillSlotWidget : public UUserWidget
 	virtual void NativePreConstruct() override;
 	
 	virtual bool NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation) override;
-	
+
+	virtual  FReply NativeOnPreviewMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
 protected:
 		
 	UPROPERTY(meta=(BindWidget))
@@ -27,9 +29,11 @@ protected:
 	
 	UPROPERTY(meta=(BindWidget))
 	class UTextBlock* KeyTextBlock;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	class UEquipmentComponent* EquipmentComponent;
+
+	UPROPERTY(EditDefaultsOnly)
+	FKey RemoveKey;
+	UPROPERTY()
+	AMainPlayerState* PlayerState;
 
 private:
 	
@@ -40,7 +44,7 @@ private:
 	FText Key;
 	
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<ADevice> Item;
+	FItem Item;
 	
 public:
 	UFUNCTION(BlueprintPure)
@@ -50,7 +54,7 @@ public:
 	FText GetKey() const;
 	
 	UFUNCTION(BlueprintPure)
-	TSubclassOf<ADevice> GetItem() const;
+	FItem GetItem() const;
 
 	UFUNCTION(BlueprintCallable)
 	void SetNumber(int32 Value);
@@ -59,8 +63,9 @@ public:
 	void SetKey(FText Value);
 	
 	UFUNCTION(BlueprintCallable)
-	void SetItem(TSubclassOf<ADevice> Value);
+	void SetItem(FItem Value);
 	
 	void SyncItem() const;
+	
 	void SyncKey() const;
 };

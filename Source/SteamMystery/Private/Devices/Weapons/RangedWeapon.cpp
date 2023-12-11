@@ -11,36 +11,35 @@
 
 bool ARangedWeapon::Use()
 {
-	const UWeaponItem* WeaponItem = GetStats();
-	if (!(WeaponItem && Super::Use())) return false;
+	const FEquipmentItem WeaponItem = GetStats();
+	if (!Super::Use()) return false;
 	const FVector Start = FirePoint->GetComponentLocation();
 	const FRotator Rotation = FirePoint->GetComponentRotation();
 
 	if (FireSound)
 		UGameplayStatics::PlaySoundAtLocation(GetWorld(), FireSound, Start, Rotation);
 	bool Result = false;
+	if (MuzzleParticles)
+		UGameplayStatics::SpawnEmitterAttached(MuzzleParticles, FirePoint);
 	if (FHitResult HitResult; Sweep(HitResult))
-	{
-		if(MuzzleParticles)
-			UGameplayStatics::SpawnEmitterAttached(MuzzleParticles, FirePoint);
 		if (const auto OtherActor = HitResult.GetActor())
 			if (const auto OwnerActor = GetOwner())
 			{
 				if (OtherActor && OtherActor != this && OtherActor != OwnerActor)
 				{
-					UAISense_Damage::ReportDamageEvent(GetWorld(), OtherActor, OwnerActor, WeaponItem->Damage,
-													   OwnerActor->GetActorLocation(), HitResult.ImpactPoint);
+					UAISense_Damage::ReportDamageEvent(GetWorld(), OtherActor, OwnerActor,
+					                                   WeaponItem.Stats[EStat::Damage],
+					                                   OwnerActor->GetActorLocation(), HitResult.ImpactPoint);
 					UGameplayStatics::ApplyPointDamage(OtherActor,
-													   WeaponItem->Damage,
-													   Start,
-													   HitResult,
-													   OwnerActor->GetInstigatorController(),
-													   this,
-													   UDamageType::StaticClass());
+					                                   WeaponItem.Stats[EStat::Damage],
+					                                   Start,
+					                                   HitResult,
+					                                   OwnerActor->GetInstigatorController(),
+					                                   this,
+					                                   UDamageType::StaticClass());
 				}
 				Result = true;
 			}
-	}
 	if (const auto OwningCharacter = Cast<AGameCharacter>(GetOwner()))
 		OwningCharacter->bFire = Result;
 	return Result;
@@ -51,19 +50,25 @@ bool ARangedWeapon::Sweep(FHitResult& HitResult) const
 	if (const auto OwningCharacter = Cast<APawn>(GetOwner()))
 		if (const auto OwnerController = OwningCharacter->GetController())
 		{
-			FRotator Rotator;
 			FVector Start;
+			FRotator Rotation;
 			FVector Direction;
-			double Length;
-			OwnerController->GetPlayerViewPoint(Start, Rotator);
+			OwnerController->GetPlayerViewPoint(Start, Rotation);
 			if (const auto MainAIController = Cast<AMainAIController>(OwnerController))
+			{
+				double Length;
 				(MainAIController->GetFocalPoint() - Start).ToDirectionAndLength(Direction, Length);
+			}
 			else
-				Direction = Rotator.Vector();
-			const FVector End = Start + Direction * GetStats()->Range;
+				Direction = Rotation.Vector();
+			const float Stat = GetWeaponStats().Stats[EStat::Range];
+			const FVector End = Start + Direction * Stat;
 			auto Params = FCollisionQueryParams::DefaultQueryParam;
 			Params.AddIgnoredActor(GetOwner());
-			return GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_EngineTraceChannel2, Params);
+			Params.AddIgnoredActor(this);
+			DrawDebugLine(GetWorld(), FirePoint->GetComponentLocation(), End, FColor::Red, false, 5, 0, 5);
+			return GetWorld()->LineTraceSingleByChannel(HitResult, FirePoint->GetComponentLocation(), End,
+			                                            ECC_EngineTraceChannel2, Params);
 		}
 	return false;
 }

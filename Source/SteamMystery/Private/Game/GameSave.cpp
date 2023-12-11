@@ -3,7 +3,10 @@
 
 #include "SteamMystery/Public/Game/GameSave.h"
 
+#include "Game/MainPlayerState.h"
+
 UGameSave::UGameSave()
 {
 	Time = FDateTime::Now();
+	ActionBar.SetNum(AMainPlayerState::ActionBarSize);
 }

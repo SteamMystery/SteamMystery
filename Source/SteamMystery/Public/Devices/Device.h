@@ -3,6 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "DataAssets/EquipmentItem.h"
+#include "Engine/DataTable.h"
+#include "Game/MainPlayerController.h"
+#include "Game/MainPlayerState.h"
 #include "GameFramework/Actor.h"
 #include "Device.generated.h"
 
@@ -17,10 +21,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual bool Use();
 
-	UFUNCTION(BlueprintPure)
-	FString GetDeviceName() const;
-
 protected:
+
 	virtual void BeginPlay() override;
 
 	UFUNCTION(BlueprintPure)
@@ -32,15 +34,21 @@ protected:
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* Mesh;
 
-
 	UPROPERTY(EditAnywhere)
 	UAnimationAsset* UseAnimation;
 
-	UPROPERTY(BlueprintReadWrite)
-	FString DeviceName = "None";
+	UPROPERTY(EditAnywhere)
+	FDataTableRowHandle RowHandle;
+
+	UPROPERTY(EditAnywhere)
+	UDataTable* UpgradesDataTable;
+	
+	UPROPERTY()
+	AMainPlayerState* PlayerState;
 
 public:
 	UFUNCTION(BlueprintPure)
-	virtual class UEquipmentItem* GetStats() const
-	PURE_VIRTUAL(ADevice::GetStats, return nullptr;)
+	UDataTable* GetUpgradesDataTable() const;
+	UFUNCTION(BlueprintPure)
+	virtual FEquipmentItem GetStats() const;
 };

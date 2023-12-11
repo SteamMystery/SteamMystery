@@ -6,6 +6,7 @@
 #include "Weapon.h"
 #include "MeleeWeapon.generated.h"
 
+class UMeleeTraceComponent;
 /**
  * 
  */
@@ -13,11 +14,9 @@ UCLASS()
 class STEAMMYSTERY_API AMeleeWeapon : public AWeapon
 {
 	GENERATED_BODY()
-
+	
 public:
-	virtual bool Use() override;
-
-protected:
-	virtual void BeginPlay() override;
-
+	
+	UFUNCTION()
+	void Attack(AActor* HitActor, const FVector& HitLocation);
 };

@@ -2,7 +2,9 @@
 
 #include "SteamMystery/Public/Devices/Weapons/Weapon.h"
 
-UWeaponItem* AWeapon::GetStats() const
+FWeaponItem AWeapon::GetWeaponStats() const
 {
-	return WeaponStats;
+	if(const auto Row = RowHandle.GetRow<FWeaponItem>(GetName()))
+		return *Row;
+	return FWeaponItem();
 }

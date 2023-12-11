@@ -47,9 +47,7 @@ UUserWidget* UBaseWidgetComponent::GetWidget() const
 void UBaseWidgetComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	static int Number = 0;
-	const auto WidgetName = FString(TEXT("UBaseWidgetComponent ")) + FString::FormatAsNumber(Number++);
 	Controller = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 	if (Controller && WidgetClass)
-		Widget = CreateWidget(Controller, WidgetClass, *WidgetName);
+		Widget = CreateWidget(Controller, WidgetClass);
 }

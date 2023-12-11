@@ -7,17 +7,41 @@
 
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
+#include "Game/GameSaveSubsystem.h"
 #include "Game/MainPlayerState.h"
 #include "Kismet/GameplayStatics.h"
 #include "Quest/QuestManager.h"
 #include "SteamMystery/Public/Game/GameSave.h"
-#include "SteamMystery/Public/Game/SteamMysteryGameInstance.h"
 
 
-bool USaveWidget::Initialize()
+void USaveWidget::NativeConstruct()
 {
-	Instance = Cast<USteamMysteryGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-	return Super::Initialize();
+	Super::NativeConstruct();
+	QuestManager = GetOwningPlayer()->GetPlayerState<AMainPlayerState>()->QuestManager;
+	SaveSubsystem = UGameplayStatics::GetGameInstance(GetWorld())->GetSubsystem<UGameSaveSubsystem>();
+
+	if (SaveButton)
+		SaveButton->OnClicked.AddUniqueDynamic(this, &USaveWidget::Save);
+
+	if (LoadButton)
+		LoadButton->OnClicked.AddUniqueDynamic(this, &USaveWidget::Load);
+
+	if (DeleteButton)
+		DeleteButton->OnClicked.AddUniqueDynamic(this, &USaveWidget::Delete);
+}
+
+void USaveWidget::Sync()
+{
+	const bool bDoesSaveGameExist = UGameplayStatics::DoesSaveGameExist(SlotName, 0);
+	if (bDoesSaveGameExist)
+	{
+		if (const auto Save = Cast<UGameSave>(UGameplayStatics::LoadGameFromSlot(SlotName, 0)))
+			if (SaveTimeTextBlock)
+				SaveTimeTextBlock->SetText(FText::AsDateTime(Save->Time));
+	}
+	else
+		SaveTimeTextBlock->SetText(FText::GetEmpty());
+	SetLoadable(bDoesSaveGameExist);
 }
 
 void USaveWidget::SetName(const FString Value)
@@ -25,35 +49,28 @@ void USaveWidget::SetName(const FString Value)
 	SlotName = Value;
 	if (SaveNameTextBlock)
 		SaveNameTextBlock->SetText(FText::FromString(Value));
-}
-
-void USaveWidget::SetSaveTime(const FText Value) const
-{
-	if (SaveTimeTextBlock)
-		SaveTimeTextBlock->SetText(Value);
-}
-
-void USaveWidget::SetGameTime(const FText Value) const
-{
-	if (GameTimeTextBlock)
-		GameTimeTextBlock->SetText(Value);
+	Sync();
 }
 
 void USaveWidget::Save()
 {
-	UGameplayStatics::SaveGameToSlot(Instance->GetSave(), SlotName, 0);
-	GetOwningPlayer()->GetPlayerState<AMainPlayerState>()->QuestManager->SaveQuestData(SlotName);
+	QuestManager->SaveQuestData(SlotName);
+	SaveSubsystem->SaveGame(SlotName);
+	Sync();
 }
 
 void USaveWidget::Load()
 {
-	UGameplayStatics::LoadGameFromSlot(SlotName, 0);
-	GetOwningPlayer()->GetPlayerState<AMainPlayerState>()->QuestManager->ROS_LoadFromSaveGame_Implementation(SlotName);
+	SaveSubsystem->LoadGame(SlotName);
+	QuestManager->ROS_LoadFromSaveGame_Implementation(SlotName);
+	QuestManager->QuestRepInventoryUpdated.Broadcast();
+	Sync();
 }
 
 void USaveWidget::Delete()
 {
 	UGameplayStatics::DeleteGameInSlot(SlotName, 0);
+	Sync();
 }
 
 void USaveWidget::SetSaveable(const bool bIsSaveable) const
@@ -69,20 +86,4 @@ void USaveWidget::SetLoadable(const bool bIsLoadable) const
 		LoadButton->SetVisibility(EVisibility);
 	if (DeleteButton)
 		DeleteButton->SetVisibility(EVisibility);
-}
-
-TSharedRef<SWidget> USaveWidget::RebuildWidget()
-{
-	const auto Widget = Super::RebuildWidget();
-
-	if (SaveButton)
-		SaveButton->OnClicked.AddDynamic(this, &USaveWidget::Save);
-
-	if (LoadButton)
-		LoadButton->OnClicked.AddDynamic(this, &USaveWidget::Load);
-
-	if (DeleteButton)
-		DeleteButton->OnClicked.AddDynamic(this, &USaveWidget::Delete);
-
-	return Widget;
 }

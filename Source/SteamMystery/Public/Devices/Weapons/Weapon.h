@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "SteamMystery/Public/DataAssets/WeaponItem.h"
+#include "DataAssets/WeaponItem.h"
 #include "SteamMystery/Public/Devices/Device.h"
 #include "Weapon.generated.h"
 
@@ -13,11 +13,8 @@ class STEAMMYSTERY_API AWeapon : public ADevice
 {
 	GENERATED_BODY()
 
-protected:
-	UPROPERTY(EditAnywhere)
-	UWeaponItem* WeaponStats;
-	
 public:
-	// ReSharper disable once CppHidingFunction
-	virtual UWeaponItem* GetStats() const override;
+
+	UFUNCTION(BlueprintPure)
+	FWeaponItem GetWeaponStats() const;
 };

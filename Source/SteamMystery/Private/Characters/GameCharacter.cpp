@@ -5,13 +5,17 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "EquipmentComponent.h"
 #include "InputMappingContext.h"
+#include "DataAssets/DataAssetCollections.h"
+#include "Game/BaseGameInstance.h"
+#include "Kismet/GameplayStatics.h"
 #include "SteamMystery/Public/Components/Stats/ElectricityComponent.h"
 #include "SteamMystery/Public/Components/Stats/HealthComponent.h"
 #include "SteamMystery/Public/Components/InventoryComponent.h"
 #include "SteamMystery/Public/Components/Stats/SteamComponent.h"
 #include "SteamMystery/Public/Devices/Device.h"
+#include "Devices/Weapons/MeleeWeapon.h"
+#include "MeleeTraceComponent.h"
 
 void AGameCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -26,16 +30,16 @@ void AGameCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 			if (ActionBarInputMapping)
 			{
 				Subsystem->AddMappingContext(ActionBarInputMapping, 1);
-				if (EquipmentComponent)
+				if (const auto MainPlayerState = Controller->GetPlayerState<AMainPlayerState>())
 				{
-					EquipmentComponent->SetInputMapping(ActionBarInputMapping);
+					MainPlayerState->SetInputMappingContext(ActionBarInputMapping);
 					if (const auto Input = Cast<UEnhancedInputComponent>(PlayerInputComponent))
 					{
 						auto Mappings = ActionBarInputMapping->GetMappings();
 						for (int i = 0; i < Mappings.Num(); ++i)
 							Input->BindAction(
 								Mappings[i].Action, ETriggerEvent::Started,
-								EquipmentComponent, &UEquipmentComponent::Action, i
+								MainPlayerState, &AMainPlayerState::Action, i
 							);
 					}
 				}
@@ -46,21 +50,21 @@ void AGameCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 // Sets default values
 AGameCharacter::AGameCharacter()
 {
+	PrimaryActorTick.bCanEverTick = true;
 	Health = CreateDefaultSubobject<UHealthComponent>(TEXT("Health"));
 	Steam = CreateDefaultSubobject<USteamComponent>(TEXT("Steam"));
 	Electricity = CreateDefaultSubobject<UElectricityComponent>(TEXT("Electricity"));
 	Inventory = CreateDefaultSubobject<UInventoryComponent>(TEXT("Inventory"));
-	EquipmentComponent = CreateDefaultSubobject<UEquipmentComponent>(TEXT("Equipment"));
+	MeleeTraceComponent = CreateDefaultSubobject<UMeleeTraceComponent>(TEXT("MeleeTraceComponent"));
 }
 
 void AGameCharacter::HandleDeath()
 {
 	DetachFromControllerPendingDestroy();
 	if (Inventory)
-		Tags.Add("Inventory");
+		Tags.Add(UInteractionComponent::InteractTag);
 	HandleDeathDelegate.Broadcast();
 }
-
 
 bool AGameCharacter::Attack()
 {
@@ -69,24 +73,31 @@ bool AGameCharacter::Attack()
 	return false;
 }
 
-void AGameCharacter::AttachDevice(const TSubclassOf<ADevice> Class)
+void AGameCharacter::AttachDevice(const FName Device)
 {
-	if(MainHand)
+	if (MainHand)
 		MainHand->Destroy();
-	if(Class)
+	if (Collections && Collections->Devices.Contains(Device))
 	{
-		MainHand = GetWorld()->SpawnActor<ADevice>(Class);
+		auto Params = FActorSpawnParameters();
+		Params.Owner = this;
+		MainHand = GetWorld()->SpawnActor<ADevice>(Collections->Devices[Device], Params);
 		MainHand->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("GripPoint"));
-		MainHand->SetOwner(this);
+		if(MeleeTraceComponent)
+			MeleeTraceComponent->SetWeapon(MainHand);
 	}
 }
 
-// Called when the game starts or when spawned
 void AGameCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	if (MainHandClass)
-		AttachDevice(MainHandClass);
+	if (const auto Instance = Cast<UBaseGameInstance>(UGameplayStatics::GetGameInstance(GetWorld())))
+	{
+		Collections = Instance->GetDataAssetCollections();
+		AttachDevice(MainHandType);
+	}
+	if (MeleeTraceComponent)
+		MeleeTraceComponent->OnTraceHit.AddUniqueDynamic(this, &ThisClass::HandleMeleeAttack);
 }
 
 ADevice* AGameCharacter::GetMainHand() const
@@ -94,6 +105,12 @@ ADevice* AGameCharacter::GetMainHand() const
 	return MainHand;
 }
 
+void AGameCharacter::HandleMeleeAttack(UMeleeTraceComponent*, AActor* HitActor, const FVector& HitLocation,
+                                       const FVector&, FName)
+{
+	if (const auto MeleeWeapon = Cast<AMeleeWeapon>(MainHand))
+		MeleeWeapon->Attack(HitActor, HitLocation);
+}
 
 void AGameCharacter::Look(const FVector2D Value)
 {
@@ -105,7 +122,6 @@ void AGameCharacter::Look(const FVector2D Value)
 	if (Value.Y != 0.f)
 		AddControllerPitchInput(Value.Y);
 }
-
 
 void AGameCharacter::Move(const FVector2D Value)
 {

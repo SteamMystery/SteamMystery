@@ -3,12 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/SceneComponent.h"
+#include "Components/ActorComponent.h"
 #include "InteractionComponent.generated.h"
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class STEAMMYSTERY_API UInteractionComponent : public USceneComponent
+class STEAMMYSTERY_API UInteractionComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
@@ -32,6 +32,9 @@ private:
 	UPROPERTY()
 	class AMainPlayerController* MainPlayerController = nullptr;
 	
+	UPROPERTY()
+	class AMainPlayerState* PlayerState = nullptr;
+	
 	UPROPERTY(EditAnywhere)
 	float MaxGrabDistance = 400;
 
@@ -39,11 +42,11 @@ private:
 	float GrabRadius = 100;
 
 	UPROPERTY(EditAnywhere)
-	class UInventoryComponent* Looter = nullptr;
-
-	UPROPERTY(EditAnywhere)
 	TSubclassOf<UUserWidget> InteractionWidgetClass;
 
 	UPROPERTY()
 	UUserWidget* InteractionWidget = nullptr;
+
+public:
+	inline static const char* InteractTag = "Interact";
 };

@@ -6,19 +6,20 @@
 #include "EquipmentItem.h"
 #include "WeaponItem.generated.h"
 
+
+
 /**
  * 
  */
-UCLASS()
-class STEAMMYSTERY_API UWeaponItem : public UEquipmentItem
+USTRUCT()
+struct FWeaponItem: public FEquipmentItem
 {
 	GENERATED_BODY()
 	
-public:
-	
-	UPROPERTY(EditAnywhere)
-	float Damage = 50.f;
-	
-	UPROPERTY(EditAnywhere)
-	float Range = 50.f;
+	FWeaponItem()
+	{
+		Stats.Emplace(EStat::Damage);
+		Stats.Emplace(EStat::Recharge);
+		Stats.Emplace(EStat::Range);
+	}
 };

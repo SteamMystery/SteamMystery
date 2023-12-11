@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Game/GameSave.h"
 #include "StatComponent.generated.h"
 
 
@@ -13,12 +14,13 @@ class STEAMMYSTERY_API UStatComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:
+	
 	// Sets default values for this component's properties
 	UStatComponent();
 
 	UFUNCTION(BlueprintPure)
 	float GetValue() const;
-	
+
 	UFUNCTION(BlueprintPure)
 	float GetPercentage() const;
 
@@ -30,7 +32,7 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	virtual bool CanConsume(const float Value) const;
-	
+
 	UFUNCTION(BlueprintCallable)
 	void Restore(const float Value);
 
@@ -38,12 +40,15 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, SaveGame)
 	float MaxValue = 100.f;
-	
+
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
+	                           FActorComponentTickFunction* ThisTickFunction) override;
+
+	UPROPERTY(SaveGame)
 	float CurrentValue = 0.f;
 
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 private:
 	float ToRestore = 0.f;
 };

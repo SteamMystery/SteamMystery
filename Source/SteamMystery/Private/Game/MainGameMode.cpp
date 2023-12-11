@@ -26,3 +26,4 @@ void AMainGameMode::BeginPlay()
 	Player = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 	MainPlayerController = Cast<AMainPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
 }
+

@@ -8,9 +8,7 @@
 void USavesComponent::ShowAsSaveable(const int32 ZOrder) const
 {
 	if (Widget)
-	{
 		Cast<USavesWidget>(Widget)->SetSaveable(true);
-	}
 	Super::Show(ZOrder);
 }
 

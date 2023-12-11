@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "GameCharacter.generated.h"
 
+class UMeleeTraceComponent;
+class UDataAssetCollections;
 class UInputMappingContext;
 class ADevice;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FHandleDeathDelegate);
@@ -16,7 +18,7 @@ class STEAMMYSTERY_API AGameCharacter : public ACharacter
 	GENERATED_BODY()
 
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
-	
+
 public:
 	// Sets default values for this character's properties
 	AGameCharacter();
@@ -35,7 +37,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 	bool bFire;
-
+	
+	UPROPERTY()
+	UDataAssetCollections* Collections;
 
 protected:
 	
@@ -44,19 +48,20 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enhanced Input")
 	UInputMappingContext* ActionBarInputMapping;
-	
+
 	virtual void BeginPlay() override;
 
 	UPROPERTY(BlueprintCallable, BlueprintAssignable)
 	FHandleDeathDelegate HandleDeathDelegate;
 
-	UPROPERTY()
+	UPROPERTY(SaveGame)
 	ADevice* MainHand;
 
-	UPROPERTY(EditDefaultsOnly)
-	const TSubclassOf<ADevice> MainHandClass;
+	UPROPERTY(EditDefaultsOnly, SaveGame)
+	FName MainHandType;
 
 public:
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	class UHealthComponent* Health;
 
@@ -68,13 +73,16 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	class UInventoryComponent* Inventory;
-
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	class UEquipmentComponent* EquipmentComponent;
+	UMeleeTraceComponent* MeleeTraceComponent;
 	
 	UFUNCTION(BlueprintPure)
 	ADevice* GetMainHand() const;
-	
+
+	UFUNCTION()
+	void HandleMeleeAttack(UMeleeTraceComponent* ThisComponent, AActor* HitActor, const FVector& HitLocation, const FVector& HitNormal, FName HitBoneName);
 	UFUNCTION(BlueprintCallable)
-	void AttachDevice(const TSubclassOf<ADevice> Class);
+	void AttachDevice(const FName Device);
 };
+

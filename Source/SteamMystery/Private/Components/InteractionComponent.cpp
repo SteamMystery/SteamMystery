@@ -5,8 +5,10 @@
 
 #include "SteamMystery/Public/Components/InventoryComponent.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/UMG/BaseWidgetComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Game/MainPlayerController.h"
+#include "Game/MainPlayerState.h"
 
 // Sets default values for this component's properties
 UInteractionComponent::UInteractionComponent()
@@ -19,11 +21,11 @@ UInteractionComponent::UInteractionComponent()
 void UInteractionComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	Looter = GetOwner()->GetComponentByClass<UInventoryComponent>();
-	if (InteractionWidgetClass)
-		if (APlayerController* OwningObject = UGameplayStatics::GetPlayerController(GetWorld(), 0))
-			InteractionWidget = CreateWidget(OwningObject, InteractionWidgetClass);
-	MainPlayerController = Cast<AMainPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	//Looter = GetOwner()->GetComponentByClass<UInventoryComponent>();
+	MainPlayerController = Cast<AMainPlayerController>(GetOwner());
+	if (InteractionWidgetClass && MainPlayerController)
+		InteractionWidget = CreateWidget(MainPlayerController, InteractionWidgetClass);
+	PlayerState = PlayerState = MainPlayerController->GetPlayerState<AMainPlayerState>();
 }
 
 
@@ -36,7 +38,7 @@ void UInteractionComponent::TickComponent(const float DeltaTime, const ELevelTic
 	{
 		if (FHitResult HitResult; Sweep(HitResult))
 			if (const auto HitActor = HitResult.GetActor())
-				if (HitActor->ActorHasTag("Inventory"))
+				if (HitActor->ActorHasTag(InteractTag))
 				{
 					if (!InteractionWidget->IsInViewport())
 						InteractionWidget->AddToViewport();
@@ -49,23 +51,25 @@ void UInteractionComponent::TickComponent(const float DeltaTime, const ELevelTic
 
 bool UInteractionComponent::Sweep(FHitResult& HitResult)
 {
-	FVector Start = GetComponentLocation();
+	FVector Start;
 	FRotator Rotator;
 	MainPlayerController->GetPlayerViewPoint(Start, Rotator);
 	const FVector End = Start + Rotator.Vector() /*GetForwardVector()*/ * MaxGrabDistance;
-	const FCollisionShape Shape = FCollisionShape::MakeSphere(GrabRadius);
 	FCollisionQueryParams Params = FCollisionQueryParams::DefaultQueryParam;
-	Params.AddIgnoredActor(GetOwner());
+	Params.AddIgnoredActor(MainPlayerController->GetPawn());
 	//DrawDebugLine(GetWorld(), Start, End, FColor::Blue, false, 5, 0, 5);
-	return GetWorld()->SweepSingleByChannel(HitResult, Start, End, FQuat::Identity, ECC_EngineTraceChannel2, Shape,
-	                                        Params);
+	return GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_EngineTraceChannel2, Params);
 }
 
 void UInteractionComponent::Interact()
 {
 	if (FHitResult HitResult; Sweep(HitResult))
 		if (const auto HitActor = HitResult.GetActor())
-			if (HitActor->ActorHasTag("Inventory"))
+			if (HitActor->ActorHasTag(InteractTag))
+			{
 				if (const auto Inventory = HitActor->GetComponentByClass<UInventoryComponent>())
-					Inventory->Loot(Looter);
+					Inventory->Loot(PlayerState);
+				if (const auto WidgetComponent = HitActor->GetComponentByClass<UBaseWidgetComponent>())
+					WidgetComponent->Show(3);
+			}
 }

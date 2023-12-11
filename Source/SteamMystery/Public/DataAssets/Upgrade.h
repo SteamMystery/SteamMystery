@@ -4,14 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Item.h"
+#include "WeaponItem.h"
 #include "Templates/Tuple.h"
 #include "Upgrade.generated.h"
 
 UENUM()
 enum class EUpgradeStatType { Point, Percent };
 
-UENUM()
-enum class EUpgradeStat { Damage, Recharge };
 
 USTRUCT()
 struct FUpgradeValue
@@ -19,27 +18,41 @@ struct FUpgradeValue
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere)
-	FString Value;
+	float Value = 0;
 
 	UPROPERTY(EditAnywhere)
-	EUpgradeStatType Type;
+	EUpgradeStatType Type = EUpgradeStatType::Percent;
 };
 
 /**
  * 
  */
-UCLASS()
-class STEAMMYSTERY_API UUpgrade : public UBaseItemDataAsset
+
+USTRUCT()
+struct FUpgrade : public FItem
 {
 	GENERATED_BODY()
 
-public:
 	UPROPERTY(EditAnywhere)
-	class UEquipmentItem* Item = nullptr;
+	TMap<FName, int> Materials;
 
 	UPROPERTY(EditAnywhere)
-	TMap<UItem*, int> Materials;
+	TMap<EStat, FUpgradeValue> UpgradeStats;
 
-	UPROPERTY(EditAnywhere)
-	TMap<EUpgradeStat, FUpgradeValue> UpgradeStats;
+	void Apply(FEquipmentItem& InItem);
 };
+
+inline void FUpgrade::Apply(FEquipmentItem& InItem)
+{
+	for (const auto Element : UpgradeStats)
+		if (InItem.Stats.Contains(Element.Key))
+			switch (auto [Value, Type] = Element.Value; Type)
+			{
+			case EUpgradeStatType::Point:
+				InItem.Stats[Element.Key] += Value;
+				break;
+			case EUpgradeStatType::Percent:
+				InItem.Stats[Element.Key] *= (100 + Value) / 100;
+				break;
+			}
+}

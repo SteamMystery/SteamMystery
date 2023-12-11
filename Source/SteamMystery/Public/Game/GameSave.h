@@ -6,7 +6,6 @@
 #include "GameFramework/SaveGame.h"
 #include "GameSave.generated.h"
 
-
 USTRUCT(BlueprintType)
 struct FMapData
 {
@@ -22,7 +21,33 @@ struct FMapData
 	TArray<FString> PickedItems;
 };
 
+USTRUCT()
+struct FActorSaveData
+{
+	GENERATED_BODY()
 
+	/* Identifier for which Actor this belongs to */
+	UPROPERTY()
+	FName ActorName;
+
+	/* For movable Actors, keep location,rotation,scale. */
+	UPROPERTY()
+	FTransform Transform;
+
+	/* Contains all 'SaveGame' marked variables of the Actor */
+	UPROPERTY()
+	TArray<uint8> ByteData;
+};
+
+USTRUCT(BlueprintType)
+struct FUpgrades
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TArray<FName> Purchased;
+	
+};
 
 /**
  *
@@ -32,10 +57,14 @@ UCLASS()
 class STEAMMYSTERY_API UGameSave : public USaveGame
 {
 	GENERATED_BODY()
+	
 
 public:
 
 	UGameSave();
+
+	UPROPERTY()
+	TArray<FActorSaveData> SavedActors;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString SaveName;
@@ -50,11 +79,17 @@ public:
 	TArray<FMapData> MapData;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<FString> Items;
+	TMap<FName, int32> Items;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<FString> Upgrades;
+	TMap<FName, FUpgrades> Upgrades;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<FString> Weapons;
+	TMap<FName, int32> Devices;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FName> ActionBar;
+
+	UPROPERTY(EditAnywhere)
+	int Coins = 0;
 };

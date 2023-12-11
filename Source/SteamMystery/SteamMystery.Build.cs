@@ -8,13 +8,24 @@ public class SteamMystery : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 		CppStandard = CppStandardVersion.Cpp20;
-	
-		PublicDependencyModuleNames.AddRange(new[] { "Core", "CoreUObject", "Engine", "InputCore", "GameplayTasks", "QuestEditor", "QuestEditorDev", "GameplayTags"});
 
-		PrivateDependencyModuleNames.AddRange(new[] { "EnhancedInput", "NavigationSystem"  });
+		PublicDependencyModuleNames.AddRange(new[]
+		{
+			"Core",
+			"CoreUObject", 
+			"Engine",
+			"InputCore", 
+			"GameplayTasks",
+			"QuestEditor",
+			"QuestEditorDev",
+			"GameplayTags", 
+			"MeleeTrace"
+		});
+
+		PrivateDependencyModuleNames.AddRange(new[] { "EnhancedInput", "NavigationSystem" });
 
 		PrivateDependencyModuleNames.AddRange(new[] { "Slate", "SlateCore" });
-		
+
 		// Uncomment if you are using online features
 		// PrivateDependencyModuleNames.Add("OnlineSubsystem");
 
