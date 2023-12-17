@@ -3,11 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Characters/GameCharacter.h"
 #include "Components/CapsuleComponent.h"
-#include "Stats/HealthComponent.h"
 #include "NPCOverlapComponent.generated.h"
 
+
+class UHealthComponent;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class STEAMMYSTERY_API UNPCOverlapComponent : public UCapsuleComponent

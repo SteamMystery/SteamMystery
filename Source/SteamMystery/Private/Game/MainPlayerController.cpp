@@ -3,14 +3,14 @@
 
 #include "SteamMystery/Public/Game/MainPlayerController.h"
 
-#include "Components/InteractionComponent.h"
+#include "Components/PlayerInteractionComponent.h"
 
 
 AMainPlayerController::AMainPlayerController()
 {
 	bEnableClickEvents = true;
 	bEnableMouseOverEvents = true;
-	InteractionComponent = CreateDefaultSubobject<UInteractionComponent>(TEXT("Interaction"));
+	InteractionComponent = CreateDefaultSubobject<UPlayerInteractionComponent>(TEXT("Interaction"));
 }
 
 void AMainPlayerController::SetPlayerEnabledState(const bool bPlayerEnabled)

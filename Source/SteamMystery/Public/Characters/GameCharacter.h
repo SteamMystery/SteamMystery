@@ -75,9 +75,6 @@ public:
 	class UElectricityComponent* Electricity;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	class UInventoryComponent* Inventory;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UMeleeTraceComponent* MeleeTraceComponent;
 	
 	UFUNCTION(BlueprintPure)
@@ -85,7 +82,10 @@ public:
 
 	UFUNCTION()
 	void HandleMeleeAttack(UMeleeTraceComponent* ThisComponent, AActor* HitActor, const FVector& HitLocation, const FVector& HitNormal, FName HitBoneName);
+
 	UFUNCTION(BlueprintCallable)
 	void AttachDevice(const FName Device);
+
+	
 };
 

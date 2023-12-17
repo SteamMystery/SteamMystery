@@ -5,10 +5,10 @@
 #include "CoreMinimal.h"
 #include "DataAssets/EquipmentItem.h"
 #include "Engine/DataTable.h"
-#include "Game/MainPlayerController.h"
-#include "Game/MainPlayerState.h"
 #include "GameFramework/Actor.h"
 #include "Device.generated.h"
+
+class AMainPlayerState;
 
 UCLASS()
 class STEAMMYSTERY_API ADevice : public AActor
@@ -21,21 +21,18 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual bool Use();
 
+	UPROPERTY(BlueprintReadWrite)
+	bool bIsRecharging = false;
+
+	UFUNCTION()
+	void Ready();
+
 protected:
 
 	virtual void BeginPlay() override;
 
-	UFUNCTION(BlueprintPure)
-	UStaticMeshComponent* GetMesh() const;
-
 	UPROPERTY(EditAnywhere)
 	USceneComponent* Root;
-
-	UPROPERTY(EditAnywhere)
-	UStaticMeshComponent* Mesh;
-
-	UPROPERTY(EditAnywhere)
-	UAnimationAsset* UseAnimation;
 
 	UPROPERTY(EditAnywhere)
 	FDataTableRowHandle RowHandle;
@@ -49,6 +46,7 @@ protected:
 public:
 	UFUNCTION(BlueprintPure)
 	UDataTable* GetUpgradesDataTable() const;
+	
 	UFUNCTION(BlueprintPure)
 	virtual FEquipmentItem GetStats() const;
 };

@@ -7,6 +7,7 @@
 
 #include "Characters/GameCharacter.h"
 #include "Components/TalkComponent.h"
+#include "Components/Stats/HealthComponent.h"
 
 
 void UNPCOverlapComponent::OnBeginOverlap(UPrimitiveComponent*, AActor* OtherActor, UPrimitiveComponent*,

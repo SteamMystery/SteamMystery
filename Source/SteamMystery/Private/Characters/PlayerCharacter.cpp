@@ -5,7 +5,7 @@
 
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "SteamMystery/Public/Components/InteractionComponent.h"
+#include "SteamMystery/Public/Components/PlayerInteractionComponent.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -24,7 +24,7 @@ APlayerCharacter::APlayerCharacter()
 	 // FirstPersonSkeletalMesh->SetupAttachment(FirstPersonCamera);
 	 // FirstPersonSkeletalMesh->SetRelativeLocation(FVector(-30,0,-150));
 	
-	 // Grabber = CreateDefaultSubobject<UInteractionComponent>(TEXT("Grabber"));
+	 // Grabber = CreateDefaultSubobject<UPlayerInteractionComponent>(TEXT("Grabber"));
 	 // Grabber->SetupAttachment(FirstPersonCamera);
 }
 

@@ -19,9 +19,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TMap<FName, int32> Items;
 
-	UPROPERTY(EditAnywhere)
-	int Coins = 0;
-
 public:
 
 	UFUNCTION(BlueprintCallable)

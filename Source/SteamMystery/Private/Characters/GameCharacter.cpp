@@ -54,15 +54,16 @@ AGameCharacter::AGameCharacter()
 	Health = CreateDefaultSubobject<UHealthComponent>(TEXT("Health"));
 	Steam = CreateDefaultSubobject<USteamComponent>(TEXT("Steam"));
 	Electricity = CreateDefaultSubobject<UElectricityComponent>(TEXT("Electricity"));
-	Inventory = CreateDefaultSubobject<UInventoryComponent>(TEXT("Inventory"));
 	MeleeTraceComponent = CreateDefaultSubobject<UMeleeTraceComponent>(TEXT("MeleeTraceComponent"));
 }
 
 void AGameCharacter::HandleDeath()
 {
 	DetachFromControllerPendingDestroy();
-	if (Inventory)
-		Tags.Add(UInteractionComponent::InteractTag);
+	if (GetComponentByClass<UInventoryComponent>())
+		Tags.Add("Inventory");
+	if (ActorHasTag("NPC"))
+		Tags.Remove("NPC");
 	HandleDeathDelegate.Broadcast();
 }
 

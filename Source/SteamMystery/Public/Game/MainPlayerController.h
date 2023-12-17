@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "InputActionValue.h"
-#include "Components/InteractionComponent.h"
+#include "Components/PlayerInteractionComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "MainPlayerController.generated.h"
 
@@ -22,5 +22,5 @@ public:
 	void SetPlayerEnabledState(bool bPlayerEnabled);
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	UInteractionComponent* InteractionComponent;
+	UPlayerInteractionComponent* InteractionComponent;
 };

@@ -137,6 +137,7 @@ void AMainPlayerState::SetInputMappingContext(UInputMappingContext* InputMapping
 			ActionBarKeys.Add(Mapping.Key.GetDisplayName());
 }
 
+// ReSharper disable once CppMemberFunctionMayBeConst
 void AMainPlayerState::Action(const FInputActionValue&, const int Index)
 {
 	OwningCharacter->AttachDevice(GetDeviceAt(Index));

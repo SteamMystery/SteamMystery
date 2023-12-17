@@ -76,5 +76,5 @@ bool ARangedWeapon::Sweep(FHitResult& HitResult) const
 ARangedWeapon::ARangedWeapon()
 {
 	FirePoint = CreateDefaultSubobject<USceneComponent>(TEXT("FirePoint"));
-	FirePoint->SetupAttachment(Mesh);
+	FirePoint->SetupAttachment(Root);
 }

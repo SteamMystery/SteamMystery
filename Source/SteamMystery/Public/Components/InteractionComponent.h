@@ -6,47 +6,15 @@
 #include "Components/ActorComponent.h"
 #include "InteractionComponent.generated.h"
 
+class AMainPlayerController;
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnInteract, const AMainPlayerController*, InController);
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class STEAMMYSTERY_API UInteractionComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-public:	
-	// Sets default values for this component's properties
-	UInteractionComponent();
-
-protected:
-	// Called when the game starts
-	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
-	UFUNCTION(BlueprintCallable)
-	bool Sweep(FHitResult& HitResult);
-	UFUNCTION(BlueprintCallable)
-	void Interact();
-private:
-	UPROPERTY()
-	class AMainPlayerController* MainPlayerController = nullptr;
-	
-	UPROPERTY()
-	class AMainPlayerState* PlayerState = nullptr;
-	
-	UPROPERTY(EditAnywhere)
-	float MaxGrabDistance = 400;
-
-	UPROPERTY(EditAnywhere)
-	float GrabRadius = 100;
-
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<UUserWidget> InteractionWidgetClass;
-
-	UPROPERTY()
-	UUserWidget* InteractionWidget = nullptr;
-
 public:
-	inline static const char* InteractTag = "Interact";
+	UPROPERTY(BlueprintAssignable)
+	FOnInteract OnInteract;
 };

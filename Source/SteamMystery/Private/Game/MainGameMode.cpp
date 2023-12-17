@@ -3,6 +3,7 @@
 
 #include "SteamMystery/Public/Game/MainGameMode.h"
 
+#include "Blueprint/UserWidget.h"
 #include "SteamMystery/Public/Game/MainPlayerController.h"
 #include "Kismet/GameplayStatics.h"
 #include "SteamMystery/Public/Characters/PlayerCharacter.h"
@@ -10,7 +11,16 @@
 void AMainGameMode::ActorDied(AActor* Actor) const
 {
 	if (AGameCharacter* Character = Cast<AGameCharacter>(Actor))
+	{
+		if (Player == Actor)
+			if (GameOverWidgetClass && MainPlayerController)
+				if (const auto Widget = CreateWidget(MainPlayerController, GameOverWidgetClass))
+				{
+					MainPlayerController->SetShowMouseCursor(true);
+					Widget->AddToViewport(999);
+				}
 		Character->HandleDeath();
+	}
 	OnActorDied.Broadcast(Actor);
 }
 
@@ -18,6 +28,6 @@ void AMainGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
-	Player = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+	Player = Cast<AGameCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 	MainPlayerController = Cast<AMainPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
 }

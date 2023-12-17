@@ -3,9 +3,8 @@
 
 #include "SteamMystery/Public/Devices/Device.h"
 
-#include "Characters/GameCharacter.h"
 #include "DataAssets/Upgrade.h"
-#include "Game/MainPlayerController.h"
+#include "Game/MainPlayerState.h"
 #include "SteamMystery/Public/Components/Stats/ElectricityComponent.h"
 #include "SteamMystery/Public/Components/Stats/SteamComponent.h"
 #include "SteamMystery/Public/DataAssets/EquipmentItem.h"
@@ -16,41 +15,43 @@ ADevice::ADevice()
 	PrimaryActorTick.bCanEverTick = false;
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	SetRootComponent(Root);
-	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
-	Mesh->SetupAttachment(Root);
 }
 
 bool ADevice::Use()
 {
+	if (bIsRecharging) return false;
+
 	if (const auto Char = GetOwner())
 		if (const auto SteamComponent = Char->GetComponentByClass<USteamComponent>())
 			if (const auto ElectricityComponent = Char->GetComponentByClass<UElectricityComponent>())
-				if (const auto Stats = GetStats(); SteamComponent->CanConsume(Stats.SteamPrice) && ElectricityComponent
-					->CanConsume(
-						Stats.ElectricityPrice))
-					return SteamComponent->Consume(Stats.SteamPrice) && ElectricityComponent->Consume(
-						Stats.ElectricityPrice);
+				if (const auto Stats = GetStats();
+					SteamComponent->CanConsume(Stats.SteamPrice)
+					&& ElectricityComponent->CanConsume(Stats.ElectricityPrice))
+				{
+					if(Stats.Stats.Contains(EStat::Recharge) && Stats.Stats[EStat::Recharge] > 0)
+					{
+						FTimerHandle UnusedTimer;
+						bIsRecharging = true;
+						GetWorld()->GetTimerManager()
+								  .SetTimer(UnusedTimer, this, &ThisClass::Ready, Stats.Stats[EStat::Recharge]);
+					}
+					return SteamComponent->Consume(Stats.SteamPrice)
+					&& ElectricityComponent->Consume(Stats.ElectricityPrice);
+				}
 	return false;
+}
+
+void ADevice::Ready()
+{
+	bIsRecharging = false;
 }
 
 void ADevice::BeginPlay()
 {
 	Super::BeginPlay();
 	if (const auto OwningPlayer = Cast<APawn>(GetOwner()))
-	{
 		if (const auto OwningController = OwningPlayer->GetController())
 			PlayerState = OwningController->GetPlayerState<AMainPlayerState>();
-		else
-			UE_LOG(LogTemp, Warning, TEXT("OwningController"));
-	}
-	else
-		UE_LOG(LogTemp, Warning, TEXT("OwningPlayer"));
-}
-
-
-UStaticMeshComponent* ADevice::GetMesh() const
-{
-	return Mesh;
 }
 
 UDataTable* ADevice::GetUpgradesDataTable() const

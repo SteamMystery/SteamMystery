@@ -23,11 +23,16 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FActorDiedEvent OnActorDied;
+
+protected:
+	
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UUserWidget> GameOverWidgetClass;
 	
 private:
 	
 	UPROPERTY()
-	class APlayerCharacter* Player;
+	class AGameCharacter* Player;
 
 	UPROPERTY()
 	class AMainPlayerController* MainPlayerController;

@@ -23,7 +23,7 @@ protected:
 	USkeletalMeshComponent* FirstPersonSkeletalMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	class UInteractionComponent* Grabber;
+	class UPlayerInteractionComponent* Grabber;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class USpringArmComponent* SpringArm;
