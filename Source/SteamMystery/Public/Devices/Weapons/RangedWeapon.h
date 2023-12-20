@@ -28,9 +28,6 @@ protected:
 	USceneComponent* FirePoint;
 
 	UPROPERTY(EditDefaultsOnly)
-	USoundBase* FireSound;
-
-	UPROPERTY(EditDefaultsOnly)
 	UParticleSystem* MuzzleParticles;
 	
 };

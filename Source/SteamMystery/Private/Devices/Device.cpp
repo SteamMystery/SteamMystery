@@ -5,6 +5,7 @@
 
 #include "DataAssets/Upgrade.h"
 #include "Game/MainPlayerState.h"
+#include "Kismet/GameplayStatics.h"
 #include "SteamMystery/Public/Components/Stats/ElectricityComponent.h"
 #include "SteamMystery/Public/Components/Stats/SteamComponent.h"
 #include "SteamMystery/Public/DataAssets/EquipmentItem.h"
@@ -20,7 +21,7 @@ ADevice::ADevice()
 bool ADevice::Use()
 {
 	if (bIsRecharging) return false;
-
+	bool bCond = false;
 	if (const auto Char = GetOwner())
 		if (const auto SteamComponent = Char->GetComponentByClass<USteamComponent>())
 			if (const auto ElectricityComponent = Char->GetComponentByClass<UElectricityComponent>())
@@ -35,10 +36,12 @@ bool ADevice::Use()
 						GetWorld()->GetTimerManager()
 								  .SetTimer(UnusedTimer, this, &ThisClass::Ready, Stats.Stats[EStat::Recharge]);
 					}
-					return SteamComponent->Consume(Stats.SteamPrice)
-					&& ElectricityComponent->Consume(Stats.ElectricityPrice);
+					bCond = SteamComponent->Consume(Stats.SteamPrice) && ElectricityComponent->Consume(Stats.ElectricityPrice);
 				}
-	return false;
+
+	if (UseSound)
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), UseSound, GetActorLocation(), GetActorRotation());
+	return bCond;
 }
 
 void ADevice::Ready()

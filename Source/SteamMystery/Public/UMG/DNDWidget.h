@@ -18,6 +18,6 @@ class STEAMMYSTERY_API UDNDWidget : public UUserWidget
 	class UImage* Image;
 
 public:
-	void SetImage(UTexture2D* InTexture) const;
+	void SetImage(UMaterialInstance* InTexture) const;
 	
 };

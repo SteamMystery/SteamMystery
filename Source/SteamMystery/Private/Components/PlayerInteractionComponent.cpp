@@ -3,10 +3,11 @@
 
 #include "SteamMystery/Public/Components/PlayerInteractionComponent.h"
 
+#include "AIController.h"
 #include "SteamMystery/Public/Components/InventoryComponent.h"
 #include "Blueprint/UserWidget.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
-#include "Components/InteractionComponent.h"
+#include "Components/InteractableComponent.h"
 #include "Components/UMG/BaseWidgetComponent.h"
 #include "Game/MainPlayerController.h"
 #include "Game/MainPlayerState.h"
@@ -30,7 +31,7 @@ void UPlayerInteractionComponent::BeginPlay()
 	MainPlayerController = Cast<AMainPlayerController>(GetOwner());
 	if (InteractionWidgetClass && MainPlayerController)
 		InteractionWidget = CreateWidget<UInteractionWidget>(MainPlayerController, InteractionWidgetClass);
-	PlayerState = PlayerState = MainPlayerController->GetPlayerState<AMainPlayerState>();
+	PlayerState = MainPlayerController->GetPlayerState<AMainPlayerState>();
 }
 
 
@@ -60,7 +61,7 @@ void UPlayerInteractionComponent::TickComponent(const float DeltaTime, const ELe
 				if (HitActor->ActorHasTag(LootTag))
 					return ShowWidget(LootText);
 				if (HitActor->ActorHasTag(NPCTag))
-					return ShowWidget(TalkText);
+					return ShowWidget(HitActor->ActorHasTag(InteractTag) ? InteractText : TalkText);
 				if (HitActor->ActorHasTag(InteractTag))
 					return ShowWidget(InteractText);
 			}
@@ -70,10 +71,11 @@ void UPlayerInteractionComponent::TickComponent(const float DeltaTime, const ELe
 
 bool UPlayerInteractionComponent::Sweep(FHitResult& HitResult) const
 {
+	if (!MainPlayerController) return false;
 	FVector Start;
 	FRotator Rotator;
 	MainPlayerController->GetPlayerViewPoint(Start, Rotator);
-	const FVector End = Start + Rotator.Vector() /*GetForwardVector()*/ * MaxGrabDistance;
+	const FVector End = Start + Rotator.Vector() * MaxGrabDistance;
 	FCollisionQueryParams Params = FCollisionQueryParams::DefaultQueryParam;
 	Params.AddIgnoredActor(MainPlayerController->GetPawn());
 	//DrawDebugLine(GetWorld(), Start, End, FColor::Blue, false, 5, 0, 5);
@@ -85,15 +87,18 @@ void UPlayerInteractionComponent::Interact()
 	if (FHitResult HitResult; Sweep(HitResult))
 		if (const auto HitActor = HitResult.GetActor())
 		{
-			if (HitActor->ActorHasTag(NPCTag))
-				if (const auto HUD = Cast<APlayerHUD>(MainPlayerController->GetHUD());
-					HitActor->GetComponentByClass<UNPCManager>())
+			if (HitActor->ActorHasTag(NPCTag) && HitActor->GetComponentByClass<UNPCManager>())
+				if (const auto HUD = Cast<APlayerHUD>(MainPlayerController->GetHUD()))
 					if (const auto TalkTabComponent = HUD->TalkTabComponent)
 					{
 						PlayerState->QuestManager->ReachedNPC(HitActor);
 						TalkTabComponent->Show(3);
-						UWidgetBlueprintLibrary::SetInputMode_UIOnlyEx(MainPlayerController, TalkTabComponent->GetWidget());
+						UWidgetBlueprintLibrary::SetInputMode_UIOnlyEx(MainPlayerController,
+						                                               TalkTabComponent->GetWidget());
 						MainPlayerController->SetShowMouseCursor(true);
+						if (const auto Pawn = Cast<APawn>(HitActor))
+							if (const auto Controller = Cast<AAIController>(Pawn->GetController()))
+								Controller->SetFocus(MainPlayerController->GetPawn());
 					}
 
 			if (HitActor->ActorHasTag(LootTag))
@@ -101,7 +106,7 @@ void UPlayerInteractionComponent::Interact()
 					InventoryComponent->Loot(PlayerState);
 
 			if (HitActor->ActorHasTag(InteractTag))
-				if (const auto InteractionComponent = HitActor->GetComponentByClass<UInteractionComponent>())
+				if (const auto InteractionComponent = HitActor->GetComponentByClass<UInteractableComponent>())
 					InteractionComponent->OnInteract.Broadcast(MainPlayerController);
 		}
 }

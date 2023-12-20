@@ -48,6 +48,7 @@ private:
 
 	UPROPERTY()
 	UInteractionWidget* InteractionWidget = nullptr;
+	FTimerHandle FocusTimerHandle;
 
 protected:
 	UPROPERTY(EditAnywhere)

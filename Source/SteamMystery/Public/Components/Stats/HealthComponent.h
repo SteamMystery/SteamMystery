@@ -7,6 +7,7 @@
 #include "StatComponent.h"
 #include "HealthComponent.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDead, AActor*, DeadActor);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class STEAMMYSTERY_API UHealthComponent : public UStatComponent
@@ -14,13 +15,9 @@ class STEAMMYSTERY_API UHealthComponent : public UStatComponent
 	GENERATED_BODY()
 
 protected:
-	// Called when the game starts
+
 	virtual void BeginPlay() override;
 
-private:
-	UPROPERTY()
-	class AMainGameMode* GameMode = nullptr;
-	
 public:
 	UFUNCTION(BlueprintPure)
 	bool IsDead() const;
@@ -28,4 +25,6 @@ public:
 	UFUNCTION()
 	void DamageTaken(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* Instigator, AActor* DamageCauser);
 
+	UPROPERTY(BlueprintAssignable)
+	FOnDead OnDead;
 };

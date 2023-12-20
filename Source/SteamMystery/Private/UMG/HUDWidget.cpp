@@ -4,6 +4,7 @@
 #include "SteamMystery/Public/UMG/HUDWidget.h"
 
 #include "Components/ProgressBar.h"
+#include "Components/TextBlock.h"
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
 #include "SteamMystery/Public/Components/Stats/ElectricityComponent.h"
@@ -29,9 +30,16 @@ void UHUDWidget::NativeTick(const FGeometry& MyGeometry, const float InDeltaTime
 
 	if (HealthBar && HealthComponent)
 		HealthBar->SetHealth(HealthComponent->GetPercentage());
+	
 	if (Steam && SteamComponent)
 		Steam->SetPercent(SteamComponent->GetPercentage());
+	
 	if (Electricity && ElectricityComponent)
 		Electricity->SetPercent(ElectricityComponent->GetPercentage());
+}
+
+void UHUDWidget::SetMonologue(const FText& InText) const
+{
+	Monologue->SetText(InText);
 }
 

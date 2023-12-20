@@ -10,7 +10,8 @@ void UHealthComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	GetOwner()->OnTakeAnyDamage.AddDynamic(this, &UHealthComponent::DamageTaken);
-	GameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	if(const auto GameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(GetWorld())))
+		OnDead.AddUniqueDynamic(GameMode, &AMainGameMode::ActorDied);
 }
 
 void UHealthComponent::DamageTaken(AActor*, const float Damage, const UDamageType*, AController*, AActor*)
@@ -18,8 +19,8 @@ void UHealthComponent::DamageTaken(AActor*, const float Damage, const UDamageTyp
 	if (Damage <= 0) return;
 
 	CurrentValue -= Damage;
-	if (IsDead() && GameMode)
-		GameMode->ActorDied(GetOwner());
+	if (IsDead())
+		OnDead.Broadcast(GetOwner());
 }
 
 bool UHealthComponent::IsDead() const

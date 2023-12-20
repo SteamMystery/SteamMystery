@@ -31,8 +31,16 @@ class STEAMMYSTERY_API UHUDWidget : public UUserWidget
 
 	UPROPERTY(meta=(BindWidget))
 	UHealthBarBase* HealthBar;
+	
 	UPROPERTY(meta=(BindWidget))
 	UProgressBar* Steam;
+	
 	UPROPERTY(meta=(BindWidget))
 	UProgressBar* Electricity;
+	
+	UPROPERTY(meta=(BindWidget))
+	class UTextBlock* Monologue;
+
+public:
+	void SetMonologue(const FText& InText) const;
 };

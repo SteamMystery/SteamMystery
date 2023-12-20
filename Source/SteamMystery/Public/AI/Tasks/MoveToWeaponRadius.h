@@ -13,5 +13,5 @@ UCLASS()
 class STEAMMYSTERY_API UMoveToWeaponRadius : public UBTTask_MoveTo
 {
 	GENERATED_BODY()
-	virtual void OnNodeCreated() override;
+	virtual void OnInstanceCreated(UBehaviorTreeComponent& OwnerComp) override;
 };

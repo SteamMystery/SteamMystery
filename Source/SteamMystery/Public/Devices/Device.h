@@ -24,6 +24,7 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	bool bIsRecharging = false;
 
+
 	UFUNCTION()
 	void Ready();
 
@@ -42,7 +43,10 @@ protected:
 	
 	UPROPERTY()
 	AMainPlayerState* PlayerState;
-
+	
+	UPROPERTY(EditAnywhere)
+	USoundBase* UseSound;
+	
 public:
 	UFUNCTION(BlueprintPure)
 	UDataTable* GetUpgradesDataTable() const;

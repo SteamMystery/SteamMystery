@@ -3,12 +3,12 @@
 
 #include "ItemDragDropOperation.h"
 
-inline FName UItemDragDropOperation::GetItem() const
+FName UItemDragDropOperation::GetItem() const
 {
 	return Item;
 }
 
-inline void UItemDragDropOperation::SetItem(const FName Value)
+void UItemDragDropOperation::SetItem(const FName Value)
 {
 	Item = Value;
 }

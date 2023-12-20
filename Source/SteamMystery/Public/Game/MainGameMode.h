@@ -17,7 +17,8 @@ class STEAMMYSTERY_API AMainGameMode : public AGameModeBase
 
 public:
 	
-	void ActorDied(AActor* Actor) const;
+	UFUNCTION()
+	void ActorDied(AActor* Actor);
 
 	virtual void BeginPlay() override;
 

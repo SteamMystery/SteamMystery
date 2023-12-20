@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "MainComponentsHUD.h"
+#include "Quest/QuestTypes.h"
 #include "PlayerHUD.generated.h"
 
 class UHUDWidget;
@@ -29,6 +30,8 @@ protected:
 	UHUDWidget* HUDWidget;
 
 public:
+	void SetMonologue(const FString& String) const;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UPauseComponent* PauseComponent;
 	

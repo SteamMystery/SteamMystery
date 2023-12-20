@@ -8,7 +8,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "SteamMystery/Public/Characters/PlayerCharacter.h"
 
-void AMainGameMode::ActorDied(AActor* Actor) const
+// ReSharper disable once CppMemberFunctionMayBeConst
+void AMainGameMode::ActorDied(AActor* Actor)
 {
 	if (AGameCharacter* Character = Cast<AGameCharacter>(Actor))
 	{

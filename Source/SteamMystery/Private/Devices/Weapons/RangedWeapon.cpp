@@ -13,11 +13,6 @@ bool ARangedWeapon::Use()
 {
 	const FEquipmentItem WeaponItem = GetStats();
 	if (!Super::Use()) return false;
-	const FVector Start = FirePoint->GetComponentLocation();
-	const FRotator Rotation = FirePoint->GetComponentRotation();
-
-	if (FireSound)
-		UGameplayStatics::PlaySoundAtLocation(GetWorld(), FireSound, Start, Rotation);
 	bool Result = false;
 	if (MuzzleParticles)
 		UGameplayStatics::SpawnEmitterAttached(MuzzleParticles, FirePoint);
@@ -32,7 +27,7 @@ bool ARangedWeapon::Use()
 					                                   OwnerActor->GetActorLocation(), HitResult.ImpactPoint);
 					UGameplayStatics::ApplyPointDamage(OtherActor,
 					                                   WeaponItem.Stats[EStat::Damage],
-					                                   Start,
+					                                   FirePoint->GetComponentLocation(),
 					                                   HitResult,
 					                                   OwnerActor->GetInstigatorController(),
 					                                   this,
@@ -66,7 +61,6 @@ bool ARangedWeapon::Sweep(FHitResult& HitResult) const
 			auto Params = FCollisionQueryParams::DefaultQueryParam;
 			Params.AddIgnoredActor(GetOwner());
 			Params.AddIgnoredActor(this);
-			DrawDebugLine(GetWorld(), FirePoint->GetComponentLocation(), End, FColor::Red, false, 5, 0, 5);
 			return GetWorld()->LineTraceSingleByChannel(HitResult, FirePoint->GetComponentLocation(), End,
 			                                            ECC_EngineTraceChannel2, Params);
 		}

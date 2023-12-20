@@ -25,5 +25,5 @@ struct FItem : public FTableRowBase
 	FText Description;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UTexture2D* Icon;
+	UMaterialInstance* Icon;
 };

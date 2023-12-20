@@ -1,15 +1,14 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 using UnrealBuildTool;
-using System.Collections.Generic;
 
 public class SteamMysteryEditorTarget : TargetRules
 {
-	public SteamMysteryEditorTarget(TargetInfo Target) : base(Target)
+	public SteamMysteryEditorTarget(TargetInfo target) : base(target)
 	{
 		Type = TargetType.Editor;
 		DefaultBuildSettings = BuildSettingsVersion.V2;
 
-		ExtraModuleNames.AddRange( new string[] { "SteamMystery" } );
+		ExtraModuleNames.AddRange( new[] { "SteamMystery" } );
 	}
 }

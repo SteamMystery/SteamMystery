@@ -17,7 +17,6 @@ public class SteamMystery : ModuleRules
 			"InputCore", 
 			"GameplayTasks",
 			"QuestEditor",
-			"QuestEditorDev",
 			"GameplayTags", 
 			"MeleeTrace"
 		});

@@ -3,11 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/InteractionComponent.h"
+#include "Components/InteractableComponent.h"
 #include "DevicePickupComponent.generated.h"
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
-class STEAMMYSTERY_API UDevicePickupComponent : public UInteractionComponent
+class STEAMMYSTERY_API UDevicePickupComponent : public UInteractableComponent
 {
 	GENERATED_BODY()
 

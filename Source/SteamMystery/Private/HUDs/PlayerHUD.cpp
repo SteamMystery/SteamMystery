@@ -7,7 +7,6 @@
 #include "SteamMystery/Public/Components/UMG/PauseComponent.h"
 #include "SteamMystery/Public/Components/UMG/SavesComponent.h"
 #include "SteamMystery/Public/UMG/HUDWidget.h"
-#include "QuestEditor/Public/Quest/QuestManager.h"
 
 void APlayerHUD::BeginPlay()
 {
@@ -24,6 +23,12 @@ void APlayerHUD::BeginPlay()
 			}
 			HUDWidget->AddToViewport(0);
 		}
+}
+
+void APlayerHUD::SetMonologue(const FString& String) const
+{
+	if(HUDWidget)
+		HUDWidget->SetMonologue(FText::FromString(String));
 }
 
 APlayerHUD::APlayerHUD()
