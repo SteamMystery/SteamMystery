@@ -50,6 +50,12 @@ bool UMonologueQuestTask::TaskShouldShowInUI_Implementation() const
 	return false;
 }
 
+FString UMonologueQuestTask::GetTaskShortDescription_Implementation(const FQuestTaskPayload& PayloadIn, const TArray<FString>& CustomPayloadDataIn) const
+{
+	return FString();
+}
+
+
 FString UMonologueQuestTask::GetTaskName_Implementation() const
 {
 	return "Monologue";

@@ -6,22 +6,6 @@
 #include "GameFramework/PlayerState.h"
 #include "HUDs/PlayerHUD.h"
 
-UMonologueQuestTaskBlocking::UMonologueQuestTaskBlocking()
-{
-	UseActivateConditionOnly = false;
-}
-
-void UMonologueQuestTaskBlocking::OnQuestTaskActivated_Implementation()
-{
-	Super::OnQuestTaskActivated_Implementation();
-	SetMonologue();
-}
-
-void UMonologueQuestTaskBlocking::OnQuestTaskLoaded_Implementation()
-{
-	Super::OnQuestTaskLoaded_Implementation();
-	SetMonologue();
-}
 
 void UMonologueQuestTaskBlocking::SetMonologue()
 {
@@ -39,15 +23,6 @@ void UMonologueQuestTaskBlocking::SetMonologue()
 			}
 }
 
-bool UMonologueQuestTaskBlocking::TaskShouldAnnounce_Implementation() const
-{
-	return false;
-}
-
-bool UMonologueQuestTaskBlocking::TaskShouldShowInUI_Implementation() const
-{
-	return false;
-}
 
 FString UMonologueQuestTaskBlocking::GetTaskName_Implementation() const
 {
