@@ -16,12 +16,8 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 	Super::ExecuteTask(OwnerComp, NodeMemory);
 
 	if (const auto AIOwnerController = OwnerComp.GetAIOwner())
-	{
 		if (const auto Character = Cast<AGameCharacter>(AIOwnerController->GetPawn()))
-			if (Character->Attack())
+			if (Character->Attack(AttackName))
 				Character->PlayAnimMontage(AnimMontage);
-	}
-	// if(const auto Blackboard = OwnerComp.GetBlackboardComponent())
-	// 	Blackboard->ClearValue(GetSelectedBlackboardKey());
 	return EBTNodeResult::Succeeded;
 }

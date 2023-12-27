@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "ItemBase.h"
+#include "Engine/DataTable.h"
 #include "Item.generated.h"
 
 /**
@@ -25,5 +25,5 @@ struct FItem : public FTableRowBase
 	FText Description;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UMaterialInstance* Icon;
+	UMaterial* Icon;
 };

@@ -21,6 +21,7 @@ class STEAMMYSTERY_API UBaseGameInstance : public UGameInstance
 	virtual void Init() override;
 
 protected:
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UDataTable* ItemsDataTable = nullptr;
 	
@@ -45,4 +46,5 @@ public:
 	
 	UFUNCTION(BlueprintPure)
 	UDataAssetCollections* GetDataAssetCollections() const;
+	virtual void BeginDestroy() override;
 };

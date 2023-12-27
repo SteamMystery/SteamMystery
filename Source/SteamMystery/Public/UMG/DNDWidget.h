@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "DNDWidget.generated.h"
 
+class UImage;
 /**
  * 
  */
@@ -15,9 +16,9 @@ class STEAMMYSTERY_API UDNDWidget : public UUserWidget
 	GENERATED_BODY()
 
 	UPROPERTY(meta=(BindWidget))
-	class UImage* Image;
+	UImage* Image;
 
 public:
-	void SetImage(UMaterialInstance* InTexture) const;
+	void SetImage(UMaterial* InTexture) const;
 	
 };

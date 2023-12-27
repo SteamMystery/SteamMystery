@@ -8,6 +8,7 @@
 #include "Game/MainPlayerState.h"
 #include "UpgradeDescriptionWidget.generated.h"
 
+class UMaterialWidget;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnUpgradeApplied, FName, DeviceName, FName, UpgradeName);
 /**
  * 
@@ -23,13 +24,13 @@ protected:
 	virtual void NativeConstruct() override;
 	virtual void Sync() const override;
 
-	UPROPERTY(meta=(BindWidget))
+	UPROPERTY(BlueprintReadOnly, meta=(BindWidget))
 	UPanelWidget* Materials;
 
 	FName DeviceName;
 
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<UUserWidget> MaterialWidgetClass;
+	TSubclassOf<UMaterialWidget> MaterialWidgetClass;
 
 	UPROPERTY()
 	AMainPlayerState* PlayerState;

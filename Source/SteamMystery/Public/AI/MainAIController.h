@@ -4,10 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
-#include "Perception/AIPerceptionComponent.h"
-#include "Perception/AIPerceptionTypes.h"
 #include "MainAIController.generated.h"
 
+struct FActorPerceptionUpdateInfo;
 /**
  * 
  */
@@ -17,7 +16,9 @@ class STEAMMYSTERY_API AMainAIController : public AAIController
 	GENERATED_BODY()
 
 	AMainAIController(const FObjectInitializer& ObjectInitializer);
+	
 protected:
+	
 	virtual void BeginPlay() override;
 
 	UFUNCTION()
@@ -32,10 +33,11 @@ protected:
 	float SmoothFocusInterpSpeed = 30.0f;
 	
 public:
+	
 	virtual void Tick(float DeltaSeconds) override;
 
 private:
-	//virtual void UpdateControlRotation(float DeltaTime, bool bUpdatePawn) override;
+
 	UPROPERTY()
 	APawn* PlayerPawn;
 	

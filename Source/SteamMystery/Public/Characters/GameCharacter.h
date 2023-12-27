@@ -11,7 +11,7 @@ class UDataAssetCollections;
 class UInputMappingContext;
 class ADevice;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FHandleDeathDelegate);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDeviceAttached, FName, InDevice);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDeviceAttached, const FName&, InDevice);
 
 UCLASS()
 class STEAMMYSTERY_API AGameCharacter : public ACharacter
@@ -23,12 +23,12 @@ class STEAMMYSTERY_API AGameCharacter : public ACharacter
 public:
 	// Sets default values for this character's properties
 	AGameCharacter();
-
+	
 	UFUNCTION()
 	void HandleDeath();
 
-	UFUNCTION(BlueprintCallable)
-	virtual bool Attack();
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	bool Attack(FName SkillName = NAME_None);
 
 	UFUNCTION(BlueprintCallable)
 	void Look(const FVector2D Value);

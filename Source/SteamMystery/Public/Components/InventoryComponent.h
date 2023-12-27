@@ -8,6 +8,8 @@
 #include "Game/MainPlayerState.h"
 #include "InventoryComponent.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnLooted);
+
 class UItem;
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
@@ -21,6 +23,9 @@ protected:
 
 public:
 
+	UPROPERTY(BlueprintAssignable)
+	FOnLooted OnLooted;
+	
 	UFUNCTION(BlueprintCallable)
 	void Loot(AMainPlayerState* Looter);
 };

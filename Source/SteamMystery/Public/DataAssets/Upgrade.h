@@ -3,14 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "EquipmentItem.h"
 #include "Item.h"
-#include "WeaponItem.h"
 #include "Templates/Tuple.h"
 #include "Upgrade.generated.h"
-
-UENUM()
-enum class EUpgradeStatType { Point, Percent };
-
 
 USTRUCT()
 struct FUpgradeValue
@@ -21,7 +17,7 @@ struct FUpgradeValue
 	float Value = 0;
 
 	UPROPERTY(EditAnywhere)
-	EUpgradeStatType Type = EUpgradeStatType::Percent;
+	bool Percent = false;
 };
 
 /**
@@ -45,14 +41,11 @@ struct FUpgrade : public FItem
 inline void FUpgrade::Apply(FEquipmentItem& InItem)
 {
 	for (const auto Element : UpgradeStats)
-		if (InItem.Stats.Contains(Element.Key))
-			switch (auto [Value, Type] = Element.Value; Type)
-			{
-			case EUpgradeStatType::Point:
-				InItem.Stats[Element.Key] += Value;
-				break;
-			case EUpgradeStatType::Percent:
-				InItem.Stats[Element.Key] *= (100 + Value) / 100;
-				break;
-			}
+	{
+		float& Stat = InItem.Stats.FindOrAdd(Element.Key);
+		if (auto [Value, Type] = Element.Value; Type)
+			Stat *= (100 + Value) / 100;
+		else
+			Stat += Value;
+	}
 }

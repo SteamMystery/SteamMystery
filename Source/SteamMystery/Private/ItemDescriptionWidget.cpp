@@ -14,10 +14,10 @@ void UItemDescriptionWidget::SyncItem(const FItem* Row) const
 	if (Row && !Row->Description.IsEmptyOrWhitespace())
 	{
 		Description->SetText(Row->Description);
-		DescriptionContainer->SetVisibility(ESlateVisibility::Visible);
+		//DescriptionContainer->SetVisibility(ESlateVisibility::Visible);
 	}
-	else
-		DescriptionContainer->SetVisibility(ESlateVisibility::Hidden);
+	// else
+	// 	DescriptionContainer->SetVisibility(ESlateVisibility::Hidden);
 	Count->SetVisibility(ESlateVisibility::Hidden);
 	Button->SetVisibility(ESlateVisibility::Hidden);
 }

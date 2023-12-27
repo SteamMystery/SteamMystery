@@ -21,14 +21,13 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-private:
 	UPROPERTY(EditDefaultsOnly)
 	UStaticMeshComponent* Mesh;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UProjectileMovementComponent* MovementComponent;
 
-	UFUNCTION()
+	UFUNCTION(BlueprintNativeEvent)
 	void OnHit(UPrimitiveComponent* HitComp,
 	           AActor* OtherActor,
 	           UPrimitiveComponent* OtherComp,
@@ -37,5 +36,8 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	float Damage = 50.f;
+	
+	UPROPERTY(EditAnywhere)
+	float ExplosionRadius = 1.f;
 	
 };

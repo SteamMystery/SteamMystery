@@ -14,10 +14,6 @@ void UUpgradeDescriptionWidget::ApplyUpgrade()
 {
 	if (const auto Row = Item.GetRow<FUpgrade>(GetName()))
 	{
-		// 	const auto Items = PlayerState->GetItems();
-		// for (const auto Element : Row->Materials)
-		// 	if(!Items.Contains(Element.Key) || Items[Element.Key] < Element.Value)
-		// 		return;
 		for (const auto Element : Row->Materials)
 			// ReSharper disable once CppExpressionWithoutSideEffects
 			PlayerState->RemoveItem(Element.Key, Element.Value);
@@ -48,13 +44,16 @@ void UUpgradeDescriptionWidget::Sync() const
 				Button->SetIsEnabled(true);
 				Materials->AddChild(Widget);
 				if (PlayerState)
-					if (const auto Items = PlayerState->GetItems(); Items.Contains(Element.Key))
+				{
+					const auto Items = PlayerState->GetItems();
+					if (const auto InCount = Items.Find(Element.Key))
 					{
-						Widget->SetMaterial(FText::FromName(Element.Key), Items[Element.Key], Element.Value);
+						Widget->SetMaterial(FText::FromName(Element.Key), *InCount, Element.Value);
 						if (!Widget->IsFullFilled())
 							Button->SetIsEnabled(false);
 						continue;
 					}
+				}
 				Widget->SetMaterial(FText::FromName(Element.Key), 0, Element.Value);
 				Button->SetIsEnabled(false);
 			}

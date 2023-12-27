@@ -18,26 +18,28 @@ ADevice::ADevice()
 	SetRootComponent(Root);
 }
 
-bool ADevice::Use()
+bool ADevice::Use_Implementation()
 {
-	if (bIsRecharging) return false;
+	if (bIsOnCooldown) return false;
 	bool bCond = false;
 	if (const auto Char = GetOwner())
 		if (const auto SteamComponent = Char->GetComponentByClass<USteamComponent>())
 			if (const auto ElectricityComponent = Char->GetComponentByClass<UElectricityComponent>())
-				if (const auto Stats = GetStats();
-					SteamComponent->CanConsume(Stats.SteamPrice)
-					&& ElectricityComponent->CanConsume(Stats.ElectricityPrice))
+			{
+				const auto Stats = GetStats();
+				const auto SteamPrice = Stats.FindRef(EStat::SteamPrice);
+				const auto ElectricityPrice = Stats.FindRef(EStat::ElectricityPrice);
+				if (SteamComponent->CanConsume(SteamPrice) && ElectricityComponent->CanConsume(ElectricityPrice))
 				{
-					if(Stats.Stats.Contains(EStat::Recharge) && Stats.Stats[EStat::Recharge] > 0)
+					if (const auto Speed = Stats.FindRef(EStat::Speed); Speed > 0)
 					{
 						FTimerHandle UnusedTimer;
-						bIsRecharging = true;
-						GetWorld()->GetTimerManager()
-								  .SetTimer(UnusedTimer, this, &ThisClass::Ready, Stats.Stats[EStat::Recharge]);
+						bIsOnCooldown = true;
+						GetWorld()->GetTimerManager().SetTimer(UnusedTimer, this, &ThisClass::Ready, Speed);
 					}
-					bCond = SteamComponent->Consume(Stats.SteamPrice) && ElectricityComponent->Consume(Stats.ElectricityPrice);
+					bCond = SteamComponent->Consume(SteamPrice) && ElectricityComponent->Consume(ElectricityPrice);
 				}
+			}
 
 	if (UseSound)
 		UGameplayStatics::PlaySoundAtLocation(GetWorld(), UseSound, GetActorLocation(), GetActorRotation());
@@ -46,15 +48,15 @@ bool ADevice::Use()
 
 void ADevice::Ready()
 {
-	bIsRecharging = false;
+	bIsOnCooldown = false;
 }
 
 void ADevice::BeginPlay()
 {
-	Super::BeginPlay();
 	if (const auto OwningPlayer = Cast<APawn>(GetOwner()))
 		if (const auto OwningController = OwningPlayer->GetController())
 			PlayerState = OwningController->GetPlayerState<AMainPlayerState>();
+	Super::BeginPlay();
 }
 
 UDataTable* ADevice::GetUpgradesDataTable() const
@@ -62,20 +64,15 @@ UDataTable* ADevice::GetUpgradesDataTable() const
 	return UpgradesDataTable;
 }
 
-FEquipmentItem ADevice::GetStats() const
+TMap<EStat, float> ADevice::GetStats() const
 {
-	if (const auto Row = RowHandle.GetRow<FEquipmentItem>(GetName()))
+	if (const auto Item = RowHandle.GetRow<FEquipmentItem>(GetName()))
 	{
-		auto Item = *Row;
 		if (PlayerState)
-		{
-			for (const auto Element : PlayerState->GetUpgrades(Item.Name))
+			for (const auto Element : PlayerState->GetUpgrades(Item->Name))
 				if (const auto Upgrade = UpgradesDataTable->FindRow<FUpgrade>(Element, GetName()))
-					Upgrade->Apply(Item);
-		}
-		else
-			UE_LOG(LogTemp, Warning, TEXT("PlayerState"));
-		return Item;
+					Upgrade->Apply(*Item);
+		return Item->Stats;
 	}
-	return FEquipmentItem();
+	return TMap<EStat, float>();
 }

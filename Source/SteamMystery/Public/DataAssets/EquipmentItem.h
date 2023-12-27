@@ -10,38 +10,25 @@
  * 
  */
 
-UENUM()
-enum class EStat { None, Damage, Recharge, Range};
+UENUM(BlueprintType)
+enum class EStat : uint8
+{
+	None				UMETA(DisplayName="None"),
+	SteamPrice			UMETA(DisplayName="Steam price"),
+	ElectricityPrice	UMETA(DisplayName="Electricity price"),
+	Damage				UMETA(DisplayName="Damage"),
+	Speed				UMETA(DisplayName="Speed"),
+	Recharge			UMETA(DisplayName="Recharge"),
+	Range				UMETA(DisplayName="Range"),
+	Ammo				UMETA(DisplayName="Ammo"),
+	ExplosionRadius		UMETA(DisplayName="Explosion radius"),
+};
 
 USTRUCT()
 struct FEquipmentItem : public FItem
 {
 	GENERATED_BODY()
-	
-	UPROPERTY(EditAnywhere)
-	float SteamPrice = 0.f;
 
-	UPROPERTY(EditAnywhere)
-	float ElectricityPrice = 0.f;
-
-	UPROPERTY(EditAnywhere)
-	float RechargeTime = 0.f;
-	
 	UPROPERTY(EditAnywhere)
 	TMap<EStat, float> Stats;
 };
-
-// UCLASS()
-// class STEAMMYSTERY_API UEquipmentItem : public UItem
-// {
-// 	GENERATED_BODY()
-// public:
-// 	UPROPERTY(EditAnywhere)
-// 	float SteamPrice = 0.f;
-//
-// 	UPROPERTY(EditAnywhere)
-// 	float ElectricityPrice = 0.f;
-//
-// 	UPROPERTY(EditAnywhere)
-// 	float RechargeTime = 0.f;
-// };

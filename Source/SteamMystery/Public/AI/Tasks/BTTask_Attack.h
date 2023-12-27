@@ -16,6 +16,9 @@ class STEAMMYSTERY_API UBTTask_Attack : public UBTTask_BlackboardBase
 public:
 	UBTTask_Attack();
 
+	UPROPERTY(EditAnywhere)
+	FName AttackName = NAME_None;
+
 protected:
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 

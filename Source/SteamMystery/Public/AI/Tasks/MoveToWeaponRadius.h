@@ -3,15 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "BehaviorTree/Tasks/BTTask_MoveTo.h"
+#include "BehaviorTree/Tasks/BTTask_BlackboardBase.h"
 #include "MoveToWeaponRadius.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class STEAMMYSTERY_API UMoveToWeaponRadius : public UBTTask_MoveTo
+class STEAMMYSTERY_API UMoveToWeaponRadius : public UBTTask_BlackboardBase
 {
 	GENERATED_BODY()
-	virtual void OnInstanceCreated(UBehaviorTreeComponent& OwnerComp) override;
+	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 };

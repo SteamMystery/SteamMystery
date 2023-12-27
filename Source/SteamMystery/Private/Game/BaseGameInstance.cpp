@@ -2,6 +2,8 @@
 
 
 #include "SteamMystery/Public/Game/BaseGameInstance.h"
+
+#include "Kismet/GameplayStatics.h"
 #include "SteamMystery/Public/Game/ExtendedGameUserSettings.h"
 
 void UBaseGameInstance::Init()
@@ -28,4 +30,10 @@ UDataTable* UBaseGameInstance::GetWeaponsDataTable() const
 UDataAssetCollections* UBaseGameInstance::GetDataAssetCollections() const
 {
 	return DataAssetCollections;
+}
+
+void UBaseGameInstance::BeginDestroy()
+{
+	Super::BeginDestroy();
+	UGameplayStatics::DeleteGameInSlot("PlayerQuestData", 0);
 }

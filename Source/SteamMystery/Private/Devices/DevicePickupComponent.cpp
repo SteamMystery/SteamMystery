@@ -7,20 +7,21 @@
 #include "Game/MainPlayerState.h"
 
 // ReSharper disable once CppMemberFunctionMayBeConst
-void UDevicePickupComponent::OnInteractCallback(const AMainPlayerController* InController)
+void UDevicePickupComponent::OnInteractCallback_Implementation(const AMainPlayerController* InController)
 {
-		if(const auto PlayerState = InController->GetPlayerState<AMainPlayerState>())
-		{
-			PlayerState->AddDevice(DeviceName);
-			GetOwner()->Destroy();
-			for(int i = 0; i < AMainPlayerState::ActionBarSize; i++)
-				if(PlayerState->GetDeviceAt(i).IsNone())
-				{
-					PlayerState->SetDevice(i, DeviceName);
-					return;
-				}
-		}
+	if (const auto PlayerState = InController->GetPlayerState<AMainPlayerState>())
+	{
+		PlayerState->AddDevice(DeviceName);
+		GetOwner()->Destroy();
+		for (int i = 0; i < AMainPlayerState::ActionBarSize; i++)
+			if (PlayerState->GetDeviceAt(i).IsNone())
+			{
+				PlayerState->SetDevice(i, DeviceName);
+				return;
+			}
+	}
 }
+
 
 void UDevicePickupComponent::BeginPlay()
 {

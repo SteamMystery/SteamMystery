@@ -6,17 +6,18 @@
 #include "Perception/AISense_Damage.h"
 #include "MeleeTraceComponent.h"
 
+// ReSharper disable once CppMemberFunctionMayBeConst
 void AMeleeWeapon::Attack(AActor* HitActor, const FVector& HitLocation)
 {
-	FEquipmentItem WeaponItem = GetStats();
+	const auto Damage = GetStats().FindRef(EStat::Damage);
 	if (const auto OwnerActor = GetOwner())
 		if (HitActor && HitActor != this && HitActor != OwnerActor)
 		{
 			UAISense_Damage::ReportDamageEvent(GetWorld(), HitActor, OwnerActor,
-											   WeaponItem.Stats[EStat::Damage],
+											   Damage,
 											   OwnerActor->GetActorLocation(), HitLocation);
 			UGameplayStatics::ApplyDamage(HitActor,
-										  WeaponItem.Stats[EStat::Damage],
+										  Damage,
 										  OwnerActor->GetInstigatorController(),
 										  OwnerActor,
 										  UDamageType::StaticClass());

@@ -25,10 +25,10 @@ void APlayerHUD::BeginPlay()
 		}
 }
 
-void APlayerHUD::SetMonologue(const FString& String) const
+void APlayerHUD::SetMonologue(const FString& InString) const
 {
-	if(HUDWidget)
-		HUDWidget->SetMonologue(FText::FromString(String));
+	if (HUDWidget)
+		HUDWidget->SetMonologue(FText::FromString(InString));
 }
 
 APlayerHUD::APlayerHUD()

@@ -18,12 +18,11 @@ class STEAMMYSTERY_API ADevice : public AActor
 public:
 	ADevice();
 
-	UFUNCTION(BlueprintCallable)
-	virtual bool Use();
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	bool Use();
 
 	UPROPERTY(BlueprintReadWrite)
-	bool bIsRecharging = false;
-
+	bool bIsOnCooldown = false;
 
 	UFUNCTION()
 	void Ready();
@@ -52,5 +51,5 @@ public:
 	UDataTable* GetUpgradesDataTable() const;
 	
 	UFUNCTION(BlueprintPure)
-	virtual FEquipmentItem GetStats() const;
+	virtual TMap<EStat, float> GetStats() const;
 };

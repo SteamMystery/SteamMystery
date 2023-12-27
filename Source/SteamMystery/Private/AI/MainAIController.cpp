@@ -7,6 +7,9 @@
 #include "Kismet/GameplayStatics.h"
 #include "Navigation/CrowdFollowingComponent.h"
 #include "Perception/AIPerceptionComponent.h"
+#include "Perception/AISense_Damage.h"
+#include "Perception/AISense_Hearing.h"
+#include "Perception/AISense_Sight.h"
 #include "SteamMystery/Public/Characters/GameCharacter.h"
 #include "SteamMystery/Public/Components/Stats/HealthComponent.h"
 
@@ -40,13 +43,27 @@ void AMainAIController::OnSensed(AActor* SourceActor, FAIStimulus Stimulus)
 {
 	if (SourceActor == GetPawn())
 		return;
-	const auto KeyName = TEXT("DetectedActor");
 	if (SourceActor->ActorHasTag("Player"))
-		if (const auto GameCharacter = Cast<AGameCharacter>(SourceActor))
-			if (const auto Health = GameCharacter->Health; !Health->IsDead() && Stimulus.WasSuccessfullySensed())
-				GetBlackboardComponent()->SetValueAsObject(KeyName, SourceActor);
-			else
-				GetBlackboardComponent()->ClearValue(KeyName);
+	{
+		const UClass* StimulusClass = UAIPerceptionSystem::GetSenseClassForStimulus(GetWorld(), Stimulus);
+		FName KeyName;
+		if (StimulusClass == UAISense_Sight::StaticClass())
+			KeyName = TEXT("SightActor");
+		else if (StimulusClass == UAISense_Hearing::StaticClass())
+			KeyName = TEXT("HearingActor");
+		else if (StimulusClass == UAISense_Damage::StaticClass())
+			KeyName = TEXT("DamageActor");
+		else return;
+
+		if (Stimulus.WasSuccessfullySensed())
+		{
+			if (const auto GameCharacter = Cast<AGameCharacter>(SourceActor))
+				if (const auto Health = GameCharacter->Health; !Health->IsDead())
+					GetBlackboardComponent()->SetValueAsObject(KeyName, SourceActor);
+		}
+		else
+			GetBlackboardComponent()->ClearValue(KeyName);
+	}
 }
 
 void AMainAIController::OnInfoChanged(const FActorPerceptionUpdateInfo& Info)
