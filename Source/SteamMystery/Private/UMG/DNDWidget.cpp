@@ -5,7 +5,7 @@
 
 #include "Components/Image.h"
 
-void UDNDWidget::SetImage(UMaterialInstance* InTexture) const
+void UDNDWidget::SetImage(UMaterial* InTexture) const
 {
 	Image->SetBrushResourceObject(InTexture);
 }

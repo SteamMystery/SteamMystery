@@ -33,7 +33,8 @@ void UMonologueQuestTask::SetMonologue()
 				FTimerHandle UnusedHandle;
 				GetWorld()->GetTimerManager().SetTimer(UnusedHandle, [HUD]
 				{
-					HUD->SetMonologue("");
+					if (IsValid(HUD))
+						HUD->SetMonologue("");
 				}, InitialPayload.AmountInvolved, false);
 			}
 	EndQuestTask();
@@ -50,7 +51,8 @@ bool UMonologueQuestTask::TaskShouldShowInUI_Implementation() const
 	return false;
 }
 
-FString UMonologueQuestTask::GetTaskShortDescription_Implementation(const FQuestTaskPayload& PayloadIn, const TArray<FString>& CustomPayloadDataIn) const
+FString UMonologueQuestTask::GetTaskShortDescription_Implementation(const FQuestTaskPayload& PayloadIn,
+                                                                    const TArray<FString>& CustomPayloadDataIn) const
 {
 	return FString();
 }

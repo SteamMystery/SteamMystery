@@ -6,7 +6,6 @@
 #include "Weapon.h"
 #include "RangedWeapon.generated.h"
 
-class AProjectile;
 /**
  * 
  */
@@ -16,13 +15,28 @@ class STEAMMYSTERY_API ARangedWeapon : public AWeapon
 	GENERATED_BODY()
 
 public:
-
-	virtual bool Use() override;
+	void Recharge();
+	UFUNCTION(BlueprintNativeEvent)
+	bool StartRecharge();
+	virtual bool Use_Implementation() override;
 	
 	bool Sweep(FHitResult& HitResult) const;
 
 	ARangedWeapon();
+
+	UFUNCTION(BlueprintPure)
+	int32 GetCurrentAmmo() const;
+
+	UFUNCTION(BlueprintPure)
+	float GetRechargePercent() const;
+	
+	UFUNCTION(BlueprintPure)
+	float GetMaxAmmo() const;
 protected:
+
+	int32 Ammo;
+	
+	bool bIsRecharging;
 	
 	UPROPERTY(EditAnywhere)
 	USceneComponent* FirePoint;
@@ -30,4 +44,14 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	UParticleSystem* MuzzleParticles;
 	
+	UPROPERTY(EditDefaultsOnly)
+	UParticleSystem* ExplosionParticles;
+
+	UPROPERTY(EditAnywhere)
+	FName AmmoName;
+	
+	FTimerHandle RechargeTimer;
+
+	UPROPERTY(EditAnywhere)
+	float RadiusScale = 1;
 };

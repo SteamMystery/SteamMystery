@@ -21,26 +21,22 @@ AProjectile::AProjectile()
 void AProjectile::BeginPlay()
 {
 	Super::BeginPlay();
-	Mesh->OnComponentHit.AddDynamic(this, &AProjectile::OnHit);
+	Mesh->OnComponentHit.AddUniqueDynamic(this, &AProjectile::OnHit);
 }
 
-void AProjectile::OnHit(UPrimitiveComponent* /*HitComp*/,
-                        AActor* OtherActor,
-                        UPrimitiveComponent* /*OtherComp*/,
-                        FVector /*NormalImpulse*/,
-                        const FHitResult& /*HitResult*/)
+void AProjectile::OnHit_Implementation(UPrimitiveComponent*, AActor*, UPrimitiveComponent*, FVector, const FHitResult&)
 {
-	if (const auto OwnerActor = GetOwner())
-	{
-		UE_LOG(LogTemp, Display, TEXT("%s"), *OwnerActor->GetActorNameOrLabel());
-		if (OtherActor && OtherActor != this && OtherActor != OwnerActor)
-		{
-			UGameplayStatics::ApplyDamage(OtherActor,
-			                              Damage,
-			                              OwnerActor->GetInstigatorController(),
-			                              this,
-			                              UDamageType::StaticClass());
-			Destroy();
-		}
-	}
+	TArray<AActor*> IgnoreActors;
+	IgnoreActors.Add(GetOwner());
+	UGameplayStatics::ApplyRadialDamage(
+		GetWorld(),
+		Damage,
+		GetActorLocation(),
+		ExplosionRadius,
+		UDamageType::StaticClass(),
+		IgnoreActors,
+		this,
+		GetInstigatorController()
+	);
+	Destroy();
 }

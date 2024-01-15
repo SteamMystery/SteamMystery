@@ -40,9 +40,7 @@ int AMainPlayerState::GetCoins() const
 
 TArray<FName> AMainPlayerState::GetUpgrades(const FName DeviceName) const
 {
-	if (CurrentSave->Upgrades.Contains(DeviceName))
-		return CurrentSave->Upgrades[DeviceName].Purchased;
-	return TArray<FName>();
+	return CurrentSave->Upgrades.FindRef(DeviceName).Purchased;
 }
 
 void AMainPlayerState::AddCoins(const int Value) const
@@ -67,29 +65,35 @@ TMap<FName, int32> AMainPlayerState::GetItems() const
 
 void AMainPlayerState::AddUpgrade(const FName DeviceName, const FName Value) const
 {
-	if (!CurrentSave->Upgrades.Contains(DeviceName))
-		CurrentSave->Upgrades.Add(DeviceName);
-	CurrentSave->Upgrades[DeviceName].Purchased.Add(Value);
+	auto& [Purchased] = CurrentSave->Upgrades.FindOrAdd(DeviceName);
+	Purchased.Add(Value);
 }
 
-void AMainPlayerState::AddItem(const FName Item, const int Count = 1) const
+void AMainPlayerState::AddItem(const FName InItem, const int InCount = 1) const
 {
-	if (CurrentSave->Items.Contains(Item))
-		CurrentSave->Items[Item] += Count;
+	if (const auto Count = CurrentSave->Items.Find(InItem))
+		*Count += InCount;
 	else
-		CurrentSave->Items.Add(Item, Count);
+		CurrentSave->Items.Add(InItem, InCount);
 }
 
-bool AMainPlayerState::RemoveItem(const FName Item, const int Count = 1) const
+bool AMainPlayerState::RemoveItem(const FName InItem, const int InCount = 1) const
 {
-	if (CurrentSave->Items.Contains(Item) && CurrentSave->Items[Item] >= Count)
+	if (const auto Count = CurrentSave->Items.Find(InItem); *Count >= InCount)
 	{
-		CurrentSave->Items[Item] -= Count;
-		if (CurrentSave->Items[Item] == 0)
-			CurrentSave->Items.Remove(Item);
+		*Count -= InCount;
+		if (*Count == 0)
+			CurrentSave->Items.Remove(InItem);
 		return true;
 	}
 	return false;
+}
+
+int32 AMainPlayerState::GetMaxCount(const FName InItem, const int InCount = 1) const
+{
+	if (const auto Count = CurrentSave->Items.Find(InItem))
+		return *Count > InCount ? InCount : *Count;
+	return 0;
 }
 
 

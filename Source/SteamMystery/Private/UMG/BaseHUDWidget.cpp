@@ -4,8 +4,8 @@
 #include "SteamMystery/Public/UMG/BaseHUDWidget.h"
 #include "SteamMystery/Public/HUDs/PlayerHUD.h"
 
-void UBaseHUDWidget::NativeConstruct()
+void UBaseHUDWidget::NativeOnInitialized()
 {
-	Super::NativeConstruct();
 	HUD = Cast<APlayerHUD>(GetOwningPlayer()->GetHUD());	
+	Super::NativeOnInitialized();
 }

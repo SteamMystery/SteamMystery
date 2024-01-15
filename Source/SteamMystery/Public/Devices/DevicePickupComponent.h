@@ -12,7 +12,7 @@ class STEAMMYSTERY_API UDevicePickupComponent : public UInteractableComponent
 	GENERATED_BODY()
 
 protected:
-	UFUNCTION()
+	UFUNCTION(BlueprintNativeEvent)
 	void OnInteractCallback(const AMainPlayerController* InController);
 	
 	virtual void BeginPlay() override;

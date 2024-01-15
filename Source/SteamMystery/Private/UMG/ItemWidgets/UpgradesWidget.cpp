@@ -42,8 +42,7 @@ void UUpgradesWidget::NativeConstruct()
 
 void UUpgradesWidget::Sync()
 {
-	if (Collections->Devices.Contains(DeviceName))
-		if (const auto CDO = Collections->Devices[DeviceName].GetDefaultObject())
+		if (const auto CDO = Collections->Devices.FindRef(DeviceName).GetDefaultObject())
 			if (const auto DataTable = CDO->GetUpgradesDataTable())
 			{
 				const auto PlayerUpgrades = PlayerState->GetUpgrades(DeviceName);

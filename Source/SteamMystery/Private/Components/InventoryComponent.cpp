@@ -14,4 +14,5 @@ void UInventoryComponent::Loot(AMainPlayerState* Looter)
 	Items.Empty();
 	if (const auto OwnerActor = GetOwner())
 		OwnerActor->Tags.Remove(UPlayerInteractionComponent::LootTag);
+	OnLooted.Broadcast();
 }

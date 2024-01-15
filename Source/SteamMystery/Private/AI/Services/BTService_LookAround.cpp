@@ -24,7 +24,7 @@ void UBTService_LookAround::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
 			const FRotator DesiredPawnRotation = CurrentPawnRotation + DesiredRotation;
 			const FRotator SmoothTargetRotation = UKismetMathLibrary::RInterpTo_Constant(
 				CurrentPawnRotation, DesiredPawnRotation, DeltaSeconds, SmoothFocusInterpSpeed);
-			DrawDebugLine(GetWorld(), CurrentPawnLocation, CurrentPawnLocation + SmoothTargetRotation.Vector() * 1000, FColor::Blue);
+			//DrawDebugLine(GetWorld(), CurrentPawnLocation, CurrentPawnLocation + SmoothTargetRotation.Vector() * 1000, FColor::Blue);
 			OwnerComp.GetBlackboardComponent()->SetValueAsVector(GetSelectedBlackboardKey(), CurrentPawnLocation + SmoothTargetRotation.Vector() * 1000);
 			// OwnerComp.GetBlackboardComponent()->SetValueAsVector(GetSelectedBlackboardKey(), CurrentPawnLocation + DesiredPawnRotation.Vector() * 1000);
 		}

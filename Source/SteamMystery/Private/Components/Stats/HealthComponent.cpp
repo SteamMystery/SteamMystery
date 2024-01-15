@@ -16,8 +16,7 @@ void UHealthComponent::BeginPlay()
 
 void UHealthComponent::DamageTaken(AActor*, const float Damage, const UDamageType*, AController*, AActor*)
 {
-	if (Damage <= 0) return;
-
+	if (Damage <= 0 || IsDead()) return;
 	CurrentValue -= Damage;
 	if (IsDead())
 		OnDead.Broadcast(GetOwner());

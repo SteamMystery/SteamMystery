@@ -49,13 +49,16 @@ public:
 	void AddCoins(const int Value) const;
 
 	UFUNCTION(BlueprintCallable)
-	void AddItem(FName Item, int Count) const;
+	void AddItem(FName InItem, int InCount) const;
 	
 	UFUNCTION(BlueprintCallable)
 	bool RemoveCoins(const int Value) const;
 
 	UFUNCTION(BlueprintCallable)
-	bool RemoveItem(FName Item, int Count) const;
+	bool RemoveItem(FName InItem, int InCount) const;
+	
+	UFUNCTION(BlueprintCallable)
+	int32 GetMaxCount(FName InItem, int InCount) const;
 
 	UFUNCTION(BlueprintPure)
 	TMap<FName, int32> GetDevices() const;

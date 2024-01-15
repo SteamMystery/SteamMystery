@@ -7,6 +7,15 @@
 #include "HUDs/PlayerHUD.h"
 
 
+void UMonologueQuestTaskBlocking::ClearMonologue()
+{
+	if (const auto PlayerState = Cast<APlayerState>(QuestManagerOwner))
+		if (const auto Controller = Cast<APlayerController>(PlayerState->GetOwningController()))
+			if (const auto HUD = Cast<APlayerHUD>(Controller->GetHUD()))
+				HUD->SetMonologue("");
+	EndQuestTask();
+}
+
 void UMonologueQuestTaskBlocking::SetMonologue()
 {
 	if (const auto PlayerState = Cast<APlayerState>(QuestManagerOwner))
@@ -15,11 +24,9 @@ void UMonologueQuestTaskBlocking::SetMonologue()
 			{
 				HUD->SetMonologue(InitialPayload.StringA);
 				FTimerHandle UnusedHandle;
-				GetWorld()->GetTimerManager().SetTimer(UnusedHandle, [this, HUD]
-				{
-					HUD->SetMonologue("");
-					EndQuestTask();
-				}, InitialPayload.AmountInvolved, false);
+				GetWorld()->GetTimerManager().SetTimer(UnusedHandle,
+				                                       this, &ThisClass::ClearMonologue,
+InitialPayload.AmountInvolved, false);
 			}
 }
 

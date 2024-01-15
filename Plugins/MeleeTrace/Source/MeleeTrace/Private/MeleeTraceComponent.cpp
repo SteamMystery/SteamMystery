@@ -94,7 +94,8 @@ void UMeleeTraceComponent::StartTrace(const FMeleeTraceInfo& MeleeTraceInfo, uin
 {
 	TInlineComponentArray<UActorComponent*> MeshComponents;
 	if (Weapon)
-		Weapon->GetComponents(UMeshComponent::StaticClass(), MeshComponents);
+		Weapon->GetComponents(UMeshComponent::StaticClass(), MeshComponents, true);
+	UE_LOG(LogTemp, Warning, TEXT("%s"), *Weapon->GetName());
 	for (UActorComponent* MeshComponent : MeshComponents)
 	{
 		UMeshComponent* TypedMeshComponent = Cast<UMeshComponent>(MeshComponent);

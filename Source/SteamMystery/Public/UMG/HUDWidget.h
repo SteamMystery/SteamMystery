@@ -4,8 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Characters/GameCharacter.h"
 #include "HUDWidget.generated.h"
 
+class UTextBlock;
 class UProgressBar;
 class UHealthBarBase;
 class UElectricityComponent;
@@ -24,22 +26,39 @@ class STEAMMYSTERY_API UHUDWidget : public UUserWidget
 
 	UPROPERTY()
 	UHealthComponent* HealthComponent;
+
 	UPROPERTY()
 	USteamComponent* SteamComponent;
+
 	UPROPERTY()
 	UElectricityComponent* ElectricityComponent;
 
 	UPROPERTY(meta=(BindWidget))
 	UHealthBarBase* HealthBar;
-	
+
 	UPROPERTY(meta=(BindWidget))
 	UProgressBar* Steam;
-	
+
 	UPROPERTY(meta=(BindWidget))
 	UProgressBar* Electricity;
+
+	UPROPERTY(meta=(BindWidget))
+	class UCircularProgressBar* RechargeProgressBar;
+
+	UPROPERTY(meta=(BindWidget))
+	UPanelWidget* AmmoContainer;
 	
 	UPROPERTY(meta=(BindWidget))
-	class UTextBlock* Monologue;
+	UTextBlock* Monologue;
+	
+	UPROPERTY(meta=(BindWidget))
+	UTextBlock* Ammo;
+	
+	UPROPERTY(meta=(BindWidget))
+	UTextBlock* MaxAmmo;
+
+	UPROPERTY()
+	AGameCharacter* PlayerCharacter;
 
 public:
 	void SetMonologue(const FText& InText) const;

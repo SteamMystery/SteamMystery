@@ -16,7 +16,7 @@ class STEAMMYSTERY_API UBaseHUDWidget : public UUserWidget
 
 
 protected:
-	virtual void NativeConstruct() override;
+	virtual void NativeOnInitialized() override;
 	
 	UPROPERTY(BlueprintReadOnly)
 	class APlayerHUD* HUD;

@@ -67,7 +67,7 @@ void AGameCharacter::HandleDeath()
 	HandleDeathDelegate.Broadcast();
 }
 
-bool AGameCharacter::Attack()
+bool AGameCharacter::Attack_Implementation(FName SkillName)
 {
 	if (MainHand)
 		return MainHand->Use();
@@ -81,21 +81,22 @@ void AGameCharacter::AttachDevice(const FName Device)
 		MainHand->Destroy();
 		MainHand = nullptr;
 	}
-	if (Collections && Collections->Devices.Contains(Device))
-	{
-		auto Params = FActorSpawnParameters();
-		Params.Owner = this;
-		MainHand = GetWorld()->SpawnActor<ADevice>(Collections->Devices[Device], Params);
-		MainHand->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("GripPoint"));
-		if (MeleeTraceComponent)
-			MeleeTraceComponent->SetWeapon(MainHand);
-	}
+	if (Collections)
+		if (const auto DeviceActorClass = Collections->Devices.Find(Device))
+		{
+			auto Params = FActorSpawnParameters();
+			Params.Owner = this;
+			MainHand = GetWorld()->SpawnActor<ADevice>(*DeviceActorClass, Params);
+			MainHand->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("GripPoint"));
+			UE_LOG(LogTemp, Warning, TEXT("1"));
+			if (MeleeTraceComponent)
+				MeleeTraceComponent->SetWeapon(MainHand);
+		}
 	OnDeviceAttached.Broadcast(Device);
 }
 
 void AGameCharacter::BeginPlay()
 {
-	Super::BeginPlay();
 	if (const auto Instance = Cast<UBaseGameInstance>(UGameplayStatics::GetGameInstance(GetWorld())))
 	{
 		Collections = Instance->GetDataAssetCollections();
@@ -103,6 +104,7 @@ void AGameCharacter::BeginPlay()
 	}
 	if (MeleeTraceComponent)
 		MeleeTraceComponent->OnTraceHit.AddUniqueDynamic(this, &ThisClass::HandleMeleeAttack);
+	Super::BeginPlay();
 }
 
 ADevice* AGameCharacter::GetMainHand() const

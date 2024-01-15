@@ -3,41 +3,107 @@
 
 #include "SteamMystery/Public/Devices/Weapons/RangedWeapon.h"
 
+#include "Game/MainPlayerState.h"
 #include "Kismet/GameplayStatics.h"
+#include "Particles/ParticleSystem.h"
 #include "Perception/AISense_Damage.h"
 #include "SteamMystery/Public/AI/MainAIController.h"
 #include "SteamMystery/Public/Characters/GameCharacter.h"
-#include "SteamMystery/Public/DataAssets/WeaponItem.h"
 
-bool ARangedWeapon::Use()
+
+void ARangedWeapon::Recharge()
 {
-	const FEquipmentItem WeaponItem = GetStats();
-	if (!Super::Use()) return false;
-	bool Result = false;
+	bIsRecharging = false;
+	if (PlayerState)
+		Ammo = PlayerState->GetMaxCount(AmmoName, GetStats().FindRef(EStat::Ammo));
+	else
+		Ammo = -1;
+}
+
+bool ARangedWeapon::StartRecharge_Implementation()
+{
+	if (const auto Recharge = GetStats().FindRef(EStat::Recharge); Recharge > 0)
+	{
+		if (PlayerState)
+			if (GetStats().FindRef(EStat::Ammo) > 0 && PlayerState->GetMaxCount(AmmoName, 1) == 0)
+				return false;
+		bIsRecharging = true;
+		GetWorld()->GetTimerManager().SetTimer(RechargeTimer, this, &ThisClass::Recharge, Recharge);
+	}
+	return true;
+}
+
+bool ARangedWeapon::Use_Implementation()
+{
+	const float NeededAmmo = GetStats().FindRef(EStat::Ammo);
+	if (bIsRecharging)
+		return false;
+
+	if (NeededAmmo > 0 && Ammo == 0)
+	{
+		StartRecharge();
+		return false;
+	}
+
+	if (!Super::Use_Implementation())
+		return false;
+
+	if (PlayerState && NeededAmmo > 0)
+	{
+		if (!PlayerState->RemoveItem(AmmoName, 1))
+			return false;
+		Ammo--;
+	}
+
 	if (MuzzleParticles)
 		UGameplayStatics::SpawnEmitterAttached(MuzzleParticles, FirePoint);
+
 	if (FHitResult HitResult; Sweep(HitResult))
 		if (const auto OtherActor = HitResult.GetActor())
 			if (const auto OwnerActor = GetOwner())
 			{
-				if (OtherActor && OtherActor != this && OtherActor != OwnerActor)
+				const auto Damage = GetStats().FindRef(EStat::Damage);
+				if (const auto Radius = GetStats().Find(EStat::ExplosionRadius))
+				{
+					const TArray<AActor*> IgnoreActors;
+					UGameplayStatics::ApplyRadialDamage(GetWorld(),
+					                                    Damage,
+					                                    HitResult.ImpactPoint,
+					                                    *Radius,
+					                                    UDamageType::StaticClass(),
+					                                    IgnoreActors,
+					                                    this,
+					                                    OwnerActor->GetInstigatorController());
+					if (ExplosionParticles)
+						UGameplayStatics::SpawnEmitterAtLocation(GetWorld(),
+						                                         ExplosionParticles,
+						                                         HitResult.ImpactPoint,
+						                                         FRotator::ZeroRotator,
+						                                         FVector(*Radius / RadiusScale));
+				}
+				else
 				{
 					UAISense_Damage::ReportDamageEvent(GetWorld(), OtherActor, OwnerActor,
-					                                   WeaponItem.Stats[EStat::Damage],
+					                                   Damage,
 					                                   OwnerActor->GetActorLocation(), HitResult.ImpactPoint);
 					UGameplayStatics::ApplyPointDamage(OtherActor,
-					                                   WeaponItem.Stats[EStat::Damage],
+					                                   Damage,
 					                                   FirePoint->GetComponentLocation(),
 					                                   HitResult,
 					                                   OwnerActor->GetInstigatorController(),
 					                                   this,
 					                                   UDamageType::StaticClass());
 				}
-				Result = true;
 			}
+
 	if (const auto OwningCharacter = Cast<AGameCharacter>(GetOwner()))
-		OwningCharacter->bFire = Result;
-	return Result;
+		OwningCharacter->bFire = true;
+
+
+	if (Ammo == 0)
+		StartRecharge();
+
+	return true;
 }
 
 bool ARangedWeapon::Sweep(FHitResult& HitResult) const
@@ -56,13 +122,17 @@ bool ARangedWeapon::Sweep(FHitResult& HitResult) const
 			}
 			else
 				Direction = Rotation.Vector();
-			const float Stat = GetWeaponStats().Stats[EStat::Range];
-			const FVector End = Start + Direction * Stat;
+			const FVector End = Start + Direction * GetStats().FindRef(EStat::Range) * 100;
 			auto Params = FCollisionQueryParams::DefaultQueryParam;
 			Params.AddIgnoredActor(GetOwner());
 			Params.AddIgnoredActor(this);
-			return GetWorld()->LineTraceSingleByChannel(HitResult, FirePoint->GetComponentLocation(), End,
-			                                            ECC_EngineTraceChannel2, Params);
+			//DrawDebugLine(GetWorld(), FirePoint->GetComponentLocation(), End, FColor::Red, false, 15);
+			GetWorld()->LineTraceSingleByChannel(HitResult,
+			                                     FirePoint->GetComponentLocation(),
+			                                     End,
+			                                     ECC_EngineTraceChannel2,
+			                                     Params);
+			return true;
 		}
 	return false;
 }
@@ -71,4 +141,24 @@ ARangedWeapon::ARangedWeapon()
 {
 	FirePoint = CreateDefaultSubobject<USceneComponent>(TEXT("FirePoint"));
 	FirePoint->SetupAttachment(Root);
+}
+
+int32 ARangedWeapon::GetCurrentAmmo() const
+{
+	return Ammo;
+}
+
+float ARangedWeapon::GetRechargePercent() const
+{
+	const FTimerManager& TimerManager = GetWorld()->GetTimerManager();
+	const auto Remains = TimerManager.GetTimerRemaining(RechargeTimer);
+	const auto All = TimerManager.GetTimerRate(RechargeTimer);
+	return Remains / All;
+}
+
+float ARangedWeapon::GetMaxAmmo() const
+{
+	if (PlayerState)
+		return PlayerState->GetItems().FindRef(AmmoName);
+	return 0;
 }

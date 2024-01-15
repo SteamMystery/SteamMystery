@@ -9,6 +9,16 @@
 
 class UHUDWidget;
 class UPauseComponent;
+
+USTRUCT()
+struct FMonologueQueueItem
+{
+	GENERATED_BODY()
+
+	FString Text;
+
+	int32 Amount;
+};
 /**
  * 
  */
@@ -20,7 +30,7 @@ class STEAMMYSTERY_API APlayerHUD : public AMainComponentsHUD
 	virtual void BeginPlay() override;
 
 protected:
-
+	
 	APlayerHUD();
 	
 	UPROPERTY(EditAnywhere)
@@ -30,7 +40,8 @@ protected:
 	UHUDWidget* HUDWidget;
 
 public:
-	void SetMonologue(const FString& String) const;
+	UFUNCTION(BlueprintCallable)
+	void SetMonologue(const FString& InString) const;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UPauseComponent* PauseComponent;

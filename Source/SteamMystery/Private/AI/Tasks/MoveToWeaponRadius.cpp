@@ -4,14 +4,21 @@
 #include "AI/Tasks/MoveToWeaponRadius.h"
 
 #include "AIController.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "Characters/GameCharacter.h"
 #include "Devices/Device.h"
 
-void UMoveToWeaponRadius::OnInstanceCreated(UBehaviorTreeComponent& OwnerComp)
+
+EBTNodeResult::Type UMoveToWeaponRadius::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-	Super::OnInstanceCreated(OwnerComp);
 	if (const auto AIOwnerController = OwnerComp.GetAIOwner())
-		if(const auto Character = Cast<AGameCharacter>(AIOwnerController->GetPawn()))
-			if(const auto MainHand = Character->GetMainHand())
-				AcceptableRadius = MainHand->GetStats().Stats[EStat::Range];
+		if (const auto Character = Cast<AGameCharacter>(AIOwnerController->GetPawn()))
+			if (const auto MainHand = Character->GetMainHand())
+			{
+				const auto AcceptableRadius = MainHand->GetStats().FindRef(EStat::Range) * 100;
+				const auto Blackboard = OwnerComp.GetBlackboardComponent();
+				if (const auto Actor = Cast<AActor>(Blackboard->GetValueAsObject(GetSelectedBlackboardKey())))
+					AIOwnerController->MoveToActor(Actor, AcceptableRadius);
+			}
+	return EBTNodeResult::Succeeded;
 }
