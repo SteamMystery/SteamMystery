@@ -18,6 +18,11 @@ ADevice::ADevice()
 	SetRootComponent(Root);
 }
 
+bool ADevice::CheckRole()
+{
+	return Roles.Contains(PlayerState->GetRole());
+}
+
 bool ADevice::Use_Implementation()
 {
 	if (bIsOnCooldown) return false;
@@ -29,7 +34,9 @@ bool ADevice::Use_Implementation()
 				const auto Stats = GetStats();
 				const auto SteamPrice = Stats.FindRef(EStat::SteamPrice);
 				const auto ElectricityPrice = Stats.FindRef(EStat::ElectricityPrice);
-				if (SteamComponent->CanConsume(SteamPrice) && ElectricityComponent->CanConsume(ElectricityPrice))
+				if (CheckRole() &&
+					SteamComponent->CanConsume(SteamPrice) &&
+					ElectricityComponent->CanConsume(ElectricityPrice))
 				{
 					if (const auto Speed = Stats.FindRef(EStat::Speed); Speed > 0)
 					{
@@ -57,6 +64,7 @@ void ADevice::BeginPlay()
 		if (const auto OwningController = OwningPlayer->GetController())
 			PlayerState = OwningController->GetPlayerState<AMainPlayerState>();
 	Super::BeginPlay();
+	Roles = GetRoles();
 }
 
 UDataTable* ADevice::GetUpgradesDataTable() const
@@ -75,4 +83,10 @@ TMap<EStat, float> ADevice::GetStats() const
 		return Item->Stats;
 	}
 	return TMap<EStat, float>();
+}
+
+TArray<ERole> ADevice::GetRoles() const
+{
+	const auto Item = RowHandle.GetRow<FEquipmentItem>(GetName());
+	return Item ? Item->Roles : TArray{ERole::None};
 }

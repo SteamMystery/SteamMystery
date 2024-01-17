@@ -16,13 +16,13 @@ void UMainMenuWidget::NativeOnInitialized()
 	Super::NativeOnInitialized();
 	MainMenuHUD = Cast<AMainMenuHUD>(GetOwningPlayer()->GetHUD());
 	if(QuitButton)
-		QuitButton->OnClicked.AddDynamic(this, &UMainMenuWidget::Quit);
+		QuitButton->OnClicked.AddUniqueDynamic(this, &UMainMenuWidget::Quit);
 	if(OptionsButton)
-		OptionsButton->OnClicked.AddDynamic(this, &UMainMenuWidget::Options);
-	// if(NewGameButton)
-	// 	NewGameButton->OnClicked.AddDynamic(this, &UMainMenuWidget::NewGame);
+		OptionsButton->OnClicked.AddUniqueDynamic(this, &UMainMenuWidget::Options);
+	if(NewGameButton)
+		NewGameButton->OnClicked.AddUniqueDynamic(this, &UMainMenuWidget::NewGame);
 	if(LoadGameButton)
-		LoadGameButton->OnClicked.AddDynamic(this, &UMainMenuWidget::LoadGame);
+		LoadGameButton->OnClicked.AddUniqueDynamic(this, &UMainMenuWidget::LoadGame);
 }
 
 void UMainMenuWidget::Quit()
@@ -37,7 +37,7 @@ void UMainMenuWidget::Options()
 
 void UMainMenuWidget::NewGame()
 {
-	UGameplayStatics::OpenLevelBySoftObjectPtr(GetWorld(), NewGameLevel);
+	MainMenuHUD->NewGameWidgetComponent->Show(1);
 }
 
 void UMainMenuWidget::LoadGame()

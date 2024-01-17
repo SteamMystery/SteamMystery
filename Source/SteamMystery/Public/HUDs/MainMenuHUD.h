@@ -6,6 +6,7 @@
 #include "MainComponentsHUD.h"
 #include "MainMenuHUD.generated.h"
 
+class UMainMenuWidget;
 /**
  * 
  */
@@ -21,12 +22,18 @@ class STEAMMYSTERY_API AMainMenuHUD : public AMainComponentsHUD
 	TSubclassOf<UUserWidget> BackgroundWidgetClass;
 
 	UPROPERTY()
-	class UMainMenuWidget* MainMenuWidget;
+	UMainMenuWidget* MainMenuWidget;
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UMainMenuWidget> MainMenuWidgetClass;
 
-
 protected:
 	virtual void BeginPlay() override;
+	
+public:
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UBaseWidgetComponent* NewGameWidgetComponent;
+	
+	AMainMenuHUD();
 };

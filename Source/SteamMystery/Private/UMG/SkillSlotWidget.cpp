@@ -19,7 +19,8 @@ void USkillSlotWidget::NativePreConstruct()
 	SyncKey();
 }
 
-bool USkillSlotWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent,
+bool USkillSlotWidget::NativeOnDrop(const FGeometry& InGeometry,
+                                    const FDragDropEvent& InDragDropEvent,
                                     UDragDropOperation* InOperation)
 {
 	if (const auto Operation = Cast<UItemDragDropOperation>(InOperation))
@@ -31,7 +32,10 @@ bool USkillSlotWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDrop
 FReply USkillSlotWidget::NativeOnPreviewMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
 {
 	if (InMouseEvent.IsMouseButtonDown(RemoveKey))
-		PlayerState->SetDevice(Number, FName());
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Click"));
+		PlayerState->SetDevice(Number, NAME_None);
+	}
 
 	return Super::NativeOnPreviewMouseButtonDown(InGeometry, InMouseEvent);
 }

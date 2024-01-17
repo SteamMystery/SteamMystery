@@ -33,29 +33,14 @@ AMainPlayerState::AMainPlayerState()
 	QuestManager = CreateDefaultSubobject<UQuestManager>(TEXT("QuestManager"));
 }
 
-int AMainPlayerState::GetCoins() const
+ERole AMainPlayerState::GetRole() const
 {
-	return CurrentSave->Coins;
+	return CurrentSave->GetRole();
 }
 
 TArray<FName> AMainPlayerState::GetUpgrades(const FName DeviceName) const
 {
 	return CurrentSave->Upgrades.FindRef(DeviceName).Purchased;
-}
-
-void AMainPlayerState::AddCoins(const int Value) const
-{
-	CurrentSave->Coins += Value;
-}
-
-bool AMainPlayerState::RemoveCoins(const int Value) const
-{
-	if (CurrentSave->Coins >= Value)
-	{
-		CurrentSave->Coins -= Value;
-		return true;
-	}
-	return false;
 }
 
 TMap<FName, int32> AMainPlayerState::GetItems() const
@@ -114,9 +99,9 @@ void AMainPlayerState::RemoveDevice(const FName Item) const
 
 FName AMainPlayerState::GetDeviceAt(const int32 Index) const
 {
-	if (CurrentSave && Index >= 0 && Index < CurrentSave->ActionBar.Num())
-		return CurrentSave->ActionBar[Index];
-	return FName("");
+	return CurrentSave && Index >= 0 && Index < CurrentSave->ActionBar.Num()
+	? CurrentSave->ActionBar[Index]
+	: NAME_None;
 }
 
 void AMainPlayerState::SetDevice(const int32 Index, const FName Item)

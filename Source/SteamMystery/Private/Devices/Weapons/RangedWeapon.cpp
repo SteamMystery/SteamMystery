@@ -24,9 +24,8 @@ bool ARangedWeapon::StartRecharge_Implementation()
 {
 	if (const auto Recharge = GetStats().FindRef(EStat::Recharge); Recharge > 0)
 	{
-		if (PlayerState)
-			if (GetStats().FindRef(EStat::Ammo) > 0 && PlayerState->GetMaxCount(AmmoName, 1) == 0)
-				return false;
+		if (PlayerState && (GetStats().FindRef(EStat::Ammo) > 0 && PlayerState->GetMaxCount(AmmoName, 1) == 0))
+			return false;
 		bIsRecharging = true;
 		GetWorld()->GetTimerManager().SetTimer(RechargeTimer, this, &ThisClass::Recharge, Recharge);
 	}
@@ -36,7 +35,7 @@ bool ARangedWeapon::StartRecharge_Implementation()
 bool ARangedWeapon::Use_Implementation()
 {
 	const float NeededAmmo = GetStats().FindRef(EStat::Ammo);
-	if (bIsRecharging)
+	if (bIsRecharging || !CheckRole())
 		return false;
 
 	if (NeededAmmo > 0 && Ammo == 0)

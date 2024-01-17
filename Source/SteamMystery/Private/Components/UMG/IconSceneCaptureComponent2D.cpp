@@ -12,5 +12,5 @@ void UIconSceneCaptureComponent2D::BeginPlay()
 {
 	Super::BeginPlay();
 	ShowOnlyActorComponents(GetOwner());
-	CaptureSceneDeferred();
+	CaptureScene();
 }

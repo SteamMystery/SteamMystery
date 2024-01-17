@@ -17,12 +17,15 @@ class STEAMMYSTERY_API ADevice : public AActor
 
 public:
 	ADevice();
+	bool CheckRole();
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	bool Use();
 
 	UPROPERTY(BlueprintReadWrite)
 	bool bIsOnCooldown = false;
+	
+	TArray<ERole> Roles;
 
 	UFUNCTION()
 	void Ready();
@@ -52,4 +55,7 @@ public:
 	
 	UFUNCTION(BlueprintPure)
 	virtual TMap<EStat, float> GetStats() const;
+	
+	UFUNCTION(BlueprintPure)
+	virtual TArray<ERole> GetRoles() const;
 };

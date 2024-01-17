@@ -16,6 +16,7 @@ class STEAMMYSTERY_API AMainComponentsHUD : public AHUD
 
 public:
 	AMainComponentsHUD();
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	class UBaseWidgetComponent* OptionsWidgetComponent;
 

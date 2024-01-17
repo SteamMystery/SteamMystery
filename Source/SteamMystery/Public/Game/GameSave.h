@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "DataAssets/Role.h"
 #include "GameFramework/SaveGame.h"
 #include "GameSave.generated.h"
 
@@ -13,10 +14,10 @@ struct FMapData
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FName LevelName;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FString> DeadActors;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FString> PickedItems;
 };
@@ -46,7 +47,6 @@ struct FUpgrades
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TArray<FName> Purchased;
-	
 };
 
 /**
@@ -57,21 +57,29 @@ UCLASS()
 class STEAMMYSTERY_API UGameSave : public USaveGame
 {
 	GENERATED_BODY()
-	
+
+protected:
+	UPROPERTY()
+	ERole Role;
 
 public:
-
 	UGameSave();
 
+	UFUNCTION(BlueprintCallable)
+	bool SetRole(ERole Value);
+
+	UFUNCTION(BlueprintPure)
+	ERole GetRole() const;
+	
 	UPROPERTY()
 	TArray<FActorSaveData> SavedActors;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString SaveName;
-	
+
 	UPROPERTY()
 	FDateTime Time;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FName CurrentLevel;
 
@@ -83,10 +91,10 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TMap<FName, FUpgrades> Upgrades;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TMap<FName, int32> Devices;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FName> ActionBar;
 

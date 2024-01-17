@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Characters/GameCharacter.h"
+#include "DataAssets/Role.h"
 #include "GameFramework/PlayerState.h"
 #include "MainPlayerState.generated.h"
 
@@ -34,8 +35,8 @@ public:
 	class UQuestManager* QuestManager;
 
 	UFUNCTION(BlueprintPure)
-	int GetCoins() const;
-
+	ERole GetRole() const;
+	
 	UFUNCTION(BlueprintPure)
 	TArray<FName> GetUpgrades(const FName DeviceName) const;
 	
@@ -44,15 +45,9 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	void AddUpgrade(const FName DeviceName, const FName Value) const;
-		
-	UFUNCTION(BlueprintCallable)
-	void AddCoins(const int Value) const;
 
 	UFUNCTION(BlueprintCallable)
 	void AddItem(FName InItem, int InCount) const;
-	
-	UFUNCTION(BlueprintCallable)
-	bool RemoveCoins(const int Value) const;
 
 	UFUNCTION(BlueprintCallable)
 	bool RemoveItem(FName InItem, int InCount) const;

@@ -28,3 +28,8 @@ void AMainMenuHUD::BeginPlay()
 		UWidgetBlueprintLibrary::SetInputMode_GameOnly(OwningPlayerController);
 	}
 }
+
+AMainMenuHUD::AMainMenuHUD()
+{
+	NewGameWidgetComponent = CreateDefaultSubobject<UBaseWidgetComponent>(TEXT("New Game"));
+}

@@ -4,7 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "Components/InteractableComponent.h"
+#include "Engine/DataTable.h"
 #include "DevicePickupComponent.generated.h"
+
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class STEAMMYSTERY_API UDevicePickupComponent : public UInteractableComponent
@@ -21,4 +23,7 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	FName DeviceName;
+	
+	UPROPERTY(EditAnywhere)
+	FDataTableRowHandle Device;
 };

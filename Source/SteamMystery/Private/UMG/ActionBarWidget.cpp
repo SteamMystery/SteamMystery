@@ -44,4 +44,6 @@ void UActionBarWidget::Sync()
 			if (const auto Child = Cast<USkillSlotWidget>(Skills->GetChildAt(i)))
 				if (const auto Row = DataTable->FindRow<FItem>(PlayerState->GetDeviceAt(i), GetName(), false))
 					Child->SetItem(*Row);
+				else
+					Child->SetItem(FItem());
 }

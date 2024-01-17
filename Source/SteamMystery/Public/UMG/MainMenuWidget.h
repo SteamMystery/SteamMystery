@@ -14,6 +14,8 @@ UCLASS()
 class STEAMMYSTERY_API UMainMenuWidget : public UUserWidget
 {
 	GENERATED_BODY()
+
+protected:
 	virtual void NativeOnInitialized() override;
 
 	UFUNCTION()
