@@ -57,7 +57,7 @@ bool ARangedWeapon::Use_Implementation()
 	if (MuzzleParticles)
 		UGameplayStatics::SpawnEmitterAttached(MuzzleParticles, FirePoint);
 
-	if (FHitResult HitResult; Sweep(HitResult))
+	if (FHitResult HitResult; Sweep(HitResult, FirePoint->GetComponentLocation(), GetStats().FindRef(EStat::Range) * 100))
 		if (const auto OtherActor = HitResult.GetActor())
 			if (const auto OwnerActor = GetOwner())
 			{
@@ -105,36 +105,6 @@ bool ARangedWeapon::Use_Implementation()
 	return true;
 }
 
-bool ARangedWeapon::Sweep(FHitResult& HitResult) const
-{
-	if (const auto OwningCharacter = Cast<APawn>(GetOwner()))
-		if (const auto OwnerController = OwningCharacter->GetController())
-		{
-			FVector Start;
-			FRotator Rotation;
-			FVector Direction;
-			OwnerController->GetPlayerViewPoint(Start, Rotation);
-			if (const auto MainAIController = Cast<AMainAIController>(OwnerController))
-			{
-				double Length;
-				(MainAIController->GetFocalPoint() - Start).ToDirectionAndLength(Direction, Length);
-			}
-			else
-				Direction = Rotation.Vector();
-			const FVector End = Start + Direction * GetStats().FindRef(EStat::Range) * 100;
-			auto Params = FCollisionQueryParams::DefaultQueryParam;
-			Params.AddIgnoredActor(GetOwner());
-			Params.AddIgnoredActor(this);
-			//DrawDebugLine(GetWorld(), FirePoint->GetComponentLocation(), End, FColor::Red, false, 15);
-			GetWorld()->LineTraceSingleByChannel(HitResult,
-			                                     FirePoint->GetComponentLocation(),
-			                                     End,
-			                                     ECC_EngineTraceChannel2,
-			                                     Params);
-			return true;
-		}
-	return false;
-}
 
 ARangedWeapon::ARangedWeapon()
 {

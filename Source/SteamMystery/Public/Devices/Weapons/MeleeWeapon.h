@@ -14,7 +14,15 @@ UCLASS()
 class STEAMMYSTERY_API AMeleeWeapon : public AWeapon
 {
 	GENERATED_BODY()
+
+protected:
+
+	UPROPERTY(EditAnywhere)
+	UParticleSystem* HitVfx;
 	
+	UPROPERTY(EditAnywhere)
+	FVector HitVfxScale =  FVector(1);
+
 public:
 	
 	UFUNCTION()

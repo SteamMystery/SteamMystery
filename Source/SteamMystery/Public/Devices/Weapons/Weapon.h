@@ -11,4 +11,8 @@ UCLASS()
 class STEAMMYSTERY_API AWeapon : public ADevice
 {
 	GENERATED_BODY()
+public:
+
+	bool Sweep(FHitResult& HitResult, const FVector& TraceStart, const float Range) const;
+	
 };

@@ -4,7 +4,6 @@
 #include "SteamMystery/Public/Devices/Weapons/MeleeWeapon.h"
 #include "Kismet/GameplayStatics.h"
 #include "Perception/AISense_Damage.h"
-#include "MeleeTraceComponent.h"
 
 // ReSharper disable once CppMemberFunctionMayBeConst
 void AMeleeWeapon::Attack(AActor* HitActor, const FVector& HitLocation)
@@ -14,12 +13,18 @@ void AMeleeWeapon::Attack(AActor* HitActor, const FVector& HitLocation)
 		if (HitActor && HitActor != this && HitActor != OwnerActor)
 		{
 			UAISense_Damage::ReportDamageEvent(GetWorld(), HitActor, OwnerActor,
-											   Damage,
-											   OwnerActor->GetActorLocation(), HitLocation);
+			                                   Damage,
+			                                   OwnerActor->GetActorLocation(), HitLocation);
 			UGameplayStatics::ApplyDamage(HitActor,
-										  Damage,
-										  OwnerActor->GetInstigatorController(),
-										  OwnerActor,
-										  UDamageType::StaticClass());
+			                              Damage,
+			                              OwnerActor->GetInstigatorController(),
+			                              OwnerActor,
+			                              UDamageType::StaticClass());
+			if (FHitResult HitResult; Sweep(HitResult, OwnerActor->GetActorLocation(), 200))
+				UGameplayStatics::SpawnEmitterAtLocation(GetWorld(),
+				                                         HitVfx,
+				                                         HitResult.ImpactPoint,
+				                                         FRotator::ZeroRotator,
+				                                         HitVfxScale);
 		}
 }

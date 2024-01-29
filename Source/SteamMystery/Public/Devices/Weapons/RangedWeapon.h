@@ -20,7 +20,6 @@ public:
 	bool StartRecharge();
 	virtual bool Use_Implementation() override;
 	
-	bool Sweep(FHitResult& HitResult) const;
 
 	ARangedWeapon();
 
