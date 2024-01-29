@@ -12,7 +12,10 @@
 void UGameSaveSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
-	CurrentSaveGame = Cast<UGameSave>(UGameplayStatics::CreateSaveGameObject(UGameSave::StaticClass()));
+	if (UGameplayStatics::DoesSaveGameExist("Save", 0))
+		LoadGame("Save");
+	else
+		CurrentSaveGame = Cast<UGameSave>(UGameplayStatics::CreateSaveGameObject(UGameSave::StaticClass()));
 }
 
 UGameSave* UGameSaveSubsystem::GetSave() const
@@ -100,6 +103,16 @@ void UGameSaveSubsystem::LoadGame(const FString InSlotName)
 
 void UGameSaveSubsystem::SaveGame(const FString InSlotName) const
 {
-	auto x = UGameplayStatics::SaveGameToSlot(CurrentSaveGame, InSlotName, 0);
-	UE_LOG(LogTemp, Warning, TEXT("Save: %d"), x);
+	UGameplayStatics::SaveGameToSlot(CurrentSaveGame, InSlotName, 0);
+}
+
+void UGameSaveSubsystem::StartNewGame() const
+{
+	UGameplayStatics::OpenLevel(GetWorld(), CurrentSaveGame->CurrentLevel);
+}
+
+void UGameSaveSubsystem::ClearSaves()
+{
+	UGameplayStatics::DeleteGameInSlot("Saves", 0);
+	UGameplayStatics::DeleteGameInSlot("QuestData", 0);
 }

@@ -7,8 +7,8 @@
 
 #include "SteamMystery/Public/Components/UMG/BaseWidgetComponent.h"
 #include "Components/Button.h"
+#include "Game/GameSaveSubsystem.h"
 #include "Kismet/GameplayStatics.h"
-#include "SteamMystery/Public/Components/UMG/SavesComponent.h"
 #include "SteamMystery/Public/HUDs/MainMenuHUD.h"
 
 void UMainMenuWidget::NativeOnInitialized()
@@ -23,6 +23,7 @@ void UMainMenuWidget::NativeOnInitialized()
 		NewGameButton->OnClicked.AddUniqueDynamic(this, &UMainMenuWidget::NewGame);
 	if(LoadGameButton)
 		LoadGameButton->OnClicked.AddUniqueDynamic(this, &UMainMenuWidget::LoadGame);
+	SaveSubsystem = UGameplayStatics::GetGameInstance(GetWorld())->GetSubsystem<UGameSaveSubsystem>();
 }
 
 void UMainMenuWidget::Quit()
@@ -42,5 +43,5 @@ void UMainMenuWidget::NewGame()
 
 void UMainMenuWidget::LoadGame()
 {
-	MainMenuHUD->SavesWidgetComponent->Show(1);
+	SaveSubsystem->StartNewGame();
 }

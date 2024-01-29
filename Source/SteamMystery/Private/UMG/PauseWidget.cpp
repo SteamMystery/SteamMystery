@@ -5,6 +5,7 @@
 #include "SteamMystery/Public/UMG/PauseWidget.h"
 
 #include "Components/Button.h"
+#include "Game/GameSaveSubsystem.h"
 #include "SteamMystery/Public/Components/UMG/PauseComponent.h"
 #include "SteamMystery/Public/Components/UMG/SavesComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -18,8 +19,6 @@ void UPauseWidget::NativeOnInitialized()
 		QuitButton->OnClicked.AddDynamic(this, &UPauseWidget::Quit);
 	if (OptionsButton)
 		OptionsButton->OnClicked.AddDynamic(this, &UPauseWidget::Options);
-	// if(MainMenuButton)
-	// 	MainMenuButton->OnClicked.AddDynamic(this, &UMainMenuWidget::NewGame);
 	if (SavesButton)
 		SavesButton->OnClicked.AddDynamic(this, &UPauseWidget::Saves);
 	if (ResumeButton)
@@ -38,8 +37,9 @@ void UPauseWidget::Resume()
 
 void UPauseWidget::Saves()
 {
-	UE_LOG(LogTemp, Warning, TEXT("%p"), HUD->SavesWidgetComponent->GetWidget())
-	HUD->SavesWidgetComponent->ShowAsSaveable(1);
+// 	UE_LOG(LogTemp, Warning, TEXT("%p"), HUD->SavesWidgetComponent->GetWidget())
+// 	HUD->SavesWidgetComponent->ShowAsSaveable(1);
+	SaveSubsystem->SaveGame("Saves");
 }
 
 void UPauseWidget::Options()

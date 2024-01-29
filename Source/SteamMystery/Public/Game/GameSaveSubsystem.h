@@ -28,16 +28,21 @@ public:
 	UGameSave* GetSave() const;
 
 	void SaveActors() const;
+	
 	void LoadActors() const;
-
 
 	UFUNCTION(BlueprintCallable)
 	void LoadGame(FString InSlotName);
 
-
 	UFUNCTION(BlueprintCallable)
 	void SaveGame(FString InSlotName) const;
 
+	UFUNCTION(BlueprintCallable)
+	void StartNewGame() const;
+
+	UFUNCTION(BlueprintCallable)
+	static void ClearSaves();
+	
 private:
 	UPROPERTY()
 	UGameSave* CurrentSaveGame;

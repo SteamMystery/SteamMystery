@@ -6,6 +6,7 @@
 #include "BaseHUDWidget.h"
 #include "PauseWidget.generated.h"
 
+class UGameSaveSubsystem;
 class UButton;
 /**
  * 
@@ -42,4 +43,7 @@ class STEAMMYSTERY_API UPauseWidget : public UBaseHUDWidget
 
 	UPROPERTY(meta=(BindWidget))
 	UButton* QuitButton = nullptr;
+	
+	UPROPERTY()
+	UGameSaveSubsystem* SaveSubsystem;
 };

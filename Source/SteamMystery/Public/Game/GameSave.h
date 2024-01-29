@@ -81,7 +81,7 @@ public:
 	FDateTime Time;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FName CurrentLevel;
+	FName CurrentLevel = "LV_Guild";
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FMapData> MapData;

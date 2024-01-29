@@ -26,8 +26,12 @@ void URoleWidget::NativePreConstruct()
 void URoleWidget::SetRole()
 {
 	if(const auto SaveSubsystem = UGameplayStatics::GetGameInstance(GetWorld())->GetSubsystem<UGameSaveSubsystem>())
+	{
 		if(const auto Save = SaveSubsystem->GetSave())
 			Save->SetRole(Role);
+		SaveSubsystem->ClearSaves();
+		SaveSubsystem->StartNewGame();
+	}
 }
 
 void URoleWidget::NativeConstruct()

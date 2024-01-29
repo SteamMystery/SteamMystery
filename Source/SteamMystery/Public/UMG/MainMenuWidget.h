@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Game/GameSaveSubsystem.h"
 #include "MainMenuWidget.generated.h"
 
 class UButton;
@@ -44,4 +45,7 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	UWorld* NewGameLevel = nullptr;
+
+	UPROPERTY()
+	UGameSaveSubsystem* SaveSubsystem;
 };
