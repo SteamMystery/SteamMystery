@@ -21,7 +21,7 @@ public class SteamMystery : ModuleRules
 			"MeleeTrace"
 		});
 
-		PrivateDependencyModuleNames.AddRange(new[] { "EnhancedInput", "NavigationSystem" });
+		PrivateDependencyModuleNames.AddRange(new[] { "EnhancedInput", "NavigationSystem", "Niagara" });
 
 		PrivateDependencyModuleNames.AddRange(new[] { "Slate", "SlateCore" });
 

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Weapon.h"
+#include "VFX/Vfx.h"
 #include "RangedWeapon.generated.h"
 
 /**
@@ -41,10 +42,7 @@ protected:
 	USceneComponent* FirePoint;
 
 	UPROPERTY(EditDefaultsOnly)
-	UParticleSystem* MuzzleParticles;
-	
-	UPROPERTY(EditDefaultsOnly)
-	UParticleSystem* ExplosionParticles;
+	FVfx MuzzleVfx;
 
 	UPROPERTY(EditAnywhere)
 	FName AmmoName;
@@ -53,4 +51,7 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	float RadiusScale = 1;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<class AProjectile> ProjectileClass;
 };

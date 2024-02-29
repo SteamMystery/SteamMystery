@@ -3,8 +3,11 @@
 
 #include "SteamMystery/Public/Devices/Weapons/RangedWeapon.h"
 
+#include "NiagaraFunctionLibrary.h"
+#include "Devices/Weapons/Projectile.h"
 #include "Game/MainPlayerState.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Particles/ParticleSystem.h"
 #include "Perception/AISense_Damage.h"
 #include "SteamMystery/Public/AI/MainAIController.h"
@@ -54,46 +57,68 @@ bool ARangedWeapon::Use_Implementation()
 		Ammo--;
 	}
 
-	if (MuzzleParticles)
-		UGameplayStatics::SpawnEmitterAttached(MuzzleParticles, FirePoint);
+	if (MuzzleVfx.NiagaraSystem)
+		UNiagaraFunctionLibrary::SpawnSystemAttached(MuzzleVfx.NiagaraSystem,
+		                                             FirePoint,
+		                                             NAME_None,
+		                                             FVector(ForceInit),
+		                                             FRotator::ZeroRotator,
+		                                             EAttachLocation::KeepRelativeOffset,
+		                                             true);
+	else if (MuzzleVfx.ParticleSystem)
+		UGameplayStatics::SpawnEmitterAttached(MuzzleVfx.ParticleSystem, FirePoint);
 
-	if (FHitResult HitResult; Sweep(HitResult, FirePoint->GetComponentLocation(), GetStats().FindRef(EStat::Range) * 100))
-		if (const auto OtherActor = HitResult.GetActor())
-			if (const auto OwnerActor = GetOwner())
-			{
-				const auto Damage = GetStats().FindRef(EStat::Damage);
-				if (const auto Radius = GetStats().Find(EStat::ExplosionRadius))
-				{
-					const TArray<AActor*> IgnoreActors;
-					UGameplayStatics::ApplyRadialDamage(GetWorld(),
-					                                    Damage,
-					                                    HitResult.ImpactPoint,
-					                                    *Radius,
-					                                    UDamageType::StaticClass(),
-					                                    IgnoreActors,
-					                                    this,
-					                                    OwnerActor->GetInstigatorController());
-					if (ExplosionParticles)
-						UGameplayStatics::SpawnEmitterAtLocation(GetWorld(),
-						                                         ExplosionParticles,
-						                                         HitResult.ImpactPoint,
-						                                         FRotator::ZeroRotator,
-						                                         FVector(*Radius / RadiusScale));
-				}
-				else
-				{
-					UAISense_Damage::ReportDamageEvent(GetWorld(), OtherActor, OwnerActor,
-					                                   Damage,
-					                                   OwnerActor->GetActorLocation(), HitResult.ImpactPoint);
-					UGameplayStatics::ApplyPointDamage(OtherActor,
-					                                   Damage,
-					                                   FirePoint->GetComponentLocation(),
-					                                   HitResult,
-					                                   OwnerActor->GetInstigatorController(),
-					                                   this,
-					                                   UDamageType::StaticClass());
-				}
-			}
+	const auto TraceStart = FirePoint->GetComponentLocation();
+	if (FHitResult HitResult; Sweep(HitResult, TraceStart, GetStats().FindRef(EStat::Range) * 100))
+	{
+		const FTransform Transform(FRotator::ZeroRotator, TraceStart);
+		if (const auto Projectile = GetWorld()->SpawnActorDeferred<AProjectile>(
+			ProjectileClass, Transform, GetOwner(), GetInstigator()))
+		{
+			Projectile->SetDamageAndRadius(GetStats().FindRef(EStat::Damage),
+			                               GetStats().FindRef(EStat::ExplosionRadius));
+			Projectile->SetPoints(TraceStart, HitResult.ImpactPoint);
+
+			Projectile->FinishSpawning(Transform);
+		}
+
+		// if (const auto OtherActor = HitResult.GetActor())
+		// 	if (const auto OwnerActor = GetOwner())
+		// 	{
+		// 		const auto Damage = GetStats().FindRef(EStat::Damage);
+		// 		if (const auto Radius = GetStats().Find(EStat::ExplosionRadius))
+		// 		{
+		// 			const TArray<AActor*> IgnoreActors;
+		// 			UGameplayStatics::ApplyRadialDamage(GetWorld(),
+		// 			                                    Damage,
+		// 			                                    HitResult.ImpactPoint,
+		// 			                                    *Radius,
+		// 			                                    UDamageType::StaticClass(),
+		// 			                                    IgnoreActors,
+		// 			                                    this,
+		// 			                                    OwnerActor->GetInstigatorController());
+		// 			if (ExplosionParticles)
+		// 				UGameplayStatics::SpawnEmitterAtLocation(GetWorld(),
+		// 				                                         ExplosionParticles,
+		// 				                                         HitResult.ImpactPoint,
+		// 				                                         FRotator::ZeroRotator,
+		// 				                                         FVector(*Radius / RadiusScale));
+		// 		}
+		// 		else
+		// 		{
+		// 			UAISense_Damage::ReportDamageEvent(GetWorld(), OtherActor, OwnerActor,
+		// 			                                   Damage,
+		// 			                                   OwnerActor->GetActorLocation(), HitResult.ImpactPoint);
+		// 			UGameplayStatics::ApplyPointDamage(OtherActor,
+		// 			                                   Damage,
+		// 			                                   FirePoint->GetComponentLocation(),
+		// 			                                   HitResult,
+		// 			                                   OwnerActor->GetInstigatorController(),
+		// 			                                   this,
+		// 			                                   UDamageType::StaticClass());
+		// 		}
+		// 	}
+	}
 
 	if (const auto OwningCharacter = Cast<AGameCharacter>(GetOwner()))
 		OwningCharacter->bFire = true;
