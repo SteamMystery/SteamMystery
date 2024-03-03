@@ -25,11 +25,8 @@ bool AWeapon::Sweep(FHitResult& HitResult, const FVector& TraceStart, const floa
 			Params.AddIgnoredActor(GetOwner());
 			Params.AddIgnoredActor(this);
 			//DrawDebugLine(GetWorld(), FirePoint->GetComponentLocation(), End, FColor::Red, false, 15);
-			GetWorld()->LineTraceSingleByChannel(HitResult,
-												 TraceStart,
-												 End,
-												 ECC_EngineTraceChannel2,
-												 Params);
+			GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, End, ECC_EngineTraceChannel2, Params);
+			UE_LOG(LogTemp, Warning, TEXT("END: %f, %f, %f"), End.X, End.Y, End.Z);
 			return true;
 		}
 	return false;

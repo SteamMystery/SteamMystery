@@ -7,21 +7,8 @@
 #include "Devices/Weapons/Projectile.h"
 #include "Game/MainPlayerState.h"
 #include "Kismet/GameplayStatics.h"
-#include "Kismet/KismetMathLibrary.h"
 #include "Particles/ParticleSystem.h"
-#include "Perception/AISense_Damage.h"
-#include "SteamMystery/Public/AI/MainAIController.h"
 #include "SteamMystery/Public/Characters/GameCharacter.h"
-
-
-void ARangedWeapon::Recharge()
-{
-	bIsRecharging = false;
-	if (PlayerState)
-		Ammo = PlayerState->GetMaxCount(AmmoName, GetStats().FindRef(EStat::Ammo));
-	else
-		Ammo = -1;
-}
 
 bool ARangedWeapon::StartRecharge_Implementation()
 {
@@ -35,11 +22,16 @@ bool ARangedWeapon::StartRecharge_Implementation()
 	return true;
 }
 
+void ARangedWeapon::Recharge_Implementation()
+{
+	bIsRecharging = false;
+	Ammo = PlayerState ? PlayerState->GetMaxCount(AmmoName, GetStats().FindRef(EStat::Ammo)) : -1;
+}
+
 bool ARangedWeapon::Use_Implementation()
 {
 	const float NeededAmmo = GetStats().FindRef(EStat::Ammo);
-	if (bIsRecharging || !CheckRole())
-		return false;
+	if (bIsRecharging) return false;
 
 	if (NeededAmmo > 0 && Ammo == 0)
 	{
@@ -47,13 +39,11 @@ bool ARangedWeapon::Use_Implementation()
 		return false;
 	}
 
-	if (!Super::Use_Implementation())
-		return false;
+	if (!Super::Use_Implementation()) return false;
 
 	if (PlayerState && NeededAmmo > 0)
 	{
-		if (!PlayerState->RemoveItem(AmmoName, 1))
-			return false;
+		if (!PlayerState->RemoveItem(AmmoName, 1)) return false;
 		Ammo--;
 	}
 
@@ -68,61 +58,24 @@ bool ARangedWeapon::Use_Implementation()
 	else if (MuzzleVfx.ParticleSystem)
 		UGameplayStatics::SpawnEmitterAttached(MuzzleVfx.ParticleSystem, FirePoint);
 
+	FHitResult HitResult;
 	const auto TraceStart = FirePoint->GetComponentLocation();
-	if (FHitResult HitResult; Sweep(HitResult, TraceStart, GetStats().FindRef(EStat::Range) * 100))
+	const auto TraceEnd = Sweep(HitResult, TraceStart, GetStats().FindRef(EStat::Range) * 100)
+		                      ? HitResult.ImpactPoint
+		                      : HitResult.TraceEnd;
+	const FTransform Transform(FRotator::ZeroRotator, TraceStart);
+	if (const auto Projectile = GetWorld()->SpawnActorDeferred<AProjectile>(ProjectileClass,
+	                                                                        Transform,
+	                                                                        GetOwner(),
+	                                                                        GetInstigator()))
 	{
-		const FTransform Transform(FRotator::ZeroRotator, TraceStart);
-		if (const auto Projectile = GetWorld()->SpawnActorDeferred<AProjectile>(
-			ProjectileClass, Transform, GetOwner(), GetInstigator()))
-		{
-			Projectile->SetDamageAndRadius(GetStats().FindRef(EStat::Damage),
-			                               GetStats().FindRef(EStat::ExplosionRadius));
-			Projectile->SetPoints(TraceStart, HitResult.ImpactPoint);
-
-			Projectile->FinishSpawning(Transform);
-		}
-
-		// if (const auto OtherActor = HitResult.GetActor())
-		// 	if (const auto OwnerActor = GetOwner())
-		// 	{
-		// 		const auto Damage = GetStats().FindRef(EStat::Damage);
-		// 		if (const auto Radius = GetStats().Find(EStat::ExplosionRadius))
-		// 		{
-		// 			const TArray<AActor*> IgnoreActors;
-		// 			UGameplayStatics::ApplyRadialDamage(GetWorld(),
-		// 			                                    Damage,
-		// 			                                    HitResult.ImpactPoint,
-		// 			                                    *Radius,
-		// 			                                    UDamageType::StaticClass(),
-		// 			                                    IgnoreActors,
-		// 			                                    this,
-		// 			                                    OwnerActor->GetInstigatorController());
-		// 			if (ExplosionParticles)
-		// 				UGameplayStatics::SpawnEmitterAtLocation(GetWorld(),
-		// 				                                         ExplosionParticles,
-		// 				                                         HitResult.ImpactPoint,
-		// 				                                         FRotator::ZeroRotator,
-		// 				                                         FVector(*Radius / RadiusScale));
-		// 		}
-		// 		else
-		// 		{
-		// 			UAISense_Damage::ReportDamageEvent(GetWorld(), OtherActor, OwnerActor,
-		// 			                                   Damage,
-		// 			                                   OwnerActor->GetActorLocation(), HitResult.ImpactPoint);
-		// 			UGameplayStatics::ApplyPointDamage(OtherActor,
-		// 			                                   Damage,
-		// 			                                   FirePoint->GetComponentLocation(),
-		// 			                                   HitResult,
-		// 			                                   OwnerActor->GetInstigatorController(),
-		// 			                                   this,
-		// 			                                   UDamageType::StaticClass());
-		// 		}
-		// 	}
+		Projectile->SetDamageAndRadius(GetStats().FindRef(EStat::Damage), GetStats().FindRef(EStat::ExplosionRadius));
+		Projectile->SetPoints(TraceStart, TraceEnd);
+		Projectile->FinishSpawning(Transform);
 	}
 
 	if (const auto OwningCharacter = Cast<AGameCharacter>(GetOwner()))
 		OwningCharacter->bFire = true;
-
 
 	if (Ammo == 0)
 		StartRecharge();
@@ -155,4 +108,10 @@ float ARangedWeapon::GetMaxAmmo() const
 	if (PlayerState)
 		return PlayerState->GetItems().FindRef(AmmoName);
 	return 0;
+}
+
+void ARangedWeapon::BeginPlay()
+{
+	Super::BeginPlay();
+	Recharge();
 }

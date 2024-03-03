@@ -3,7 +3,7 @@
 
 #include "SteamMystery/Public/Devices/Weapons/Projectile.h"
 
-#include "NiagaraFunctionLibrary.h"
+#include "Components/BoxComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -15,8 +15,10 @@ AProjectile::AProjectile()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	Root = CreateDefaultSubobject<UBoxComponent>(TEXT("Root"));
+	SetRootComponent(Root);
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Projectile Mesh"));
-	SetRootComponent(Mesh);
+	Mesh->SetupAttachment(Root);
 	MovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Movement Component"));
 }
 
@@ -36,7 +38,8 @@ void AProjectile::SetPoints(const FVector Start, const FVector End)
 void AProjectile::BeginPlay()
 {
 	Super::BeginPlay();
-	Mesh->OnComponentHit.AddUniqueDynamic(this, &AProjectile::OnHit);
+	OnActorHit.AddUniqueDynamic(this, &AProjectile::OnHit);
+	//Mesh->OnComponentHit.AddUniqueDynamic(this, &AProjectile::OnHit);
 
 	FTimerHandle UnusedHandle;
 	GetWorldTimerManager().SetTimer(UnusedHandle, [this]
@@ -45,43 +48,27 @@ void AProjectile::BeginPlay()
 	}, ProjectileLifetime, false);
 
 	FVector TossVelocity;
-	UGameplayStatics::SuggestProjectileVelocity(GetWorld(), TossVelocity, StartLocation, EndLocation,
-	                                            TossSpeed, false, 0, 0,
-	                                            ESuggestProjVelocityTraceOption::DoNotTrace,
-	                                            FCollisionResponseParams::DefaultResponseParam, TArray<AActor*>(),
-	                                            true);
+	if (!UGameplayStatics::SuggestProjectileVelocity(GetWorld(), TossVelocity, StartLocation, EndLocation,
+	                                                 TossSpeed, false, 0, 0,
+	                                                 ESuggestProjVelocityTraceOption::DoNotTrace,
+	                                                 FCollisionResponseParams::DefaultResponseParam, TArray<AActor*>(),
+	                                                 true))
+		TossVelocity = UKismetMathLibrary::GetDirectionUnitVector(StartLocation, EndLocation) * TossSpeed;
 
-	MovementComponent->SetVelocityInLocalSpace(TossVelocity);
+		MovementComponent->SetVelocityInLocalSpace(TossVelocity);
 }
 
-void AProjectile::OnHit_Implementation(UPrimitiveComponent*,
-                                       AActor* OtherActor,
-                                       UPrimitiveComponent*,
-                                       FVector,
-                                       const FHitResult& HitResult)
+void AProjectile::OnHit_Implementation(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse,
+	const FHitResult& Hit)
+// void AProjectile::OnHit_Implementation(UPrimitiveComponent*,
+//                                        AActor* OtherActor,
+//                                        UPrimitiveComponent*,
+//                                        FVector,
+//                                        const FHitResult& Hit)
 {
-	const auto RotFromZ = UKismetMathLibrary::MakeRotFromZ(HitResult.Normal);
-
-	if (ImpactVfx.NiagaraSystem)
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(),
-		                                               ImpactVfx.NiagaraSystem,
-		                                               HitResult.Location,
-		                                               RotFromZ,
-		                                               ImpactVfx.Scale);
-	else if (ImpactVfx.ParticleSystem)
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(),
-		                                         ImpactVfx.ParticleSystem,
-		                                         HitResult.Location,
-		                                         RotFromZ,
-		                                         ImpactVfx.Scale);
-
-	if (DecalProps.Material)
-		UGameplayStatics::SpawnDecalAtLocation(GetWorld(),
-		                                       DecalProps.Material,
-		                                       DecalProps.Size,
-		                                       HitResult.Location,
-		                                       UKismetMathLibrary::MakeRotFromX(HitResult.Normal),
-		                                       DecalProps.LifeSpan);
+	ImpactVfx.SpawnAtHitLocation(GetWorld(), Hit);
+	DecalProps.SpawnAtHitLocation(GetWorld(), Hit);
+	UE_LOG(LogTemp, Warning, TEXT("%s"), *OtherActor->GetActorNameOrLabel())
 	AActor* OwnerActor = GetOwner();
 
 	TArray<AActor*> IgnoreActors;
@@ -92,7 +79,7 @@ void AProjectile::OnHit_Implementation(UPrimitiveComponent*,
 		UGameplayStatics::ApplyRadialDamage(
 			GetWorld(),
 			Damage,
-			HitResult.ImpactPoint,
+			Hit.ImpactPoint,
 			ExplosionRadius,
 			UDamageType::StaticClass(),
 			IgnoreActors,
@@ -101,19 +88,7 @@ void AProjectile::OnHit_Implementation(UPrimitiveComponent*,
 
 		const FVector Scale(ExplosionRadius / ExplosionRadiusScale);
 
-		if (ExplosionVfx.NiagaraSystem)
-			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(),
-			                                               ExplosionVfx.NiagaraSystem,
-			                                               HitResult.ImpactPoint,
-			                                               RotFromZ,
-			                                               Scale);
-
-		else if (ExplosionVfx.ParticleSystem)
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(),
-			                                         ExplosionVfx.ParticleSystem,
-			                                         HitResult.ImpactPoint,
-			                                         RotFromZ,
-			                                         Scale);
+		ExplosionVfx.SpawnAtHitLocation(GetWorld(), Hit, Scale);
 	}
 	else
 	{
@@ -121,12 +96,12 @@ void AProjectile::OnHit_Implementation(UPrimitiveComponent*,
 		                                   OtherActor,
 		                                   OwnerActor,
 		                                   Damage,
-		                                   OwnerActor->GetActorLocation(), HitResult.ImpactPoint);
+		                                   OwnerActor->GetActorLocation(), Hit.ImpactPoint);
 
 		UGameplayStatics::ApplyPointDamage(OtherActor,
 		                                   Damage,
 		                                   StartLocation,
-		                                   HitResult,
+		                                   Hit,
 		                                   OwnerActor->GetInstigatorController(),
 		                                   this,
 		                                   UDamageType::StaticClass());

@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Weapon.h"
+#include "VFX/DecalProps.h"
+#include "VFX/Vfx.h"
 #include "MeleeWeapon.generated.h"
 
 class UMeleeTraceComponent;
@@ -18,10 +20,10 @@ class STEAMMYSTERY_API AMeleeWeapon : public AWeapon
 protected:
 
 	UPROPERTY(EditAnywhere)
-	UParticleSystem* HitVfx;
+	FVfx HitVfx;
 	
 	UPROPERTY(EditAnywhere)
-	FVector HitVfxScale =  FVector(1);
+	FDecalProps DecalProps;
 
 public:
 	

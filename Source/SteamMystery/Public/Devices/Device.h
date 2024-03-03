@@ -17,7 +17,7 @@ class STEAMMYSTERY_API ADevice : public AActor
 
 public:
 	ADevice();
-	bool CheckRole();
+	bool CheckRole() const;
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	bool Use();

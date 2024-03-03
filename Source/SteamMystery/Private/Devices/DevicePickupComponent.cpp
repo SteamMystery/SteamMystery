@@ -32,7 +32,11 @@ void UDevicePickupComponent::BeginPlay()
 	if (const auto SaveSubsystem = UGameplayStatics::GetGameInstance(GetWorld())->GetSubsystem<UGameSaveSubsystem>())
 		if (const auto Save = SaveSubsystem->GetSave())
 			if (const auto Row = Device.GetRow<FEquipmentItem>(GetName()))
-				if (Row->Roles.Contains(Save->GetRole()))
+				if (Row->Roles.ContainsByPredicate([&](const ERole Role)
+				{
+					return Role == Save->GetRole() || Role == ERole::All;
+				}))
+				//if (Row->Roles.Contains(Save->GetRole()) || Row->Roles.Contains(ERole::All))
 				{
 					OnInteract.AddUniqueDynamic(this, &ThisClass::OnInteractCallback);
 					GetOwner()->Tags.Add(UPlayerInteractionComponent::InteractTag);

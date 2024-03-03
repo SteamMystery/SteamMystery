@@ -8,9 +8,6 @@
 #include "VFX/Vfx.h"
 #include "Projectile.generated.h"
 
-class UNiagaraSystem;
-class UProjectileMovementComponent;
-
 UCLASS()
 class STEAMMYSTERY_API AProjectile : public AActor
 {
@@ -28,12 +25,15 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
+	
+	UPROPERTY(EditAnywhere)
+	class UBoxComponent* Root;
+	
 	UPROPERTY(EditDefaultsOnly)
 	UStaticMeshComponent* Mesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	UProjectileMovementComponent* MovementComponent;
+	class UProjectileMovementComponent* MovementComponent;
 
 	UPROPERTY(EditDefaultsOnly)
 	float ProjectileLifetime;
@@ -57,11 +57,12 @@ protected:
 	FDecalProps DecalProps;
 
 	UFUNCTION(BlueprintNativeEvent)
-	void OnHit(UPrimitiveComponent* HitComp,
-	           AActor* OtherActor,
-	           UPrimitiveComponent* OtherComp,
-	           FVector NormalImpulse,
-	           const FHitResult& HitResult);
+	// void OnHit(UPrimitiveComponent* HitComp,
+	//            AActor* OtherActor,
+	//            UPrimitiveComponent* OtherComp,
+	//            FVector NormalImpulse,
+	//            const FHitResult& HitResult);
+	void OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (ExposeOnSpawn))
 	float Damage = 50;

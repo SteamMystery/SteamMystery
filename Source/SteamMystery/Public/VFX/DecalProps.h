@@ -19,7 +19,12 @@ struct FDecalProps
 
 	UPROPERTY(EditAnywhere)
 	FVector Size;
+	
+	UPROPERTY(EditAnywhere)
+	FRotator Rotation = FRotator::ZeroRotator;
 
 	UPROPERTY(EditAnywhere)
 	float LifeSpan;
+
+	void SpawnAtHitLocation(const UWorld* InWorld, const FHitResult& HitResult) const;
 };

@@ -18,38 +18,46 @@ ADevice::ADevice()
 	SetRootComponent(Root);
 }
 
-bool ADevice::CheckRole()
+bool ADevice::CheckRole() const
 {
-	return Roles.Contains(PlayerState->GetRole());
+	return Roles.Contains(ERole::All) || Roles.Contains(PlayerState->GetRole());
 }
 
 bool ADevice::Use_Implementation()
 {
-	if (bIsOnCooldown) return false;
-	bool bCond = false;
-	if (const auto Char = GetOwner())
-		if (const auto SteamComponent = Char->GetComponentByClass<USteamComponent>())
-			if (const auto ElectricityComponent = Char->GetComponentByClass<UElectricityComponent>())
-			{
-				const auto Stats = GetStats();
-				const auto SteamPrice = Stats.FindRef(EStat::SteamPrice);
-				const auto ElectricityPrice = Stats.FindRef(EStat::ElectricityPrice);
-				if (CheckRole() &&
-					SteamComponent->CanConsume(SteamPrice) &&
-					ElectricityComponent->CanConsume(ElectricityPrice))
-				{
-					if (const auto Speed = Stats.FindRef(EStat::Speed); Speed > 0)
-					{
-						FTimerHandle UnusedTimer;
-						bIsOnCooldown = true;
-						GetWorld()->GetTimerManager().SetTimer(UnusedTimer, this, &ThisClass::Ready, Speed);
-					}
-					bCond = SteamComponent->Consume(SteamPrice) && ElectricityComponent->Consume(ElectricityPrice);
-				}
-			}
+	const auto OwningCharacter = GetOwner();
+	if (bIsOnCooldown || !OwningCharacter || !CheckRole()) return false;
+
+	USteamComponent* SteamComponent = OwningCharacter->GetComponentByClass<USteamComponent>();
+	UElectricityComponent* ElectricityComponent = OwningCharacter->GetComponentByClass<UElectricityComponent>();
+	const auto Stats = GetStats();
+	const auto SteamPrice = Stats.FindRef(EStat::SteamPrice);
+	const auto ElectricityPrice = Stats.FindRef(EStat::ElectricityPrice);
+
+	bool bCond = true;
+
+	if (bCond && SteamPrice > 0)
+		bCond &= SteamComponent && SteamComponent->CanConsume(SteamPrice);
+
+	if (bCond && ElectricityPrice > 0)
+		bCond &= ElectricityComponent && ElectricityComponent->CanConsume(ElectricityPrice);
+	
+	if (bCond)
+	{
+		SteamComponent->Consume(SteamPrice);
+		ElectricityComponent->Consume(ElectricityPrice);
+		
+		if (const auto Speed = Stats.FindRef(EStat::Speed); Speed > 0)
+		{
+			FTimerHandle UnusedTimer;
+			bIsOnCooldown = true;
+			GetWorld()->GetTimerManager().SetTimer(UnusedTimer, this, &ThisClass::Ready, Speed);
+		}
+	}
 
 	if (UseSound)
 		UGameplayStatics::PlaySoundAtLocation(GetWorld(), UseSound, GetActorLocation(), GetActorRotation());
+	
 	return bCond;
 }
 

@@ -16,6 +16,7 @@ class STEAMMYSTERY_API ARangedWeapon : public AWeapon
 	GENERATED_BODY()
 
 public:
+	UFUNCTION(BlueprintNativeEvent)
 	void Recharge();
 	UFUNCTION(BlueprintNativeEvent)
 	bool StartRecharge();
@@ -33,6 +34,7 @@ public:
 	UFUNCTION(BlueprintPure)
 	float GetMaxAmmo() const;
 protected:
+	virtual void BeginPlay() override;
 
 	int32 Ammo;
 	

@@ -23,4 +23,7 @@ struct FVfx
 
 	UPROPERTY(EditAnywhere)
 	FVector Scale = FVector(1);
+
+	void SpawnAtHitLocation(const UWorld* InWorld, const FHitResult& HitResult) const;
+	void SpawnAtHitLocation(const UWorld* InWorld, const FHitResult& HitResult, const FVector& InScale) const;
 };

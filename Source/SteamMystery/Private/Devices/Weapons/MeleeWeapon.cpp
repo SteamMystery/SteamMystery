@@ -2,7 +2,10 @@
 
 
 #include "SteamMystery/Public/Devices/Weapons/MeleeWeapon.h"
+
+#include "NiagaraFunctionLibrary.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Perception/AISense_Damage.h"
 
 // ReSharper disable once CppMemberFunctionMayBeConst
@@ -20,11 +23,11 @@ void AMeleeWeapon::Attack(AActor* HitActor, const FVector& HitLocation)
 			                              OwnerActor->GetInstigatorController(),
 			                              OwnerActor,
 			                              UDamageType::StaticClass());
+
 			if (FHitResult HitResult; Sweep(HitResult, OwnerActor->GetActorLocation(), 200))
-				UGameplayStatics::SpawnEmitterAtLocation(GetWorld(),
-				                                         HitVfx,
-				                                         HitResult.ImpactPoint,
-				                                         FRotator::ZeroRotator,
-				                                         HitVfxScale);
+			{
+				HitVfx.SpawnAtHitLocation(GetWorld(), HitResult);
+				DecalProps.SpawnAtHitLocation(GetWorld(), HitResult);
+			}
 		}
 }
