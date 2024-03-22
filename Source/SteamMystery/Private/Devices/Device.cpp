@@ -20,7 +20,9 @@ ADevice::ADevice()
 
 bool ADevice::CheckRole() const
 {
-	return Roles.Contains(ERole::All) || Roles.Contains(PlayerState->GetRole());
+	if (PlayerState)
+		return Roles.Contains(ERole::All) || Roles.Contains(PlayerState->GetRole());
+	return true;
 }
 
 bool ADevice::Use_Implementation()
@@ -41,12 +43,12 @@ bool ADevice::Use_Implementation()
 
 	if (bCond && ElectricityPrice > 0)
 		bCond &= ElectricityComponent && ElectricityComponent->CanConsume(ElectricityPrice);
-	
+
 	if (bCond)
 	{
 		SteamComponent->Consume(SteamPrice);
 		ElectricityComponent->Consume(ElectricityPrice);
-		
+
 		if (const auto Speed = Stats.FindRef(EStat::Speed); Speed > 0)
 		{
 			FTimerHandle UnusedTimer;
@@ -57,7 +59,7 @@ bool ADevice::Use_Implementation()
 
 	if (UseSound)
 		UGameplayStatics::PlaySoundAtLocation(GetWorld(), UseSound, GetActorLocation(), GetActorRotation());
-	
+
 	return bCond;
 }
 

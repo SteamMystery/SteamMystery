@@ -60,7 +60,7 @@ class STEAMMYSTERY_API UGameSave : public USaveGame
 
 protected:
 	UPROPERTY()
-	ERole Role;
+	ERole Role = ERole::Gunner;
 
 public:
 	UGameSave();
