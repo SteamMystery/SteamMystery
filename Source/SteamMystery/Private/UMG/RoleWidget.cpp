@@ -22,8 +22,7 @@ void URoleWidget::NativePreConstruct()
 	Super::NativeConstruct();
 }
 
-// ReSharper disable once CppMemberFunctionMayBeConst
-void URoleWidget::SetRole()
+void URoleWidget::StartGame_Implementation()
 {
 	if(const auto SaveSubsystem = UGameplayStatics::GetGameInstance(GetWorld())->GetSubsystem<UGameSaveSubsystem>())
 	{
@@ -37,7 +36,7 @@ void URoleWidget::SetRole()
 void URoleWidget::NativeConstruct()
 {
 	if(Button)
-		Button->OnClicked.AddUniqueDynamic(this, &ThisClass::SetRole);
+		Button->OnClicked.AddUniqueDynamic(this, &ThisClass::StartGame);
 	Super::NativeConstruct();
 }
 

@@ -8,7 +8,7 @@
 
 void FDecalProps::SpawnAtHitLocation(const UWorld* InWorld, const FHitResult& HitResult) const
 {
-	UE_LOG(LogTemp, Warning, TEXT("SpawnedDecal to: %s"), *HitResult.GetActor()->GetActorNameOrLabel())
+	//UE_LOG(LogTemp, Warning, TEXT("SpawnedDecal to: %s"), *HitResult.GetActor()->GetActorNameOrLabel())
 	if (Material)
 		UGameplayStatics::SpawnDecalAtLocation(InWorld,
 											   Material,

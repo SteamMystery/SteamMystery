@@ -51,20 +51,17 @@ void AProjectile::BeginPlay()
 	if (!UGameplayStatics::SuggestProjectileVelocity(GetWorld(), TossVelocity, StartLocation, EndLocation,
 	                                                 TossSpeed, false, 0, 0,
 	                                                 ESuggestProjVelocityTraceOption::DoNotTrace,
-	                                                 FCollisionResponseParams::DefaultResponseParam, TArray<AActor*>(),
-	                                                 true))
+	                                                 FCollisionResponseParams::DefaultResponseParam,
+	                                                 TArray<AActor*>(), bDrawDebug))
 		TossVelocity = UKismetMathLibrary::GetDirectionUnitVector(StartLocation, EndLocation) * TossSpeed;
 
-		MovementComponent->SetVelocityInLocalSpace(TossVelocity);
+	MovementComponent->SetVelocityInLocalSpace(TossVelocity);
 }
 
-void AProjectile::OnHit_Implementation(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse,
-	const FHitResult& Hit)
-// void AProjectile::OnHit_Implementation(UPrimitiveComponent*,
-//                                        AActor* OtherActor,
-//                                        UPrimitiveComponent*,
-//                                        FVector,
-//                                        const FHitResult& Hit)
+void AProjectile::OnHit_Implementation(AActor* SelfActor,
+                                       AActor* OtherActor,
+                                       FVector NormalImpulse,
+                                       const FHitResult& Hit)
 {
 	ImpactVfx.SpawnAtHitLocation(GetWorld(), Hit);
 	DecalProps.SpawnAtHitLocation(GetWorld(), Hit);
@@ -76,19 +73,15 @@ void AProjectile::OnHit_Implementation(AActor* SelfActor, AActor* OtherActor, FV
 
 	if (ExplosionRadius > 0)
 	{
-		UGameplayStatics::ApplyRadialDamage(
-			GetWorld(),
-			Damage,
-			Hit.ImpactPoint,
-			ExplosionRadius,
-			UDamageType::StaticClass(),
-			IgnoreActors,
-			this,
-			GetInstigatorController());
-
-		const FVector Scale(ExplosionRadius / ExplosionRadiusScale);
-
-		ExplosionVfx.SpawnAtHitLocation(GetWorld(), Hit, Scale);
+		UGameplayStatics::ApplyRadialDamage(GetWorld(),
+		                                    Damage,
+		                                    Hit.ImpactPoint,
+		                                    ExplosionRadius,
+		                                    UDamageType::StaticClass(),
+		                                    IgnoreActors,
+		                                    this,
+		                                    GetInstigatorController());
+		ExplosionVfx.SpawnAtHitLocation(GetWorld(), Hit, FVector(ExplosionRadius / ExplosionRadiusScale));
 	}
 	else
 	{
@@ -96,7 +89,8 @@ void AProjectile::OnHit_Implementation(AActor* SelfActor, AActor* OtherActor, FV
 		                                   OtherActor,
 		                                   OwnerActor,
 		                                   Damage,
-		                                   OwnerActor->GetActorLocation(), Hit.ImpactPoint);
+		                                   OwnerActor->GetActorLocation(),
+		                                   Hit.ImpactPoint);
 
 		UGameplayStatics::ApplyPointDamage(OtherActor,
 		                                   Damage,

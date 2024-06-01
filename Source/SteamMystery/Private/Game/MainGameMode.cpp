@@ -28,7 +28,6 @@ void AMainGameMode::ActorDied(AActor* Actor)
 void AMainGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-
 	Player = Cast<AGameCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 	MainPlayerController = Cast<AMainPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
 }

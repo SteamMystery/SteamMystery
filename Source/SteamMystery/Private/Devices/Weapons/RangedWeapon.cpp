@@ -60,7 +60,8 @@ bool ARangedWeapon::Use_Implementation()
 
 	FHitResult HitResult;
 	const auto TraceStart = FirePoint->GetComponentLocation();
-	const auto TraceEnd = Sweep(HitResult, TraceStart, GetStats().FindRef(EStat::Range) * 100)
+	float Range = GetStats().FindRef(EStat::Range) * 100;
+	const auto TraceEnd = Sweep(HitResult, TraceStart, Range)
 		                      ? HitResult.ImpactPoint
 		                      : HitResult.TraceEnd;
 	const FTransform Transform(FRotator::ZeroRotator, TraceStart);

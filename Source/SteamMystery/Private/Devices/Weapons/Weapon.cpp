@@ -13,21 +13,20 @@ bool AWeapon::Sweep(FHitResult& HitResult, const FVector& TraceStart, const floa
 			FRotator Rotation;
 			FVector Direction;
 			OwnerController->GetPlayerViewPoint(Start, Rotation);
-			if (const auto MainAIController = Cast<AMainAIController>(OwnerController))
+			if (const auto AIController = Cast<AAIController>(OwnerController))
 			{
 				double Length;
-				(MainAIController->GetFocalPoint() - Start).ToDirectionAndLength(Direction, Length);
+				const auto Vector = AIController->GetFocalPoint() - Start;
+				Vector.ToDirectionAndLength(Direction, Length);
 			}
 			else
 				Direction = Rotation.Vector();
-			const FVector End = Start + Direction * Range;
+			const FVector TraceEnd = Start + Direction * Range;
 			auto Params = FCollisionQueryParams::DefaultQueryParam;
 			Params.AddIgnoredActor(GetOwner());
 			Params.AddIgnoredActor(this);
-			//DrawDebugLine(GetWorld(), FirePoint->GetComponentLocation(), End, FColor::Red, false, 15);
-			GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, End, ECC_EngineTraceChannel2, Params);
-			UE_LOG(LogTemp, Warning, TEXT("END: %f, %f, %f"), End.X, End.Y, End.Z);
-			return true;
+			HitResult.TraceEnd = TraceEnd;
+			return GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECC_EngineTraceChannel2, Params);
 		}
 	return false;
 }

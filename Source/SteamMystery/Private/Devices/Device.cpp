@@ -30,8 +30,8 @@ bool ADevice::Use_Implementation()
 	const auto OwningCharacter = GetOwner();
 	if (bIsOnCooldown || !OwningCharacter || !CheckRole()) return false;
 
-	USteamComponent* SteamComponent = OwningCharacter->GetComponentByClass<USteamComponent>();
-	UElectricityComponent* ElectricityComponent = OwningCharacter->GetComponentByClass<UElectricityComponent>();
+	const auto SteamComponent = OwningCharacter->GetComponentByClass<USteamComponent>();
+	const auto ElectricityComponent = OwningCharacter->GetComponentByClass<UElectricityComponent>();
 	const auto Stats = GetStats();
 	const auto SteamPrice = Stats.FindRef(EStat::SteamPrice);
 	const auto ElectricityPrice = Stats.FindRef(EStat::ElectricityPrice);

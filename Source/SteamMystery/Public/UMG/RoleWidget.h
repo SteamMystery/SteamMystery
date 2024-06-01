@@ -22,8 +22,8 @@ class STEAMMYSTERY_API URoleWidget : public UUserWidget
 protected:
 
 	virtual void NativePreConstruct() override;
-	UFUNCTION()
-	void SetRole();	
+	UFUNCTION(BlueprintNativeEvent)
+	void StartGame();	
 	virtual void NativeConstruct() override;
 
 	UPROPERTY(EditAnywhere)

@@ -17,7 +17,6 @@ class STEAMMYSTERY_API UItemCollectionWidget : public UBaseHUDWidget
 
 protected:
 	virtual void NativeOnInitialized() override;
-	virtual void NativeConstruct() override;
 	virtual void Sync();
 
 	UPROPERTY()

@@ -13,11 +13,6 @@ void UItemCollectionWidget::NativeOnInitialized()
 	GameInstance = Cast<UBaseGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 }
 
-void UItemCollectionWidget::NativeConstruct()
-{
-	Super::NativeConstruct();
-}
-
 void UItemCollectionWidget::Sync()
 {
 }

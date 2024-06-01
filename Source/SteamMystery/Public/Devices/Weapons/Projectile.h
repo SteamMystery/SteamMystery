@@ -55,13 +55,11 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly)
 	FDecalProps DecalProps;
+	
+	UPROPERTY(EditAnywhere)
+	bool bDrawDebug = false;
 
 	UFUNCTION(BlueprintNativeEvent)
-	// void OnHit(UPrimitiveComponent* HitComp,
-	//            AActor* OtherActor,
-	//            UPrimitiveComponent* OtherComp,
-	//            FVector NormalImpulse,
-	//            const FHitResult& HitResult);
 	void OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (ExposeOnSpawn))
